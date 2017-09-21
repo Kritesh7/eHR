@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ehr.cfcs.com.ehr.Main.AttendanceModule"
+    tools:showIn="@layout/activity_attendance_module">
+
+    <LinearLayout
+        android:id="@+id/mainlay"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonlay">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+
+        <!--<TextView
+            android:padding="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attendance"
+            android:textColor="@color/purple700"/>-->
+
+        <LinearLayout
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".1">
+
+            <TextView
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/purple500"
+                android:layout_width="0dp"
+                android:layout_weight=".5"
+                android:layout_height="wrap_content"
+                android:text="9 Sep 2017"/>
+
+            <TextView
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="0dp"
+                android:layout_weight=".5"
+                android:textColor="@color/purple500"
+                android:layout_height="wrap_content"
+                android:text="10:32 Am"/>
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".6"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:elevation="10dp">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/locationtxt"
+                    android:layout_width="0dp"
+                    android:layout_weight=".8"
+                    android:layout_height="wrap_content"
+                    android:hint="Your Location"
+                    android:textColor="@color/purple700" />
+
+                <ImageView
+                    android:id="@+id/locationimg"
+                    android:padding="5dp"
+                    android:layout_width="0dp"
+                    android:layout_weight=".2"
+                    android:src="@drawable/gps"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+
+            <fragment
+                android:id="@+id/mapwhere"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <EditText
+            android:textColor="@color/purple700"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".3"
+            android:hint="Remark"/>
+
+        </LinearLayout>
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonlay"
+        app:layout_constraintTop_toBottomOf="@+id/mainlay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="0dp"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/submitbtn"
+        android:layout_width="0dp"
+        android:layout_weight=".5"
+        android:layout_height="wrap_content"
+        android:background="@color/purple700"
+        android:text="Submit"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/white"
+
+       />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+            android:background="@color/purple700"
+            android:text="Cancel"
+            android:textColor="@color/white"
+
+            />
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

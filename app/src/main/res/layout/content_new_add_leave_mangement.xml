@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ehr.cfcs.com.ehr.Main.NewAddLeaveMangementActivity"
+    tools:showIn="@layout/activity_new_add_leave_mangement">
+
+    <LinearLayout
+
+        android:padding="10dp"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent">
+
+    <LinearLayout
+
+        android:orientation="vertical"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Leave Type"
+            android:textSize="16sp"
+            android:textColor="@color/purple700"/>
+
+        <Spinner
+            android:layout_marginTop="5dp"
+            android:id="@+id/leavetypespinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </Spinner>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/startdate"
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:layout_height="wrap_content"
+                android:hint="start Date"/>
+
+            <ImageView
+                android:id="@+id/cal"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cal"/>
+
+            <CheckBox
+                android:layout_marginLeft="10dp"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/purple700"
+                android:text="Second Half"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/enddate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:hint="End Date" />
+
+            <ImageView
+                android:id="@+id/end_cal"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cal"/>
+
+            <CheckBox
+                android:layout_marginLeft="10dp"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/purple700"
+                android:text="First Half"/>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/purple700"
+            android:textColor="@color/white"
+            android:elevation="10dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:text="Apply"/>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

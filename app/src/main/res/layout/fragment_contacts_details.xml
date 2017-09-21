@@ -1,0 +1,209 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="ehr.cfcs.com.ehr.Fragment.ContactsDetailsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <ScrollView
+        android:layout_above="@+id/editcontactdetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none" >
+
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColorHint="#0D47A1"
+                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/linebelowedittext"
+                    android:backgroundTint="@color/purple700"
+                    android:hint="Permanent Address"
+                    android:inputType="textPersonName"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="12/B 40 Greater Noida"
+                    android:textColor="@color/purple500"
+                    android:textColorHint="@color/purple700"
+                    android:textSize="16dp"
+                    android:theme="@style/MyEditText" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColorHint="#0D47A1"
+                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/linebelowedittext"
+                    android:backgroundTint="@color/purple700"
+                    android:hint="Current Address"
+                    android:inputType="textPersonName"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="12/B 40 Greater Noida"
+                    android:textColor="@color/purple500"
+                    android:textColorHint="@color/purple700"
+                    android:textSize="16dp"
+                    android:theme="@style/MyEditText" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColorHint="#0D47A1"
+                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/linebelowedittext"
+                    android:backgroundTint="@color/purple700"
+                    android:hint="Corresponding Address"
+                    android:inputType="textPersonName"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="12/B 40 Greater Noida"
+                    android:textColor="@color/purple500"
+                    android:textColorHint="@color/purple700"
+                    android:textSize="16dp"
+                    android:theme="@style/MyEditText" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColorHint="#0D47A1"
+                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/linebelowedittext"
+                    android:backgroundTint="@color/purple700"
+                    android:hint="Phone Number"
+                    android:inputType="textPersonName"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="8975467980"
+                    android:textColor="@color/purple500"
+                    android:textColorHint="@color/purple700"
+                    android:textSize="16dp"
+                    android:theme="@style/MyEditText" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColorHint="#0D47A1"
+                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/linebelowedittext"
+                    android:backgroundTint="@color/purple700"
+                    android:hint="Mobile Number"
+                    android:inputType="textPersonName"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="8975467980"
+                    android:textColor="@color/purple500"
+                    android:textColorHint="@color/purple700"
+                    android:textSize="16dp"
+                    android:theme="@style/MyEditText" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColorHint="#0D47A1"
+                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/linebelowedittext"
+                    android:backgroundTint="@color/purple700"
+                    android:hint="Email Id(Personal)"
+                    android:inputType="textPersonName"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="abc@gmail.com"
+                    android:textColor="@color/purple500"
+                    android:textColorHint="@color/purple700"
+                    android:textSize="16dp"
+                    android:theme="@style/MyEditText" />
+            </android.support.design.widget.TextInputLayout>
+
+           <!-- <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:nextFocusLeft="@id/autotext"
+                android:nextFocusUp="@id/autotext"
+                android:textColorHint="#0D47A1"
+                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/linebelowedittext"
+                    android:backgroundTint="@color/purple700"
+                    android:hint="Father/Husband Name"
+                    android:inputType="textPersonName"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:text="Parent Demo"
+                    android:textColor="@color/purple500"
+                    android:textColorHint="@color/purple700"
+                    android:textSize="16dp"
+                    android:theme="@style/MyEditText" />
+            </android.support.design.widget.TextInputLayout>-->
+
+        </LinearLayout>
+
+        </ScrollView>
+
+        <Button
+            android:id="@+id/editcontactdetails"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Edit Contact Details"
+            android:background="@color/purple700"
+            android:textColor="@color/white"/>
+
+    </RelativeLayout>
+
+</FrameLayout>
