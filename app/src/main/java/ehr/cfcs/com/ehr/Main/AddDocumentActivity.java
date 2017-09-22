@@ -15,21 +15,19 @@ import java.util.ArrayList;
 
 import ehr.cfcs.com.ehr.Adapter.BookMeaPrevisonAdapter;
 import ehr.cfcs.com.ehr.Model.BookMeaPrevisionModel;
-import ehr.cfcs.com.ehr.Model.SkillsModel;
 import ehr.cfcs.com.ehr.R;
 
-public class AddNewStationaryRequestActivity extends AppCompatActivity {
+public class AddDocumentActivity extends AppCompatActivity {
 
     public TextView titleTxt;
     public BookMeaPrevisonAdapter adapter;
     public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
     public ListView listView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_stationary_request);
+        setContentView(R.layout.activity_add_document);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -38,9 +36,8 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity {
             window.setStatusBarColor(this.getResources().getColor(R.color.status_color));
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.staionaory_tollbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.document_tollbar);
         setSupportActionBar(toolbar);
-
         titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -58,13 +55,14 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Add New Stationary Request");
+        titleTxt.setText("Add New Document");
+
 
         listView = (ListView)findViewById(R.id.listview);
 
         //listView.setItemsCanFocus(true);
 
-        adapter = new BookMeaPrevisonAdapter(list,AddNewStationaryRequestActivity.this);
+        adapter = new BookMeaPrevisonAdapter(list,AddDocumentActivity.this);
         listView.setAdapter(adapter);
 
         prepareInsDetails();
@@ -75,13 +73,13 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity {
 
     private void prepareInsDetails() {
 
-        BookMeaPrevisionModel model = new BookMeaPrevisionModel("Pencil");
+        BookMeaPrevisionModel model = new BookMeaPrevisionModel("10th Marksheet");
         list.add(model);
-        model = new BookMeaPrevisionModel("Shopener");
+        model = new BookMeaPrevisionModel("12th Marksheet");
         list.add(model);
-        model = new BookMeaPrevisionModel("Notepad");
+        model = new BookMeaPrevisionModel("Graduation Certificate");
         list.add(model);
-        model = new BookMeaPrevisionModel("Bag");
+        model = new BookMeaPrevisionModel("Post Graduation Certificate");
         list.add(model);
 
 

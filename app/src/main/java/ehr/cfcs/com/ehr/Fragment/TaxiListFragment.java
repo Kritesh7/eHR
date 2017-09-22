@@ -1,8 +1,10 @@
 package ehr.cfcs.com.ehr.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 
 import ehr.cfcs.com.ehr.Adapter.CabListAdapter;
 import ehr.cfcs.com.ehr.Adapter.DocumentListAdapter;
+import ehr.cfcs.com.ehr.Main.AddCabActivity;
+import ehr.cfcs.com.ehr.Main.AddDocumentActivity;
 import ehr.cfcs.com.ehr.Model.CabListModel;
 import ehr.cfcs.com.ehr.Model.DocumentListModel;
 import ehr.cfcs.com.ehr.R;
@@ -40,6 +44,7 @@ public class TaxiListFragment extends Fragment {
     public RecyclerView cabrecycler;
     public CabListAdapter adapter;
     public ArrayList<CabListModel> list = new ArrayList<>();
+    public FloatingActionButton fab;
 
 
     private OnFragmentInteractionListener mListener;
@@ -82,6 +87,7 @@ public class TaxiListFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_taxi_list, container, false);
         cabrecycler = (RecyclerView)rootView.findViewById(R.id.cab_recycler);
+        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
 
         adapter = new CabListAdapter(getActivity(),list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -92,6 +98,16 @@ public class TaxiListFragment extends Fragment {
         cabrecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         prepareInsDetails();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(getActivity(), AddCabActivity.class);
+                startActivity(i);
+                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
 
         return rootView;
     }

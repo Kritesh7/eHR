@@ -8,28 +8,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
-import ehr.cfcs.com.ehr.Adapter.BookMeaPrevisonAdapter;
-import ehr.cfcs.com.ehr.Model.BookMeaPrevisionModel;
-import ehr.cfcs.com.ehr.Model.SkillsModel;
 import ehr.cfcs.com.ehr.R;
 
-public class AddNewStationaryRequestActivity extends AppCompatActivity {
+public class AddQualificationActivity extends AppCompatActivity {
 
     public TextView titleTxt;
-    public BookMeaPrevisonAdapter adapter;
-    public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
-    public ListView listView;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_stationary_request);
+        setContentView(R.layout.activity_add_qualification);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -38,7 +28,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity {
             window.setStatusBarColor(this.getResources().getColor(R.color.status_color));
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.staionaory_tollbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.addqualificationtollbar);
         setSupportActionBar(toolbar);
 
         titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
@@ -58,36 +48,17 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Add New Stationary Request");
-
-        listView = (ListView)findViewById(R.id.listview);
-
-        //listView.setItemsCanFocus(true);
-
-        adapter = new BookMeaPrevisonAdapter(list,AddNewStationaryRequestActivity.this);
-        listView.setAdapter(adapter);
-
-        prepareInsDetails();
+        titleTxt.setText("Add Qualification Detail");
 
 
-
-    }
-
-    private void prepareInsDetails() {
-
-        BookMeaPrevisionModel model = new BookMeaPrevisionModel("Pencil");
-        list.add(model);
-        model = new BookMeaPrevisionModel("Shopener");
-        list.add(model);
-        model = new BookMeaPrevisionModel("Notepad");
-        list.add(model);
-        model = new BookMeaPrevisionModel("Bag");
-        list.add(model);
-
-
-
-        adapter.notifyDataSetChanged();
-
+       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });*/
     }
 
     @Override
@@ -98,6 +69,5 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity {
                 R.anim.push_right_out);
 
     }
-
 
 }

@@ -16,4 +16,11 @@
     <string name="title_activity_addand_edit_traning">AddandEditTraningActivity</string>
     <string name="title_activity_add_new_stationary_request">AddNewStationaryRequestActivity
     </string>
+    <string name="title_activity_add_document">AddDocumentActivity</string>
+    <string name="title_activity_add_cab">AddCabActivity</string>
+    <string name="title_activity_add_hotel">AddHotelActivity</string>
+    <string name="title_activity_add_offieceally_details">AddOffieceallyDetailsActivity</string>
+    <string name="title_activity_add_dependent">AddDependentActivity</string>
+    <string name="title_activity_medicaland_anssurance">MedicalandAnssuranceActivity</string>
+    <string name="title_activity_add_qualification">AddQualificationActivity</string>
 </resources>

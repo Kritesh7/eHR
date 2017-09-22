@@ -1,8 +1,10 @@
 package ehr.cfcs.com.ehr.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 
 import ehr.cfcs.com.ehr.Adapter.DependentAdapter;
 import ehr.cfcs.com.ehr.Adapter.HotelBookingListAdapter;
+import ehr.cfcs.com.ehr.Main.AddCabActivity;
+import ehr.cfcs.com.ehr.Main.AddDependentActivity;
 import ehr.cfcs.com.ehr.Model.DependentModel;
 import ehr.cfcs.com.ehr.Model.HotelBookingListModel;
 import ehr.cfcs.com.ehr.R;
@@ -39,6 +43,7 @@ public class DependnetsFragment extends Fragment {
 
     public DependentAdapter adapter;
     public ArrayList<DependentModel> list = new ArrayList<>();
+    public FloatingActionButton fab;
     private OnFragmentInteractionListener mListener;
 
     public RecyclerView dependetRecy;
@@ -81,6 +86,7 @@ public class DependnetsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_dependnets, container, false);
 
         dependetRecy = (RecyclerView)rootView.findViewById(R.id.dependent_recycler);
+        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
 
         adapter = new DependentAdapter(getActivity(),list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -91,6 +97,16 @@ public class DependnetsFragment extends Fragment {
         dependetRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         prepareInsDetails();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(getActivity(), AddDependentActivity.class);
+                startActivity(i);
+                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
 
         return rootView;
     }

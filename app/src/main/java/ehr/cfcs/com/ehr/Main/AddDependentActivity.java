@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Main;
 
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,28 +9,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ListView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import ehr.cfcs.com.ehr.Adapter.BookMeaPrevisonAdapter;
-import ehr.cfcs.com.ehr.Model.BookMeaPrevisionModel;
-import ehr.cfcs.com.ehr.Model.SkillsModel;
 import ehr.cfcs.com.ehr.R;
 
-public class AddNewStationaryRequestActivity extends AppCompatActivity {
+public class AddDependentActivity extends AppCompatActivity {
 
     public TextView titleTxt;
-    public BookMeaPrevisonAdapter adapter;
-    public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
-    public ListView listView;
-
+    public Spinner relationshipSpinner;
+    public ArrayList<String> relationshipList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_new_stationary_request);
+        setContentView(R.layout.activity_add_dependent);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -38,7 +35,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity {
             window.setStatusBarColor(this.getResources().getColor(R.color.status_color));
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.staionaory_tollbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.adddependenttollbar);
         setSupportActionBar(toolbar);
 
         titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
@@ -58,36 +55,27 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Add New Stationary Request");
+        titleTxt.setText("Add New Dependent");
 
-        listView = (ListView)findViewById(R.id.listview);
+        relationshipSpinner = (Spinner)findViewById(R.id.relationshipespinner);
 
-        //listView.setItemsCanFocus(true);
+        //Relationship Type Spinner
+        if (relationshipList.size()>0)
+        {
+            relationshipList.clear();
+        }
+        relationshipList.add("Please Select Relationship");
+        relationshipList.add("Father");
+        relationshipList.add("Mother");
+        relationshipList.add("Brother");
 
-        adapter = new BookMeaPrevisonAdapter(list,AddNewStationaryRequestActivity.this);
-        listView.setAdapter(adapter);
+        //change spinner arrow color
+        relationshipSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
 
-        prepareInsDetails();
-
-
-
-    }
-
-    private void prepareInsDetails() {
-
-        BookMeaPrevisionModel model = new BookMeaPrevisionModel("Pencil");
-        list.add(model);
-        model = new BookMeaPrevisionModel("Shopener");
-        list.add(model);
-        model = new BookMeaPrevisionModel("Notepad");
-        list.add(model);
-        model = new BookMeaPrevisionModel("Bag");
-        list.add(model);
-
-
-
-        adapter.notifyDataSetChanged();
-
+        ArrayAdapter<String> relationShipAdapter = new ArrayAdapter<String>(AddDependentActivity.this, R.layout.customizespinner,
+                relationshipList);
+        relationShipAdapter.setDropDownViewResource(R.layout.customizespinner);
+        relationshipSpinner.setAdapter(relationShipAdapter);
     }
 
     @Override
@@ -98,6 +86,5 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity {
                 R.anim.push_right_out);
 
     }
-
 
 }

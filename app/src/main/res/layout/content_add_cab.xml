@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ehr.cfcs.com.ehr.Main.AddCabActivity"
+    tools:showIn="@layout/activity_add_cab">
+
+
+
+    <LinearLayout
+        android:id="@+id/mainlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/newrequestbtn"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight=".8"
+                android:background="@drawable/linebelowedittext"
+                android:backgroundTint="@color/purple700"
+                android:hint="Booking Date"
+                android:inputType="textPersonName"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/purple500"
+                android:textColorHint="@color/purple700"
+                android:textSize="16dp"
+                android:theme="@style/MyEditText" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:src="@drawable/cal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="City Of Booking"
+                android:textColor="@color/purple700"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/cityofbokkinglist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+            </Spinner>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight=".8"
+                android:background="@drawable/linebelowedittext"
+                android:backgroundTint="@color/purple700"
+                android:hint="Booking Time"
+                android:inputType="textPersonName"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/purple500"
+                android:textColorHint="@color/purple700"
+                android:textSize="16dp"
+                android:theme="@style/MyEditText" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:src="@drawable/stopwatch" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColorHint="#0D47A1"
+            app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/linebelowedittext"
+                android:backgroundTint="@color/purple700"
+                android:hint="Source Address"
+                android:inputType="textMultiLine"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:text="Parent Demo"
+                android:textColor="@color/purple500"
+                android:textColorHint="@color/purple700"
+                android:textSize="16dp"
+                android:theme="@style/MyEditText" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColorHint="#0D47A1"
+            app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/linebelowedittext"
+                android:backgroundTint="@color/purple700"
+                android:hint="Destination Address"
+                android:inputType="textMultiLine"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:text="Parent Demo"
+                android:textColor="@color/purple500"
+                android:textColorHint="@color/purple700"
+                android:textSize="16dp"
+                android:theme="@style/MyEditText" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColorHint="#0D47A1"
+            app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/linebelowedittext"
+                android:backgroundTint="@color/purple700"
+                android:hint="Booking Remark"
+                android:inputType="textMultiLine"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:text="Parent Demo"
+                android:textColor="@color/purple500"
+                android:textColorHint="@color/purple700"
+                android:textSize="16dp"
+                android:theme="@style/MyEditText" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <Button
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainlay"
+        android:id="@+id/newrequestbtn"
+        android:background="@color/purple700"
+        android:textColor="@color/white"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Add New Cab"/>
+
+</android.support.constraint.ConstraintLayout>

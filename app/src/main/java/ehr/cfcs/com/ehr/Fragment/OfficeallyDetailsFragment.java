@@ -1,8 +1,10 @@
 package ehr.cfcs.com.ehr.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 
 import ehr.cfcs.com.ehr.Adapter.OfficelyAdapter;
 import ehr.cfcs.com.ehr.Adapter.TraningAdapter;
+import ehr.cfcs.com.ehr.Main.AddCabActivity;
+import ehr.cfcs.com.ehr.Main.AddOffieceallyDetailsActivity;
 import ehr.cfcs.com.ehr.Model.OfficealyModel;
 import ehr.cfcs.com.ehr.Model.TraningModel;
 import ehr.cfcs.com.ehr.R;
@@ -41,6 +45,7 @@ public class OfficeallyDetailsFragment extends Fragment {
     public OfficelyAdapter adapter;
     public ArrayList<OfficealyModel> list = new ArrayList<>();
     public RecyclerView officelyRecycler;
+    public FloatingActionButton fab;
 
     public OfficeallyDetailsFragment() {
         // Required empty public constructor
@@ -80,6 +85,7 @@ public class OfficeallyDetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_officeally_details, container, false);
 
         officelyRecycler = (RecyclerView)rootView.findViewById(R.id.officely_recycler);
+        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
 
         adapter = new OfficelyAdapter(getActivity(),list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -90,6 +96,16 @@ public class OfficeallyDetailsFragment extends Fragment {
         officelyRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         prepareInsDetails();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(getActivity(), AddOffieceallyDetailsActivity.class);
+                startActivity(i);
+                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
 
         return rootView;
     }
