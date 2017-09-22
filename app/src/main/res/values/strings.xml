@@ -23,4 +23,5 @@
     <string name="title_activity_add_dependent">AddDependentActivity</string>
     <string name="title_activity_medicaland_anssurance">MedicalandAnssuranceActivity</string>
     <string name="title_activity_add_qualification">AddQualificationActivity</string>
+    <string name="title_activity_add_previous_expreince">AddPreviousExpreinceActivity</string>
 </resources>

@@ -105,6 +105,10 @@
         <activity
             android:name=".Main.AddQualificationActivity"
             android:label="@string/title_activity_add_qualification"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Main.AddPreviousExpreinceActivity"
+            android:label="@string/title_activity_add_previous_expreince"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

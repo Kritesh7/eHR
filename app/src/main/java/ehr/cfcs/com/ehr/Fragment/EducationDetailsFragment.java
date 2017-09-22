@@ -1,7 +1,9 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +16,8 @@ import java.util.ArrayList;
 
 import ehr.cfcs.com.ehr.Adapter.EducationDetailsAdapter;
 import ehr.cfcs.com.ehr.Adapter.OfficelyAdapter;
+import ehr.cfcs.com.ehr.Main.AddCabActivity;
+import ehr.cfcs.com.ehr.Main.AddQualificationActivity;
 import ehr.cfcs.com.ehr.Model.EducationModel;
 import ehr.cfcs.com.ehr.Model.OfficealyModel;
 import ehr.cfcs.com.ehr.R;
@@ -39,6 +43,7 @@ public class EducationDetailsFragment extends Fragment {
     public EducationDetailsAdapter adapter;
     public ArrayList<EducationModel> list = new ArrayList<>();
     public RecyclerView educationRecycler;
+    public FloatingActionButton fab;
 
     private OnFragmentInteractionListener mListener;
 
@@ -82,6 +87,7 @@ public class EducationDetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_edication_details, container, false);
 
         educationRecycler = (RecyclerView)rootView.findViewById(R.id.education_recycler);
+        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
 
         adapter = new EducationDetailsAdapter(getActivity(),list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -92,6 +98,16 @@ public class EducationDetailsFragment extends Fragment {
         educationRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         prepareInsDetails();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(getActivity(), AddQualificationActivity.class);
+                startActivity(i);
+                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
 
         return rootView;
     }
