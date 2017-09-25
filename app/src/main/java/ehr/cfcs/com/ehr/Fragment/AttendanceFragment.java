@@ -68,7 +68,7 @@ public class AttendanceFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     public ImageView profileImg;
     public Button cancelBtn;
-    public de.hdodenhof.circleimageview.CircleImageView profileSelectImg;
+    public ImageView profileSelectImg;
 
     public AttendanceFragment() {
         // Required empty public constructor
@@ -111,7 +111,7 @@ public class AttendanceFragment extends Fragment implements OnMapReadyCallback {
         locationTxt = (EditText)rootView. findViewById(R.id.locationtxt);
         subBtn = (Button) rootView.findViewById(R.id.submitbtn);
         profileImg = (ImageView)rootView.findViewById(R.id.procam);
-        profileSelectImg = (de.hdodenhof.circleimageview.CircleImageView) rootView.findViewById(R.id.pro_image);
+        profileSelectImg = (ImageView) rootView.findViewById(R.id.pro_image);
         cancelBtn = (Button)rootView.findViewById(R.id.cancelbtn);
 
         gpsTracker = new GPSTracker(getActivity(), getActivity());
@@ -153,8 +153,8 @@ public class AttendanceFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(getActivity(), AttendanceModule.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(getActivity(), AttendanceModule.class);
+                startActivity(intent);*/
             }
         });
 

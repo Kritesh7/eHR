@@ -24,4 +24,6 @@
     <string name="title_activity_medicaland_anssurance">MedicalandAnssuranceActivity</string>
     <string name="title_activity_add_qualification">AddQualificationActivity</string>
     <string name="title_activity_add_previous_expreince">AddPreviousExpreinceActivity</string>
+    <string name="title_activity_add_new_lnaguage">AddNewLnaguageActivity</string>
+    <string name="title_activity_add_new_skil">AddNewSkilActivity</string>
 </resources>

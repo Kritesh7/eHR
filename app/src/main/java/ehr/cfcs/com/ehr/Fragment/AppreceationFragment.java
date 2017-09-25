@@ -1,10 +1,8 @@
 package ehr.cfcs.com.ehr.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,23 +13,21 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-import ehr.cfcs.com.ehr.Adapter.SkillAdapter;
-import ehr.cfcs.com.ehr.Adapter.StatinaryRequestAdapter;
-import ehr.cfcs.com.ehr.Main.AddNewLnaguageActivity;
-import ehr.cfcs.com.ehr.Main.AddNewSkilActivity;
-import ehr.cfcs.com.ehr.Model.SkillsModel;
-import ehr.cfcs.com.ehr.Model.StationaryRequestModel;
+import ehr.cfcs.com.ehr.Adapter.AppreceationAdapter;
+import ehr.cfcs.com.ehr.Adapter.AssestsDetailsAdapter;
+import ehr.cfcs.com.ehr.Model.AppreceationModel;
+import ehr.cfcs.com.ehr.Model.AssestDetailsModel;
 import ehr.cfcs.com.ehr.R;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link SkillsFragment.OnFragmentInteractionListener} interface
+ * {@link AppreceationFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link SkillsFragment#newInstance} factory method to
+ * Use the {@link AppreceationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SkillsFragment extends Fragment {
+public class AppreceationFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -41,15 +37,14 @@ public class SkillsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public SkillAdapter adapter;
-    public ArrayList<SkillsModel> list = new ArrayList<>();
-    public RecyclerView skillRecycler;
-    public FloatingActionButton fab;
+    public AppreceationAdapter adapter;
+    public ArrayList<AppreceationModel> list = new ArrayList<>();
+    public RecyclerView appreceationRecy;
 
 
     private OnFragmentInteractionListener mListener;
 
-    public SkillsFragment() {
+    public AppreceationFragment() {
         // Required empty public constructor
     }
 
@@ -59,11 +54,11 @@ public class SkillsFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment SkillsFragment.
+     * @return A new instance of fragment AppreceationFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SkillsFragment newInstance(String param1, String param2) {
-        SkillsFragment fragment = new SkillsFragment();
+    public static AppreceationFragment newInstance(String param1, String param2) {
+        AppreceationFragment fragment = new AppreceationFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -84,52 +79,40 @@ public class SkillsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_appreceation, container, false);
+        appreceationRecy = (RecyclerView)rootView.findViewById(R.id.appreceation_recycler);
 
-        View rootView = inflater.inflate(R.layout.fragment_skills, container, false);
-
-        skillRecycler = (RecyclerView)rootView.findViewById(R.id.skill_recycler);
-        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
-
-        adapter = new SkillAdapter(getActivity(),list);
+        adapter = new AppreceationAdapter(getActivity(),list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        skillRecycler.setLayoutManager(mLayoutManager);
-        skillRecycler.setItemAnimator(new DefaultItemAnimator());
-        skillRecycler.setAdapter(adapter);
+        appreceationRecy.setLayoutManager(mLayoutManager);
+        appreceationRecy.setItemAnimator(new DefaultItemAnimator());
+        appreceationRecy.setAdapter(adapter);
 
-        skillRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
+        appreceationRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         prepareInsDetails();
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent i = new Intent(getActivity(), AddNewSkilActivity.class);
-                startActivity(i);
-                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
 
         return rootView;
     }
 
     private void prepareInsDetails() {
 
-        SkillsModel model = new SkillsModel("Java","Beginner","By Internet","03-09-2017","Present");
+        AppreceationModel model = new AppreceationModel("03-09-2017","Good Job");
         list.add(model);
-        model = new SkillsModel("Java","Beginner","By Internet","03-09-2017","Present");
+        model = new AppreceationModel("03-09-2017","Good Job");
         list.add(model);
-        model = new SkillsModel("Java","Beginner","By Internet","03-09-2017","Present");
+        model = new AppreceationModel("03-09-2017","Good Job");
         list.add(model);
-        model = new SkillsModel("Java","Beginner","By Internet","03-09-2017","Present");
+        model = new AppreceationModel("03-09-2017","Good Job");
         list.add(model);
-        model = new SkillsModel("Java","Beginner","By Internet","03-09-2017","Present");
+        model = new AppreceationModel("03-09-2017","Good Job");
         list.add(model);
 
 
         adapter.notifyDataSetChanged();
 
     }
+
     // TODO: Rename method, update argument and hook method into UI event
    /* public void onButtonPressed(Uri uri) {
         if (mListener != null) {

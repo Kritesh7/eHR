@@ -675,8 +675,9 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     }
 
     @Override
-    public void onFragmentInteraction(int navigationCount) {
+    public void onFragmentInteraction(int navigationCount, String Title) {
 
         navigationItemIndex = navigationCount;
+        titleTxt.setText(Title);
     }
 }

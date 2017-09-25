@@ -109,6 +109,14 @@
         <activity
             android:name=".Main.AddPreviousExpreinceActivity"
             android:label="@string/title_activity_add_previous_expreince"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Main.AddNewLnaguageActivity"
+            android:label="@string/title_activity_add_new_lnaguage"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Main.AddNewSkilActivity"
+            android:label="@string/title_activity_add_new_skil"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

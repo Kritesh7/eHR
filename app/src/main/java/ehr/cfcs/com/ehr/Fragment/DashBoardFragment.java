@@ -84,7 +84,7 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(1);
+                mListener.onFragmentInteraction(1,"Attendance");
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new AttendanceFragment();
@@ -106,7 +106,7 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(18);
+                mListener.onFragmentInteraction(18,"Stationary Request");
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new StationaryRequestFragment();
@@ -127,7 +127,7 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(19);
+                mListener.onFragmentInteraction(19 , "Document List");
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new DocumentListFragment();
@@ -149,7 +149,7 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(20);
+                mListener.onFragmentInteraction(20, "Cab List");
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new TaxiListFragment();
@@ -171,7 +171,7 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(21);
+                mListener.onFragmentInteraction(21,"Hotel Booking List");
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new HotelBookingListFragment();
@@ -192,13 +192,40 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                mListener.onFragmentInteraction(220,"Appreciation");
+
+                FragmentManager fragmentManager = getFragmentManager();
+                Fragment frag = new AppreceationFragment();
+
+                /*fragmentManager.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);*/
+                // update the main content by replacing fragments
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, frag)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
         warningLay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mListener.onFragmentInteraction(221,"Warning");
 
+                FragmentManager fragmentManager = getFragmentManager();
+                Fragment frag = new WarningFragment();
+
+                /*fragmentManager.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);*/
+                // update the main content by replacing fragments
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, frag)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -220,6 +247,6 @@ public class DashBoardFragment extends Fragment {
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(int navigationCount);
+        void onFragmentInteraction(int navigationCount, String Titile);
     }
 }
