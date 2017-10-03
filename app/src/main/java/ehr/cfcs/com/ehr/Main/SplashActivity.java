@@ -62,11 +62,7 @@ public class SplashActivity extends AppCompatActivity {
                 // This method will be executed once the timer is over
                 // Start your app main activity
 
-
-
                 checkGPS();
-
-
 
             }
         }, SPLASH_TIME_OUT);

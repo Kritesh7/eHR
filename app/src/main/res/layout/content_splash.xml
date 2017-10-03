@@ -8,29 +8,14 @@
     tools:context="ehr.cfcs.com.ehr.Main.SplashActivity"
     tools:showIn="@layout/activity_splash">
 
-    <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
     <ImageView
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/logomain"
-        />
-
-    <com.gmail.samehadar.iosdialog.CamomileSpinner
-        app:spinnerColor="@color/status_color"
-        duration="30"
-        clockwise="false"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    </FrameLayout>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
