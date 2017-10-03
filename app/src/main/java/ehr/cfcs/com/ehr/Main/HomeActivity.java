@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -40,6 +41,8 @@ import ehr.cfcs.com.ehr.Fragment.StationaryRequestFragment;
 import ehr.cfcs.com.ehr.Fragment.TaxiListFragment;
 import ehr.cfcs.com.ehr.Fragment.TrainingFragment;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 public class HomeActivity extends AppCompatActivity implements DashBoardFragment.OnFragmentInteractionListener {
 
@@ -310,7 +313,18 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                     case R.id.nav_logout:
 
                         navigationItemIndex = 22;
-                        CURRENT_TAG = TAG_Employ_HotelBooking;
+
+                        Intent ik = new Intent(getApplicationContext(),LoginActivity.class);
+                        startActivity(ik);
+                        overridePendingTransition(R.anim.push_left_in,
+                                R.anim.push_right_out);
+                        finish();
+
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setStatus(HomeActivity.this,
+                                "")));
+
+
+                        CURRENT_TAG = TAG_Employ_Logout;
                         titleTxt.setText("Log Out");
 
                         break;

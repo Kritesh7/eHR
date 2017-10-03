@@ -22,7 +22,6 @@ public class AddNewLnaguageActivity extends AppCompatActivity {
     public TextView titleTxt;
     public Spinner langageSpinner;
     public ArrayList<String> langageList = new ArrayList<>();
-    //
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

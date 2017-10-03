@@ -32,5 +32,11 @@
         <item name="colorControlActivated">@color/purple700</item>
     </style>
 
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/status_color</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/colorAccent</item>
+    </style>
+
 
 </resources>
