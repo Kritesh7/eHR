@@ -1,23 +1,49 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.LeaveMangementAdapter;
 import ehr.cfcs.com.ehr.Adapter.LeaveSummarryAdapter;
+import ehr.cfcs.com.ehr.Main.HomeActivity;
+import ehr.cfcs.com.ehr.Main.LoginActivity;
+import ehr.cfcs.com.ehr.Main.NewAddLeaveMangementActivity;
 import ehr.cfcs.com.ehr.Model.LeaveManagementModel;
 import ehr.cfcs.com.ehr.Model.LeaveSummarryModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +66,11 @@ public class LeaveSummarryFragment extends Fragment {
     public LeaveSummarryAdapter adapter;
     public ArrayList<LeaveSummarryModel> list = new ArrayList<>();
     public RecyclerView leaveSummrryRecy;
+    public String leaveSummeryUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveSummaryList";
+
+    public String userId = "", authCode = "";
+    public ConnectionDetector conn;
+    public FloatingActionButton fab;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,6 +112,12 @@ public class LeaveSummarryFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_leave_summarry, container, false);
 
         leaveSummrryRecy =(RecyclerView)rootView.findViewById(R.id.leave_summerry_recycler);
+        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+
+        conn = new ConnectionDetector(getActivity());
+
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
         adapter = new LeaveSummarryAdapter(getActivity(),list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -90,7 +127,25 @@ public class LeaveSummarryFragment extends Fragment {
 
         leaveSummrryRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        prepareInsDetails();
+        if (conn.getConnectivityStatus()>0) {
+
+            leaveSummeryData(authCode, userId);
+
+        }else
+            {
+                conn.showNoInternetAlret();
+            }
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(getActivity(), NewAddLeaveMangementActivity.class);
+                startActivity(i);
+                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
+            }
+        });
 
         return rootView;
     }
@@ -112,6 +167,82 @@ public class LeaveSummarryFragment extends Fragment {
         adapter.notifyDataSetChanged();
 
     }
+
+    //Leave Summery List
+    public void leaveSummeryData(final String AuthCode , final String AdminID) {
+
+        final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, leaveSummeryUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String LeaveTypeName = jsonObject.getString("LeaveTypeName");
+                        String LeaveYear = jsonObject.getString("LeaveYear");
+                        String EntitledFor = jsonObject.getString("EntitledFor");
+                        String LeaveCarryOver = jsonObject.getString("LeaveCarryOver");
+                        String LeaveTaken = jsonObject.getString("LeaveTaken");
+                        String LeaveBalance = jsonObject.getString("LeaveBalance");
+
+                        list.add(new LeaveSummarryModel(LeaveTypeName,LeaveYear,EntitledFor,LeaveCarryOver,LeaveTaken,LeaveBalance));
+
+
+
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
 
    /* // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

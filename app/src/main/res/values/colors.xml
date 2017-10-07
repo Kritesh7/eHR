@@ -9,6 +9,7 @@
     <color name="white">#ffffff</color>
     <color name="navitmes">#616161</color>
     <color name="dahboard_textcolor">#424242</color>
+    <color name="disbale_color">#999999</color>
 
     <color name="col1">#E3F2FD</color>
     <color name="col2">#B3E5FC</color>

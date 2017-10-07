@@ -27,7 +27,7 @@ public class SettingConstant {
     protected static final String SourceAddress = "SourceAddress";
     protected static final String AuthCode = "AuthCode";
     protected static final String UserName = "UserName";
-    protected static final String SourceName = "SourceName";
+    protected static final String UserType = "UserType";
     protected static final String Sourcelog = "Source_Lognitude";
     protected static final String SourceLat = "Source_Latitude";
     protected static final String SourceTime = "SourceTime";

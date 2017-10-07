@@ -120,16 +120,16 @@ public class SharedPrefs
     }
 
     // Source Address Shared Prefrence
-    public static String getSourceName(Context context)
+    public static String getUserType(Context context)
     {
         SharedPreferences sp = getSetting(context);
-        return  sp.getString(SettingConstant.SourceName, null);
+        return  sp.getString(SettingConstant.UserType, null);
     }
-    public static boolean setSourceName(Context context, String authKey)
+    public static boolean setUserType(Context context, String authKey)
     {
         SharedPreferences sp = getSetting(context);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(SettingConstant.SourceName, authKey);
+        editor.putString(SettingConstant.UserType, authKey);
         return editor.commit();
     }
 

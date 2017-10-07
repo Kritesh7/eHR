@@ -130,6 +130,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void Login_Api(final String emailId  , final String Password, final String AuthCode ,
                           final String ClientName , final String ClientVersion) {
+
+
         final ProgressDialog pDialog = new ProgressDialog(LoginActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
@@ -157,6 +159,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             String AdminID = jsonObject.getString("AdminID");
                             String UserName = jsonObject.getString("UserName");
+                            String Type = jsonObject.getString("Type");
                             /*String RoleName = jsonObject.getString("RoleName");
                             String EmailID = jsonObject.getString("EmailID");
                             String MobileNo = jsonObject.getString("MobileNo");
@@ -183,6 +186,8 @@ public class LoginActivity extends AppCompatActivity {
                                     emailId)));
                             UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(LoginActivity.this,
                                     UserName)));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserType(LoginActivity.this,
+                                    Type)));
                            /* UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(LoginActivity.this, AuthCode)));
 
                             UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setZoneId(LoginActivity.this, ZoneID)));*/

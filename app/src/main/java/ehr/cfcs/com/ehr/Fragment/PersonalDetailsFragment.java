@@ -1,5 +1,7 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,13 +13,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -31,13 +37,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ehr.cfcs.com.ehr.Main.AddOffieceallyDetailsActivity;
 import ehr.cfcs.com.ehr.Main.HomeActivity;
 import ehr.cfcs.com.ehr.Main.LoginActivity;
+import ehr.cfcs.com.ehr.Model.NationnalityModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
@@ -60,6 +71,7 @@ public class PersonalDetailsFragment extends Fragment {
 
     public String personalDetailsUrl = SettingConstant.BaseUrl + "AppEmployeePersonalData";
     public String personalDdlDetailsUrl = SettingConstant.BaseUrl + "AppddlEmployeePersonalData";
+    public String editPersonalDetailsUrl = SettingConstant.BaseUrl + "AppEmpPersonalDataLogInsUpdt";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -72,16 +84,19 @@ public class PersonalDetailsFragment extends Fragment {
     public RadioGroup genderGroup;
     public RadioButton mailBtn, femailBtn;
     public ImageView dobImg, joingDateImg;
-    public String userId = "", authcode = "";
+    public String userId = "", authcode = "",userTypeString = "";
 
     public ArrayList<String> materialList = new ArrayList<>();
-    public ArrayList<String> nationalityList = new ArrayList<>();
+    public ArrayList<NationnalityModel> nationalityList = new ArrayList<>();
     public ArrayList<String> zoneList = new ArrayList<>();
     public ArrayList<String> departmentList = new ArrayList<>();
     public ArrayList<String> titleList = new ArrayList<>();
     public ProgressDialog pDialog;
-
-    public ArrayAdapter<String> materialAdapter, nationaolityAdapter,titleAdapter;
+    private int yy, mm, dd;
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    public ArrayAdapter<String> materialAdapter,titleAdapter;
+    public ArrayAdapter<NationnalityModel> nationaolityAdapter;
+    public String GenderName = "",MartialStatusName = "", selectedItemForNationality = "", genderId = "", materialStatusId = "";
 
     private OnFragmentInteractionListener mListener;
 
@@ -152,21 +167,12 @@ public class PersonalDetailsFragment extends Fragment {
 
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
+        userTypeString = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getUserType(getActivity())));
 
         pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
 
 
         //material Spinner
-       /* if (materialList.size()>0)
-        {
-            materialList.clear();
-        }
-        materialList.add("Please Select Material Status");
-        materialList.add("Single");
-        materialList.add("Married");*/
-
-
-        //change spinner arrow color
         materialStatusSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
 
         materialAdapter = new ArrayAdapter<String>(getActivity(), R.layout.customizespinner,
@@ -184,19 +190,9 @@ public class PersonalDetailsFragment extends Fragment {
 
 
         //nationality Spiiner
-      /*  if (nationalityList.size()>0)
-        {
-            nationalityList.clear();
-        }
-        nationalityList.add("Please Select Nationality");
-        nationalityList.add("Indian");
-        nationalityList.add("Othrt");*/
-
-
-        //change spinner arrow color
         natinalitySpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
 
-        nationaolityAdapter = new ArrayAdapter<String>(getActivity(), R.layout.customizespinner,
+        nationaolityAdapter = new ArrayAdapter<NationnalityModel>(getActivity(), R.layout.customizespinner,
                 nationalityList);
         nationaolityAdapter.setDropDownViewResource(R.layout.customizespinner);
         natinalitySpinner.setAdapter(nationaolityAdapter);
@@ -238,6 +234,68 @@ public class PersonalDetailsFragment extends Fragment {
         departmentAdapter.setDropDownViewResource(R.layout.customizespinner);
         departmentSpinner.setAdapter(departmentAdapter);
 
+        //dob calendar
+        dobImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                InputMethodManager inputManager = (InputMethodManager)getActivity().
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                yy = year;
+                                mm = monthOfYear;
+                                dd = dayOfMonth;
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(Calendar.MONTH, monthOfYear);
+                                String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(calendar.getTime());
+                                sdf = new DateFormatSymbols().getShortMonths()[monthOfYear];
+
+                                Log.e("checking,............", sdf + " null");
+                                dobTxt.setText(dayOfMonth + " " + sdf + " " + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+
+            }
+        });
+
+        //nationality spiiner select item
+        natinalitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                selectedItemForNationality = nationalityList.get(i).getNationlityId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
 
         //disable all widget
         firstNameTxt.setEnabled(false);
@@ -271,24 +329,44 @@ public class PersonalDetailsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                //change button name
-                editBtn.setText("Save Personal Detail");
+                if (editBtn.getText().toString().equalsIgnoreCase("Edit Personal Details"))
+                {
 
-                //enable the widget
-                titleSpinner.setEnabled(true);
-                firstNameTxt.setEnabled(true);
-                middleNameTxt.setEnabled(true);
-                nameTxt.setEnabled(true);
-                prefrednameTxt.setEnabled(true);
-                dobTxt.setEnabled(true);
-                dobImg.setEnabled(true);
-                alternativeTxt.setEnabled(true);
-                passportNameTxt.setEnabled(true);
-                passportnumberTxt.setEnabled(true);
-                panNoTxt.setEnabled(true);
-                natinalitySpinner.setEnabled(true);
+                    editBtn.setText("Save Personal Detail");
+
+                    //enable all widget
+                    titleSpinner.setEnabled(true);
+                    firstNameTxt.setEnabled(true);
+                    middleNameTxt.setEnabled(true);
+                    nameTxt.setEnabled(true);
+                    prefrednameTxt.setEnabled(true);
+                    dobTxt.setEnabled(true);
+                    dobImg.setEnabled(true);
+                    alternativeTxt.setEnabled(true);
+                    passportNameTxt.setEnabled(true);
+                    passportnumberTxt.setEnabled(true);
+                    panNoTxt.setEnabled(true);
+                    natinalitySpinner.setEnabled(true);
+
+                     mailBtn.setEnabled(false);
+                   // genderGroup.setEnabled(false);
+                     femailBtn.setEnabled(false);
+                }else
+                    {
+
+                        editPersonalDetails(userId,dobTxt.getText().toString(),"",genderId,materialStatusId,
+                                childernTxt.getText().toString(),selectedItemForNationality,alternativeTxt.getText().toString(),
+                                prefrednameTxt.getText().toString(),passportNameTxt.getText().toString(),passportnumberTxt.getText().toString(),
+                                panNoTxt.getText().toString(),titleSpinner.getSelectedItem().toString(),firstNameTxt.getText().toString(),
+                                middleNameTxt.getText().toString(),nameTxt.getText().toString(),userTypeString,authcode);
+
+                    }
+
+              //  customeDialoge();
             }
         });
+
+
 
 
 
@@ -300,6 +378,25 @@ public class PersonalDetailsFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    //custome dialoge
+    public void customeDialoge()
+    {
+        final Dialog openDialog = new Dialog(getActivity());
+        openDialog.setContentView(R.layout.custome_diloge);
+        openDialog.setTitle("Custom Dialog Box");
+        TextView dialogTextContent = (TextView)openDialog.findViewById(R.id.dialog_text);
+     //   ImageView dialogImage = (ImageView)openDialog.findViewById(R.id.dialog_image);
+        Button dialogCloseButton = (Button)openDialog.findViewById(R.id.dialog_button);
+        dialogCloseButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                openDialog.dismiss();
+            }
+        });
+        openDialog.show();
     }
 
 
@@ -337,9 +434,9 @@ public class PersonalDetailsFragment extends Fragment {
                             String FatherName = jsonObject.getString("FatherName");
                             String EmpID = jsonObject.getString("EmpID");
                             String Email = jsonObject.getString("Email");
-                            String GenderName = jsonObject.getString("GenderName");
+                            GenderName = jsonObject.getString("GenderName");
                             String NationalityName = jsonObject.getString("NationalityName");
-                            String MartialStatusName = jsonObject.getString("MartialStatusName");
+                            MartialStatusName = jsonObject.getString("MartialStatusName");
                             String ZoneName = jsonObject.getString("ZoneName");
                             String DepartmentName = jsonObject.getString("DepartmentName");
                             String DesignationName = jsonObject.getString("DesignationName");
@@ -352,6 +449,7 @@ public class PersonalDetailsFragment extends Fragment {
                             String AlternateEmail = jsonObject.getString("AlternateEmail");
                             String DOB = jsonObject.getString("DOB");
                             String Children = jsonObject.getString("Children");
+                            String EditVisibility = jsonObject.getString("EditVisibility");
 
                             //feed data in widget
                             nameTxt.setText(LastName);
@@ -370,6 +468,19 @@ public class PersonalDetailsFragment extends Fragment {
                             passportnumberTxt.setText(PassportNo);
                             alternativeTxt.setText(AlternateEmail);
                             panNoTxt.setText(PAN);
+                            
+                            //edit button visibility check
+                            if (EditVisibility.equalsIgnoreCase("1"))
+                            {
+                                editBtn.setVisibility(View.VISIBLE);
+                            }else
+                                {
+                                    editBtn.setText("Previous request Pending");
+                                    editBtn.setBackgroundColor(getActivity().getResources().getColor(R.color.disbale_color));
+                                    editBtn.setEnabled(false);
+                                   // editBtn.setVisibility(View.GONE);
+                                    //Toast.makeText(getActivity(), "Your Previous request waiting for Hr approval", Toast.LENGTH_SHORT).show();
+                                }
 
                             //material selected Spinner
                             for (int j = 0; j<materialList.size(); j++)
@@ -377,13 +488,21 @@ public class PersonalDetailsFragment extends Fragment {
                                 if (materialList.get(j).equalsIgnoreCase(MartialStatusName))
                                 {
                                     materialStatusSpinner.setSelection(j);
+
+                                    if (MartialStatusName.equalsIgnoreCase("Single"))
+                                    {
+                                        materialStatusId = "1";
+                                    }else
+                                        {
+                                            materialStatusId = "2";
+                                        }
                                 }
                             }
 
                             //nationality selected Spiiner
                             for (int k=0; k<nationalityList.size(); k++)
                             {
-                                if (nationalityList.get(k).equalsIgnoreCase(NationalityName))
+                                if (nationalityList.get(k).getNameNationlaity().equalsIgnoreCase(NationalityName))
                                 {
                                     natinalitySpinner.setSelection(k);
                                 }
@@ -420,17 +539,14 @@ public class PersonalDetailsFragment extends Fragment {
                             if (GenderName.equalsIgnoreCase("Male"))
                             {
                                 mailBtn.setChecked(true);
+                                genderId = "1";
                             }else
                                 {
                                     femailBtn.setChecked(true);
+                                    genderId = "2";
+
                                 }
-
-
-
-
                         }
-
-
                     }
 
                     pDialog.dismiss();
@@ -507,14 +623,15 @@ public class PersonalDetailsFragment extends Fragment {
                     {
                         nationalityList.clear();
                     }
-                    nationalityList.add("Please Select Nationality");
+                    nationalityList.add(new NationnalityModel("Please Select Nationality",""));
                     JSONArray nationalityObj = jsonObject.getJSONArray("NationalityMaster");
                     for (int j=0; j<nationalityObj.length(); j++)
                     {
                         JSONObject object = nationalityObj.getJSONObject(j);
 
                         String NationalityName = object.getString("NationalityName");
-                        nationalityList.add(NationalityName);
+                        String NationalityID = object.getString("NationalityID");
+                        nationalityList.add(new NationnalityModel(NationalityName,NationalityID));
                     }
 
                     //bind Title Spinner Data
@@ -539,12 +656,7 @@ public class PersonalDetailsFragment extends Fragment {
 
                     personalDetails(userId,authcode);
 
-
-
-
-
-
-                   // pDialog.dismiss();
+                    // pDialog.dismiss();
 
                 } catch (JSONException e) {
                     Log.e("checking json excption" , e.getMessage());
@@ -562,18 +674,130 @@ public class PersonalDetailsFragment extends Fragment {
 
 
             }
-        })/*{
+        });
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+    //Edit all details
+    public void editPersonalDetails(final String AdminID  , final String DOB, final String MarrigeDate ,
+                          final String Gender , final String MartialStatus, final String Children, final String Nationality,
+                                    final String Email, final String PreferredName, final String PassportName,final String PassportNo,
+                                    final String PAN, final String Title, final String FirstName, final String MiddleName,
+                                    final String LastName, final String UserType, final String AuthCode) {
+
+        final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, editPersonalDetailsUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                        if (jsonObject.has("MsgNotification"))
+                        {
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+                            Toast.makeText(getActivity(), MsgNotification, Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        if (jsonObject.has("status"))
+                        {
+                            String status = jsonObject.getString("status");
+
+                            if (status.equalsIgnoreCase("success"))
+                            {
+                                //change button name
+                                editBtn.setText("Edit Personal Details");
+
+                                //disable the widget
+                                titleSpinner.setEnabled(false);
+                                firstNameTxt.setEnabled(false);
+                                middleNameTxt.setEnabled(false);
+                                nameTxt.setEnabled(false);
+                                prefrednameTxt.setEnabled(false);
+                                dobTxt.setEnabled(false);
+                                dobImg.setEnabled(false);
+                                alternativeTxt.setEnabled(false);
+                                passportNameTxt.setEnabled(false);
+                                passportnumberTxt.setEnabled(false);
+                                panNoTxt.setEnabled(false);
+                                natinalitySpinner.setEnabled(false);
+
+                                //bind Details Api
+                                personalDdlDetails();
+                            }
+
+
+
+
+                        }
+
+
+
+
+
+
+                    }
+
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AdminID", AdminID);
+                params.put("DOB",DOB);
+                params.put("MarrigeDate",MarrigeDate);
+                params.put("Gender",Gender);
+                params.put("MartialStatus",MartialStatus);
+                params.put("Children",Children);
+                params.put("Nationality",Nationality);
+                params.put("Email",Email);
+                params.put("PreferredName",PreferredName);
+                params.put("PassportName",PassportName);
+                params.put("PassportNo",PassportNo);
+                params.put("PAN",PAN);
+                params.put("Title",Title);
+                params.put("FirstName",FirstName);
+                params.put("MiddleName",MiddleName);
+                params.put("LastName",LastName);
+                params.put("UserType",UserType);
                 params.put("AuthCode",AuthCode);
 
                 Log.e("Parms", params.toString());
                 return params;
             }
 
-        }*/;
+        };
         historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

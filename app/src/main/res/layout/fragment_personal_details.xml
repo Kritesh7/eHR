@@ -154,12 +154,20 @@
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="0dp"
+                        android:layout_weight=".8"
+                        android:layout_height="wrap_content"
+                        android:nextFocusLeft="@id/autotext"
+                        android:nextFocusUp="@id/autotext"
+                        android:textColorHint="#0D47A1"
+                        app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
                     <EditText
                         android:id="@+id/dob"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:layout_weight=".8"
                         android:background="@drawable/linebelowedittext"
                         android:backgroundTint="@color/purple700"
                         android:hint="D.O.B"
@@ -170,6 +178,7 @@
                         android:textColorHint="@color/purple700"
                         android:textSize="16dp"
                         android:theme="@style/MyEditText" />
+                    </android.support.design.widget.TextInputLayout>
 
                     <ImageView
                         android:id="@+id/dobimg"
