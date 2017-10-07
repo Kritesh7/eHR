@@ -322,6 +322,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setStatus(HomeActivity.this,
                                 "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAdminId(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmailId(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(HomeActivity.this,
+                                "")));
 
 
                         CURRENT_TAG = TAG_Employ_Logout;

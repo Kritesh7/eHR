@@ -26,4 +26,5 @@
     <string name="title_activity_add_previous_expreince">AddPreviousExpreinceActivity</string>
     <string name="title_activity_add_new_lnaguage">AddNewLnaguageActivity</string>
     <string name="title_activity_add_new_skil">AddNewSkilActivity</string>
+    <string name="title_activity_for_got_password">ForGotPasswordActivity</string>
 </resources>

@@ -79,16 +79,16 @@ public class SharedPrefs
 
 
     //status Refrence--------------------
-    public static String getZoneId(Context context)
+    public static String getEmailId(Context context)
     {
         SharedPreferences sp = getSetting(context);
-        return  sp.getString(SettingConstant.ZoneId, null);
+        return  sp.getString(SettingConstant.EmailId, null);
     }
-    public static boolean setZoneId(Context context, String authKey)
+    public static boolean setEmailId(Context context, String authKey)
     {
         SharedPreferences sp = getSetting(context);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(SettingConstant.ZoneId, authKey);
+        editor.putString(SettingConstant.EmailId, authKey);
         return editor.commit();
     }
 
@@ -106,16 +106,16 @@ public class SharedPrefs
         return editor.commit();
     }
     // Start Time Shard Preference
-    public static String getStartTime(Context context)
+    public static String getUserName(Context context)
     {
         SharedPreferences sp = getSetting(context);
-        return  sp.getString(SettingConstant.StartTime, null);
+        return  sp.getString(SettingConstant.UserName, null);
     }
-    public static boolean setStartTime(Context context, String authKey)
+    public static boolean setUserName(Context context, String authKey)
     {
         SharedPreferences sp = getSetting(context);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(SettingConstant.StartTime, authKey);
+        editor.putString(SettingConstant.UserName, authKey);
         return editor.commit();
     }
 

@@ -15,6 +15,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -46,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     public ConnectionDetector conn;
     public String loginUrl = SettingConstant.BASEURL_FOR_LOGIN + "AppUserLogin";
     public EditText userNameTxt, passwordTxt;
+    public TextView forgotBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn = (Button)findViewById(R.id.loginbtn);
         userNameTxt = (EditText)findViewById(R.id.usernmaetxt);
         passwordTxt = (EditText)findViewById(R.id.passwordtxt);
+        forgotBtn = (TextView)findViewById(R.id.forgetpass);
         mContext = LoginActivity.this;
         conn = new ConnectionDetector(LoginActivity.this);
 
@@ -104,6 +107,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        forgotBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent ik = new Intent(getApplicationContext(),ForGotPasswordActivity.class);
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
+
+            }
+        });
+
         /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
 
@@ -113,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    public void Login_Api(final String UserName  , final String Password, final String AuthCode ,
+    public void Login_Api(final String emailId  , final String Password, final String AuthCode ,
                           final String ClientName , final String ClientVersion) {
         final ProgressDialog pDialog = new ProgressDialog(LoginActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -162,6 +177,12 @@ public class LoginActivity extends AppCompatActivity {
                                     "1")));
                             UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAdminId(LoginActivity.this,
                                     AdminID)));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(LoginActivity.this,
+                                    AuthCode)));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmailId(LoginActivity.this,
+                                    emailId)));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(LoginActivity.this,
+                                    UserName)));
                            /* UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(LoginActivity.this, AuthCode)));
 
                             UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setZoneId(LoginActivity.this, ZoneID)));*/
@@ -193,7 +214,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("UserName", UserName);
+                params.put("UserName", emailId);
                 params.put("Password",Password);
                 params.put("AuthCode",AuthCode);
                 params.put("BrandName",ClientName);

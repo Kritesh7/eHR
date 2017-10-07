@@ -118,6 +118,10 @@
         <activity
             android:name=".Main.AddNewSkilActivity"
             android:label="@string/title_activity_add_new_skil"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Main.ForGotPasswordActivity"
+            android:label="@string/title_activity_for_got_password"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
