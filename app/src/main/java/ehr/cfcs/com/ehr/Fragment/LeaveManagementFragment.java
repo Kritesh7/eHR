@@ -135,7 +135,6 @@ public class LeaveManagementFragment extends Fragment {
 
             }
         });
-        //
 
         if (conn.getConnectivityStatus()>0) {
 
