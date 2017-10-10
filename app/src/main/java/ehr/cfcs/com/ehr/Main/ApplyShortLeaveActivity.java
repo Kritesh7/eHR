@@ -387,6 +387,7 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
             }
 
         };
+        //
         historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
