@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import ehr.cfcs.com.ehr.Fragment.AssestDetailsFragment;
+import ehr.cfcs.com.ehr.Fragment.AttendaceListFragment;
 import ehr.cfcs.com.ehr.Fragment.AttendanceFragment;
 import ehr.cfcs.com.ehr.Fragment.ContactsDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.DashBoardFragment;
@@ -26,6 +27,7 @@ import ehr.cfcs.com.ehr.Fragment.DocumentListFragment;
 import ehr.cfcs.com.ehr.Fragment.EducationDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.EmergencyContactsFragment;
 import ehr.cfcs.com.ehr.Fragment.ChnagePasswordFragment;
+import ehr.cfcs.com.ehr.Fragment.HolidayListFragment;
 import ehr.cfcs.com.ehr.Fragment.HotelBookingListFragment;
 import ehr.cfcs.com.ehr.Fragment.LanguagesFragment;
 import ehr.cfcs.com.ehr.Fragment.LeaveManagementFragment;
@@ -36,10 +38,12 @@ import ehr.cfcs.com.ehr.Fragment.OfficeallyDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.PersonalDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.PreviousExprienceFragment;
 import ehr.cfcs.com.ehr.Fragment.ResumeFragment;
+import ehr.cfcs.com.ehr.Fragment.ShortLeaveHistoryFragment;
 import ehr.cfcs.com.ehr.Fragment.SkillsFragment;
 import ehr.cfcs.com.ehr.Fragment.StationaryRequestFragment;
 import ehr.cfcs.com.ehr.Fragment.TaxiListFragment;
 import ehr.cfcs.com.ehr.Fragment.TrainingFragment;
+import ehr.cfcs.com.ehr.Fragment.WeekOfListFragment;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
@@ -67,13 +71,16 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     private static final String TAG_Employ_PreviousExpreince = "PreviousExpreince";
     private static final String TAG_Employ_Languages = "Languages";
     private static final String TAG_Employ_Skills = "Skills";
-    private static final String TAG_Employ_Resume = "Resume";
     private static final String TAG_Employ_StationaryRequest = "StationaryRequest";
     private static final String TAG_Employ_DocumentList = "DocumentList";
     private static final String TAG_Employ_CabList = "CabList";
     private static final String TAG_Employ_HotelBooking = "HotelBooking";
     private static final String TAG_Employ_Logout = "Logout";
     private static final String TAG_Leave_Summrry = "Leave Summary";
+    private static final String TAG_Short_Leave_History = "Short Leave History";
+    private static final String TAG_WeekOf = "Week Of";
+    private static final String TAG_Holiday_List = "Holiday List";
+
 
 
     public static int navigationItemIndex = 0;
@@ -142,7 +149,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         navigationItemIndex = 1;
                         CURRENT_TAG = TAG_Attendnace;
-                        titleTxt.setText("Attendance");
+                        titleTxt.setText("Attendance List");
 
                         break;
 
@@ -150,7 +157,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         navigationItemIndex = 2;
                         CURRENT_TAG = TAG_Leave_Management;
-                        titleTxt.setText("Leave Management");
+                        titleTxt.setText("Leave History");
 
                         break;
 
@@ -310,6 +317,31 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         break;
 
+                    case R.id.nav_short_leave_history:
+
+                        navigationItemIndex = 23;
+                        CURRENT_TAG = TAG_Short_Leave_History;
+                        titleTxt.setText("Short Leave History");
+
+                        break;
+
+                    case R.id.nav_weekof:
+
+                        navigationItemIndex = 24;
+                        CURRENT_TAG = TAG_WeekOf;
+                        titleTxt.setText("Week Off");
+
+                        break;
+
+                    case R.id.nav_holidayList:
+
+                        navigationItemIndex = 25;
+                        CURRENT_TAG = TAG_Holiday_List;
+                        titleTxt.setText("Holiday List");
+
+                        break;
+
+
                     case R.id.nav_logout:
 
                         navigationItemIndex = 22;
@@ -426,7 +458,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 // movies fragment
               /*  PayoutsListFragment payoutsListFragment = new PayoutsListFragment();*/
 
-                newFragment = new AttendanceFragment();
+                newFragment = new AttendaceListFragment();
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -665,6 +697,38 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 transaction.commit();
                 return newFragment ;
 
+            case 23:
+
+                newFragment = new ShortLeaveHistoryFragment();
+                transaction.replace(R.id.home_navigation_framelayout, newFragment);
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                return newFragment ;
+
+            case 24:
+
+                newFragment = new WeekOfListFragment();
+                transaction.replace(R.id.home_navigation_framelayout, newFragment);
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                return newFragment ;
+
+            case 25:
+
+                newFragment = new HolidayListFragment();
+                transaction.replace(R.id.home_navigation_framelayout, newFragment);
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                return newFragment ;
 
             default:
                 return new DashBoardFragment();

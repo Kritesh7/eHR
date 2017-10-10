@@ -1,6 +1,7 @@
 package ehr.cfcs.com.ehr.Fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -14,21 +15,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import ehr.cfcs.com.ehr.Adapter.LeaveMangementAdapter;
+import ehr.cfcs.com.ehr.Adapter.ShortLeaveHistoryAdapter;
+import ehr.cfcs.com.ehr.Main.ApplyShortLeaveActivity;
 import ehr.cfcs.com.ehr.Main.NewAddLeaveMangementActivity;
 import ehr.cfcs.com.ehr.Model.LeaveManagementModel;
+import ehr.cfcs.com.ehr.Model.ShortLeaveHistoryModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
@@ -39,12 +47,12 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LeaveManagementFragment.OnFragmentInteractionListener} interface
+ * {@link ShortLeaveHistoryFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LeaveManagementFragment#newInstance} factory method to
+ * Use the {@link ShortLeaveHistoryFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LeaveManagementFragment extends Fragment {
+public class ShortLeaveHistoryFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -54,19 +62,19 @@ public class LeaveManagementFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
-
-    public RecyclerView leaveMangementRecy;
-    public LeaveMangementAdapter adapter;
-    public String leaveListUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveList";
-
-    public ArrayList<LeaveManagementModel> list = new ArrayList<>();
+    public RecyclerView shortLeaveHistoryRecycler;
+    public ShortLeaveHistoryAdapter adapter;
+    public ArrayList<ShortLeaveHistoryModel> list = new ArrayList<>();
     public FloatingActionButton fab;
     public String userId = "", authCode = "";
     public ConnectionDetector conn;
+    public String shortLeaveUrl = SettingConstant.BaseUrl + "AppEmployeeShortLeaveList";
 
-    public LeaveManagementFragment() {
-        //Required empty public constructor
+
+    private OnFragmentInteractionListener mListener;
+
+    public ShortLeaveHistoryFragment() {
+        // Required empty public constructor
     }
 
     /**
@@ -75,11 +83,11 @@ public class LeaveManagementFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment LeaveManagementFragment.
+     * @return A new instance of fragment ShortLeaveHistoryFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LeaveManagementFragment newInstance(String param1, String param2) {
-        LeaveManagementFragment fragment = new LeaveManagementFragment();
+    public static ShortLeaveHistoryFragment newInstance(String param1, String param2) {
+        ShortLeaveHistoryFragment fragment = new ShortLeaveHistoryFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -100,9 +108,11 @@ public class LeaveManagementFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_leave_management, container, false);
 
-        leaveMangementRecy = (RecyclerView)rootView.findViewById(R.id.leave_management_recycler);
+        View rootView = inflater.inflate(R.layout.fragment_short_leave_history, container, false);
+
+        shortLeaveHistoryRecycler = (RecyclerView)rootView.findViewById(R.id.short_leave_history_recycler);
+
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
 
         conn = new ConnectionDetector(getActivity());
@@ -110,64 +120,53 @@ public class LeaveManagementFragment extends Fragment {
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
-        adapter = new LeaveMangementAdapter(getActivity(),list,getActivity());
+        adapter = new ShortLeaveHistoryAdapter(getActivity(),list,getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        leaveMangementRecy.setLayoutManager(mLayoutManager);
-        leaveMangementRecy.setItemAnimator(new DefaultItemAnimator());
-        leaveMangementRecy.setAdapter(adapter);
+        shortLeaveHistoryRecycler.setLayoutManager(mLayoutManager);
+        shortLeaveHistoryRecycler.setItemAnimator(new DefaultItemAnimator());
+        shortLeaveHistoryRecycler.setAdapter(adapter);
 
-        leaveMangementRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
+        shortLeaveHistoryRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
+
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(getActivity(), NewAddLeaveMangementActivity.class);
+                Intent i = new Intent(getActivity(), ApplyShortLeaveActivity.class);
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-
             }
         });
-
-        if (conn.getConnectivityStatus()>0) {
-
-            leaveManagementData(authCode, userId, "", "", "-1");
-
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
 
         return rootView;
     }
 
-    /* private void prepareInsDetails() {
+    @Override
+    public void onResume() {
+        super.onResume();
 
-        LeaveManagementModel model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-        list.add(model);
-         model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-         list.add(model);
-         model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-         list.add(model);
-         model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-         list.add(model);
-         model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-         list.add(model);
+        if (conn.getConnectivityStatus()>0) {
 
+            shortLeaveHistoryList(authCode, userId, "", "", "-1");
 
-        adapter.notifyDataSetChanged();
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
+    }
 
-    }*/
-
-    public void leaveManagementData(final String AuthCode , final String AdminID, final String FromDate, final String ToDate,
-                                 final String Status) {
+    //Short Leave History List
+    public void shortLeaveHistoryList(final String AuthCode , final String AdminID, final String FromDate, final String ToDate,
+                                    final String Status) {
 
         final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
         StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, leaveListUrl, new Response.Listener<String>() {
+                Request.Method.POST, shortLeaveUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -182,14 +181,18 @@ public class LeaveManagementFragment extends Fragment {
                     for (int i=0 ; i<jsonArray.length();i++)
                     {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                        String LeaveApplication_Id = jsonObject.getString("LeaveApplication_Id");
                         String LeaveTypeName = jsonObject.getString("LeaveTypeName");
-                        String StartDateText = jsonObject.getString("StartDateText");
-                        String EndDateText = jsonObject.getString("EndDateText");
+                        String StartDate = jsonObject.getString("StartDateText");
+                        String TimeFrom = jsonObject.getString("TimeFrom");
+                        String TimeTo = jsonObject.getString("TimeTo");
                         String AppliedDate = jsonObject.getString("AppliedDate");
                         String StatusText = jsonObject.getString("StatusText");
-                        String LeaveApplication_Id = jsonObject.getString("LeaveApplication_Id");
+                        String CommentText = jsonObject.getString("CommentText");
 
-                        list.add(new LeaveManagementModel(LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,LeaveApplication_Id));
+                        list.add(new ShortLeaveHistoryModel(LeaveApplication_Id,LeaveTypeName,StartDate,TimeFrom,TimeTo,AppliedDate,
+                                StatusText,CommentText));
 
 
 
@@ -199,8 +202,15 @@ public class LeaveManagementFragment extends Fragment {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
+
                     Log.e("checking json excption" , e.getMessage());
                     e.printStackTrace();
+
+                }catch (StringIndexOutOfBoundsException ex)
+                {
+                    Toast.makeText(getActivity(),"Error in request processing", Toast.LENGTH_SHORT).show();
+                    pDialog.dismiss();
+                  //  Log.e("checking exception", ex.getMessage());
                 }
             }
         }, new Response.ErrorListener() {
@@ -236,9 +246,8 @@ public class LeaveManagementFragment extends Fragment {
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-   /* public void onButtonPressed(Uri uri) {
+   /* // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }

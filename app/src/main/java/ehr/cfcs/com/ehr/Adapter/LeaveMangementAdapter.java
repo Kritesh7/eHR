@@ -48,7 +48,7 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        LeaveManagementModel model = list.get(position);
+        final LeaveManagementModel model = list.get(position);
 
         holder.leaveTypeTxt.setText(model.getLeaveType());
         holder.startDateTxt.setText(model.getStartDate());
@@ -61,6 +61,7 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
             public void onClick(View view) {
 
                 Intent i = new Intent(context, ViewLeavemangementActivity.class);
+                i.putExtra("LeaveApplication_Id",model.getLeaveApplication_Id());
                 activity.startActivity(i);
                 activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }

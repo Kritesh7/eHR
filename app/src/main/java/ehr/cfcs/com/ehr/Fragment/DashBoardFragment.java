@@ -1,6 +1,7 @@
 package ehr.cfcs.com.ehr.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import ehr.cfcs.com.ehr.Main.HomeActivity;
+import ehr.cfcs.com.ehr.Main.NewAddLeaveMangementActivity;
 import ehr.cfcs.com.ehr.R;
 
 /**
@@ -84,10 +87,10 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(1,"Attendance");
+                mListener.onFragmentInteraction(1,"Attendance List");
 
                 FragmentManager fragmentManager = getFragmentManager();
-                Fragment frag = new AttendanceFragment();
+                Fragment frag = new AttendaceListFragment();
 
                 /*fragmentManager.setCustomAnimations(
                         R.anim.push_right_in,
@@ -226,6 +229,17 @@ public class DashBoardFragment extends Fragment {
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
                         .commit();
+            }
+        });
+
+        leaverequsLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent ik = new Intent(getActivity(),NewAddLeaveMangementActivity.class);
+                startActivity(ik);
+                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
             }
         });
 

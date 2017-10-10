@@ -89,6 +89,7 @@
                 android:src="@drawable/cal"/>
 
             <CheckBox
+                android:id="@+id/secondhalfcheck"
                 android:layout_marginLeft="10dp"
                 android:layout_width="0dp"
                 android:layout_weight="5"
@@ -118,6 +119,7 @@
                 android:src="@drawable/cal"/>
 
             <CheckBox
+                android:id="@+id/firsthalfcheck"
                 android:layout_marginLeft="10dp"
                 android:layout_width="0dp"
                 android:layout_weight="5"
@@ -127,7 +129,32 @@
 
         </LinearLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColorHint="#0D47A1"
+            app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+            <EditText
+                android:id="@+id/leave_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/linebelowedittext"
+                android:backgroundTint="@color/purple700"
+                android:hint="Comment"
+                android:inputType="textMultiLine"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/purple500"
+                android:textColorHint="@color/purple700"
+                android:textSize="16dp"
+                android:theme="@style/MyEditText" />
+        </android.support.design.widget.TextInputLayout>
+
         <Button
+            android:id="@+id/applyleave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/purple700"

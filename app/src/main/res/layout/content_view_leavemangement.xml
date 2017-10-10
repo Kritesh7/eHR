@@ -37,6 +37,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/leavetype"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Full Time"
@@ -54,6 +55,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/startdate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="28-03-1995"
@@ -71,6 +73,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/enddate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="28-03-2005"
@@ -88,6 +91,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/numberofdays"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="444 dyas"
@@ -105,6 +109,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/appliedon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="01-02-1995"
@@ -122,6 +127,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Approved"
@@ -139,6 +145,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/commentbymanger"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Good Technical skill"
@@ -156,6 +163,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/managercommentedon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Test "
@@ -173,6 +181,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/commentedbyhr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Good Commnucation skill"
@@ -190,6 +199,7 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/hrcommentedon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Test by me"

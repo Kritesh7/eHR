@@ -2,11 +2,13 @@ package ehr.cfcs.com.ehr.Main;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,6 +18,9 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,9 +40,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ehr.cfcs.com.ehr.Model.LeaveTypeModel;
@@ -62,8 +70,12 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
     public String leaveTypeUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveTypeList";
     public ArrayAdapter<LeaveYearTypeModel>  leaveYearAdapter;
     public ArrayAdapter<LeaveTypeModel> leaveTypeAdapter;
-    public String userId = "", authcode = "";
+    public String userId = "", authcode = "",mgrId = "",leaveId = "",firstHalfString = "false",secondHalfString = "false",yearString = "";
     public ConnectionDetector conn;
+    public String applyUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveApply";
+    public Button applyBtn;
+    public EditText commentTxt;
+    public CheckBox firstHalfCheck, secondHalfCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,9 +117,14 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
         endCal = (ImageView)findViewById(R.id.end_cal);
         startTxt = (EditText)findViewById(R.id.startdate);
         endTxt = (EditText) findViewById(R.id.enddate);
+        applyBtn = (Button) findViewById(R.id.applyleave);
+        firstHalfCheck = (CheckBox) findViewById(R.id.firsthalfcheck);
+        secondHalfCheck = (CheckBox) findViewById(R.id.secondhalfcheck);
+        commentTxt = (EditText) findViewById(R.id.leave_comment);
 
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(NewAddLeaveMangementActivity.this)));
         authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(NewAddLeaveMangementActivity.this)));
+        mgrId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getMgrDir(NewAddLeaveMangementActivity.this)));
         conn = new ConnectionDetector(NewAddLeaveMangementActivity.this);
 
 
@@ -134,7 +151,12 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                                 yy = year;
                                 dd = dayOfMonth;*/
 
-                                startTxt.setText(dayOfMonth + "-" + (month+1) + "-" + year);
+                                Calendar calendar = Calendar.getInstance();
+                                String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(calendar.getTime());
+                                sdf = new DateFormatSymbols().getShortMonths()[month];
+
+
+                                startTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
 
                             }
                         },year , month, day);
@@ -164,8 +186,11 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                                /* mm = month;
                                 yy = year;
                                 dd = dayOfMonth;*/
+                                Calendar calendar = Calendar.getInstance();
+                                String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(calendar.getTime());
+                                sdf = new DateFormatSymbols().getShortMonths()[month];
 
-                                endTxt.setText(dayOfMonth + "-" + (month+1) + "-" + year);
+                                endTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
 
                             }
                         },year , month, day);
@@ -213,6 +238,8 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
            //     String year = ;
 
+                yearString = leaveYearList.get(i).getLeaveYear();
+
                 try {
 
                     getLeaveType(authcode,userId,leaveYearList.get(i+1).getLeaveYear());
@@ -228,6 +255,80 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //get leave id to select leave type
+        leaveTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+               leaveId =  leaveTypeList.get(i).getLeaveID();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //first half check
+        firstHalfCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if (b)
+                {
+                    firstHalfString = "true";
+                }else
+                    {
+                        firstHalfString = "false";
+                    }
+            }
+        });
+
+        secondHalfCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if (b)
+                {
+                    secondHalfString = "true";
+                }else
+                    {
+                        secondHalfString = "false";
+                    }
+            }
+        });
+
+
+        applyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (yearString.equalsIgnoreCase(""))
+                {
+                    Toast.makeText(NewAddLeaveMangementActivity.this, "Please Select Year", Toast.LENGTH_SHORT).show();
+                }else if (leaveId.equalsIgnoreCase(""))
+                {
+                    Toast.makeText(NewAddLeaveMangementActivity.this, "Please Select Leave Type", Toast.LENGTH_SHORT).show();
+                }else if (startTxt.getText().toString().equalsIgnoreCase(""))
+                {
+                    startTxt.setError("Please Enter valid Start date");
+                }else if (endTxt.getText().toString().equalsIgnoreCase(""))
+                {
+                    endTxt.setError("Please Enter valid End date");
+                }else {
+                    if (conn.getConnectivityStatus()>0) {
+
+                        applyLeave(userId, mgrId, leaveId, startTxt.getText().toString(), firstHalfString, endTxt.getText().toString(),
+                                secondHalfString, commentTxt.getText().toString(), yearString, authcode);
+                    }else
+                        {
+                            conn.showNoInternetAlret();
+                        }
+                }
 
             }
         });
@@ -384,6 +485,94 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                 params.put("AdminID",AdminID);
                 params.put("Year",Year);
 
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+    //Apply  Leave
+    public void applyLeave(final String AdminID , final String MgrID , final String LeaveID, final String FromDate,
+                                final String FirstHalf, final String ToDate, final String SecondHalf,
+                                final String Comments,final String Year , final String AuthCode ) {
+
+        final ProgressDialog pDialog = new ProgressDialog(NewAddLeaveMangementActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, applyUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Apply Short Leave", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                        if (jsonObject.has("MsgNotification"))
+                        {
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+                            Toast.makeText(NewAddLeaveMangementActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        if (jsonObject.has("status"))
+                        {
+                            String status = jsonObject.getString("status");
+
+                            if (status.equalsIgnoreCase("success"))
+                            {
+                                onBackPressed();
+
+                            }
+                        }
+
+
+                    }
+
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(NewAddLeaveMangementActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AdminID", AdminID);
+                params.put("MgrID",MgrID);
+                params.put("LeaveID",LeaveID);
+                params.put("FromDate",FromDate);
+                params.put("FirstHalf",FirstHalf);
+                params.put("ToDate",ToDate);
+                params.put("SecondHalf",SecondHalf);
+                params.put("Comments",Comments);
+                params.put("Year",Year);
+                params.put("AuthCode",AuthCode);
 
                 Log.e("Parms", params.toString());
                 return params;

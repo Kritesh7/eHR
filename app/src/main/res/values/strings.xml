@@ -27,4 +27,6 @@
     <string name="title_activity_add_new_lnaguage">AddNewLnaguageActivity</string>
     <string name="title_activity_add_new_skil">AddNewSkilActivity</string>
     <string name="title_activity_for_got_password">ForGotPasswordActivity</string>
+    <string name="title_activity_view_short_leave_history">ViewShortLeaveHistoryActivity</string>
+    <string name="title_activity_apply_short_leave">ApplyShortLeaveActivity</string>
 </resources>

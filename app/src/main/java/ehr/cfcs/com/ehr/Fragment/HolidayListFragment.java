@@ -1,10 +1,9 @@
 package ehr.cfcs.com.ehr.Fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,20 +13,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import ehr.cfcs.com.ehr.Adapter.LeaveMangementAdapter;
-import ehr.cfcs.com.ehr.Main.NewAddLeaveMangementActivity;
+
+import ehr.cfcs.com.ehr.Adapter.HolidayListAdapter;
+import ehr.cfcs.com.ehr.Adapter.HotelBookingListAdapter;
+import ehr.cfcs.com.ehr.Model.HolidayListModel;
 import ehr.cfcs.com.ehr.Model.LeaveManagementModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
@@ -39,12 +43,12 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LeaveManagementFragment.OnFragmentInteractionListener} interface
+ * {@link HolidayListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LeaveManagementFragment#newInstance} factory method to
+ * Use the {@link HolidayListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LeaveManagementFragment extends Fragment {
+public class HolidayListFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -53,20 +57,17 @@ public class LeaveManagementFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    public HolidayListAdapter adapter;
+    public RecyclerView holidayListRecy;
+    public ConnectionDetector conn;
+    public ArrayList<HolidayListModel> list = new ArrayList<>();
+    public String userId = "", authCode = "";
+    public String holidayListUrl = SettingConstant.BaseUrl + "AppEmployeeHolidayList";
 
     private OnFragmentInteractionListener mListener;
 
-    public RecyclerView leaveMangementRecy;
-    public LeaveMangementAdapter adapter;
-    public String leaveListUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveList";
-
-    public ArrayList<LeaveManagementModel> list = new ArrayList<>();
-    public FloatingActionButton fab;
-    public String userId = "", authCode = "";
-    public ConnectionDetector conn;
-
-    public LeaveManagementFragment() {
-        //Required empty public constructor
+    public HolidayListFragment() {
+        // Required empty public constructor
     }
 
     /**
@@ -75,11 +76,11 @@ public class LeaveManagementFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment LeaveManagementFragment.
+     * @return A new instance of fragment HolidayListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LeaveManagementFragment newInstance(String param1, String param2) {
-        LeaveManagementFragment fragment = new LeaveManagementFragment();
+    public static HolidayListFragment newInstance(String param1, String param2) {
+        HolidayListFragment fragment = new HolidayListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -99,75 +100,45 @@ public class LeaveManagementFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_leave_management, container, false);
+        // Inflate the layout for this fragment hotellist_recycler
+        View rootView = inflater.inflate(R.layout.fragment_holiday_list, container, false);
 
-        leaveMangementRecy = (RecyclerView)rootView.findViewById(R.id.leave_management_recycler);
-        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        holidayListRecy = (RecyclerView) rootView.findViewById(R.id.hotellist_recycler);
 
         conn = new ConnectionDetector(getActivity());
-
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
-        adapter = new LeaveMangementAdapter(getActivity(),list,getActivity());
+        adapter = new HolidayListAdapter(getActivity(),list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        leaveMangementRecy.setLayoutManager(mLayoutManager);
-        leaveMangementRecy.setItemAnimator(new DefaultItemAnimator());
-        leaveMangementRecy.setAdapter(adapter);
+        holidayListRecy.setLayoutManager(mLayoutManager);
+        holidayListRecy.setItemAnimator(new DefaultItemAnimator());
+        holidayListRecy.setAdapter(adapter);
 
-        leaveMangementRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent i = new Intent(getActivity(), NewAddLeaveMangementActivity.class);
-                startActivity(i);
-                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-
-            }
-        });
+        holidayListRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         if (conn.getConnectivityStatus()>0) {
 
-            leaveManagementData(authCode, userId, "", "", "-1");
+            holidayList(authCode, userId, "");
 
         }else
-            {
-                conn.showNoInternetAlret();
-            }
+        {
+            conn.showNoInternetAlret();
+        }
 
         return rootView;
     }
 
-    /* private void prepareInsDetails() {
 
-        LeaveManagementModel model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-        list.add(model);
-         model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-         list.add(model);
-         model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-         list.add(model);
-         model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-         list.add(model);
-         model = new LeaveManagementModel("Full Time","28-03-2017","03-09-2017","02-01-2017","Approved");
-         list.add(model);
-
-
-        adapter.notifyDataSetChanged();
-
-    }*/
-
-    public void leaveManagementData(final String AuthCode , final String AdminID, final String FromDate, final String ToDate,
-                                 final String Status) {
+    //Holiday List Api
+    public void holidayList(final String AuthCode , final String AdminID, final String Year) {
 
         final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
         StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, leaveListUrl, new Response.Listener<String>() {
+                Request.Method.POST, holidayListUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -182,14 +153,13 @@ public class LeaveManagementFragment extends Fragment {
                     for (int i=0 ; i<jsonArray.length();i++)
                     {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String LeaveTypeName = jsonObject.getString("LeaveTypeName");
-                        String StartDateText = jsonObject.getString("StartDateText");
-                        String EndDateText = jsonObject.getString("EndDateText");
-                        String AppliedDate = jsonObject.getString("AppliedDate");
-                        String StatusText = jsonObject.getString("StatusText");
-                        String LeaveApplication_Id = jsonObject.getString("LeaveApplication_Id");
+                        String HolidayName = jsonObject.getString("HolidayName");
+                        String Desc = jsonObject.getString("Desc");
+                        String HoliDateText = jsonObject.getString("HoliDateText");
+                        String HolidayType = jsonObject.getString("HolidayType");
 
-                        list.add(new LeaveManagementModel(LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,LeaveApplication_Id));
+
+                        list.add(new HolidayListModel(HolidayName,HoliDateText,HolidayType,Desc));
 
 
 
@@ -220,9 +190,8 @@ public class LeaveManagementFragment extends Fragment {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
                 params.put("AdminID",AdminID);
-                params.put("FromDate",FromDate);
-                params.put("ToDate",ToDate);
-                params.put("Status",Status);
+                params.put("Year",Year);
+
 
 
                 Log.e("Parms", params.toString());
@@ -236,9 +205,8 @@ public class LeaveManagementFragment extends Fragment {
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
-
-    // TODO: Rename method, update argument and hook method into UI event
-   /* public void onButtonPressed(Uri uri) {
+   /* // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }

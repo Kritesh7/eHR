@@ -14,17 +14,6 @@
             />
 
         <item
-            android:id="@+id/nav_leavesummary"
-            android:title="Leave Summary"
-            android:icon="@drawable/leave_management"/>
-
-        <item
-            android:id="@+id/nav_leavemanagment"
-            android:title="Leave Managment"
-            android:icon="@drawable/leave_management"/>
-
-
-        <item
             android:id="@+id/nav_Traning"
             android:title="Training"
             android:icon="@drawable/training"/>
@@ -33,6 +22,41 @@
             android:id="@+id/nav_Asset_details"
             android:title="Assets Details"
             android:icon="@drawable/assets_details_new"/>
+
+        <item
+            android:title="Leave Management"
+            >
+
+            <menu>
+                <item
+                    android:id="@+id/nav_leavesummary"
+                    android:title="Leave Summary"
+                    android:icon="@drawable/leavesum"/>
+
+                <item
+                    android:id="@+id/nav_leavemanagment"
+                    android:title="Leave History"
+                    android:icon="@drawable/leavehistory"/>
+
+                <item
+                    android:id="@+id/nav_short_leave_history"
+                    android:icon="@drawable/shortleave"
+                    android:title="Short Leave History" />
+
+                <item
+                    android:id="@+id/nav_weekof"
+                    android:icon="@drawable/weekof"
+                    android:title="Week Off" />
+
+                <item
+                    android:id="@+id/nav_holidayList"
+                    android:icon="@drawable/holidaylist"
+                    android:title="Holiday List" />
+
+            </menu>
+
+
+        </item>
 
         <item
             android:id="@+id/nav_book_me"

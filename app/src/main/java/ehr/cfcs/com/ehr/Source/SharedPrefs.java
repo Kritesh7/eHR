@@ -135,16 +135,16 @@ public class SharedPrefs
 
 
     // Source let Shared Prefrence
-    public static String getSourceLet(Context context)
+    public static String getMgrDir(Context context)
     {
         SharedPreferences sp = getSetting(context);
-        return  sp.getString(SettingConstant.SourceLat, null);
+        return  sp.getString(SettingConstant.MgrDir, null);
     }
-    public static boolean setSourceLat(Context context, String authKey)
+    public static boolean setMgrDir(Context context, String authKey)
     {
         SharedPreferences sp = getSetting(context);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(SettingConstant.SourceLat, authKey);
+        editor.putString(SettingConstant.MgrDir, authKey);
         return editor.commit();
     }
 

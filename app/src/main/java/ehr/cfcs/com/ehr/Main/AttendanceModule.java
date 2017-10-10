@@ -3,8 +3,10 @@ package ehr.cfcs.com.ehr.Main;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
@@ -12,11 +14,16 @@ import android.hardware.Camera;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,6 +37,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,31 +49,33 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import ehr.cfcs.com.ehr.Fragment.AttendanceFragment;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.GPSTracker;
 import ehr.cfcs.com.ehr.Source.LocationAddress;
 
-public class AttendanceModule extends AppCompatActivity implements View.OnClickListener {
+public class AttendanceModule extends AppCompatActivity implements OnMapReadyCallback {
 
-    private SurfaceView preview = null;
-    private SurfaceHolder previewHolder = null;
-    private Camera camera = null;
-    private boolean inPreview = false;
-    ImageView image;
-    Bitmap bmp, itembmp;
-    static Bitmap mutableBitmap;
-    PointF start = new PointF();
-    PointF mid = new PointF();
-    float oldDist = 1f;
-    File imageFileName = null;
-    File imageFileFolder = null;
-    private MediaScannerConnection msConn;
-    Display d;
-    int screenhgt, screenwdh;
-    ProgressDialog dialog;
+
+    public TextView titleTxt;
+    public SupportMapFragment mSupportMapFragment;
+    public MarkerOptions options;
+    public ArrayList<LatLng> MarkerPoints;
+    public GPSTracker gpsTracker;
+    public Context mContext;
+    public ImageView locationImg;
+    public EditText locationTxt;
+    String locationAddress = "";
+    public Button subBtn;
+    private GoogleMap mMap;
+    public ImageView profileImg;
+    public Button cancelBtn;
+    public ImageView profileSelectImg;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,36 +89,71 @@ public class AttendanceModule extends AppCompatActivity implements View.OnClickL
             window.setStatusBarColor(this.getResources().getColor(R.color.status_color));
         }
 
-        image = (ImageView) findViewById(R.id.image);
-        preview = (SurfaceView) findViewById(R.id.surface);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.attendancetollbar);
+        setSupportActionBar(toolbar);
+        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
 
-        previewHolder = preview.getHolder();
-        previewHolder.addCallback(surfaceCallback);
-        previewHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        previewHolder.setFixedSize(getWindow().getWindowManager()
-                .getDefaultDisplay().getWidth(), getWindow().getWindowManager()
-                .getDefaultDisplay().getHeight());
-
-    }
-
-
-
-    @Override
-    public void onClick(View view) {
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (checkSelfPermission(Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            requestPermissions(new String[]{Manifest.permission.CAMERA},
-                    1);
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // onBackPressed();
+                onBackPressed();
+
+            }
+        });
+
+        titleTxt.setText("Add Attendance");
+
+        locationImg = (ImageView)findViewById(R.id.locationimg);
+        locationTxt = (EditText)findViewById(R.id.locationtxt);
+        subBtn = (Button)findViewById(R.id.submitbtn);
+        profileImg = (ImageView)findViewById(R.id.procam);
+        profileSelectImg = (ImageView)findViewById(R.id.pro_image);
+        cancelBtn = (Button)findViewById(R.id.cancelbtn);
+
+        gpsTracker = new GPSTracker(AttendanceModule.this, AttendanceModule.this);
+
+        mSupportMapFragment = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.mapwhere);
+        mSupportMapFragment.getMapAsync(this);
+
+
+        MarkerPoints = new ArrayList<>();
+        options = new MarkerOptions();
+
+        locationImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                locationTxt.setText(locationAddress);
+            }
+        });
+
+        profileImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (checkSelfPermission(Manifest.permission.CAMERA)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.CAMERA},
+                            0);
+                }else {
+                    selectImage();
+                }
+
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onBackPressed();
+            }
+        });
 
 
     }
@@ -116,171 +161,118 @@ public class AttendanceModule extends AppCompatActivity implements View.OnClickL
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Now user should be able to use camera
-
-            camera = Camera.open();
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS)
+        {
+            selectImage();
         }
-        else {
-            // Your app will not have this permission. Turn off all functions
-            // that require this permission or it will force close like your
-            // original question
-        }
+
     }
 
-    @Override
-    public void onPause() {
-        if (inPreview) {
-            camera.stopPreview();
-        }
+    //uploadImage work
+    private void selectImage() {
 
-        camera.release();
-        camera = null;
-        inPreview = false;
-        super.onPause();
-    }
+        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
 
-    private Camera.Size getBestPreviewSize(int width, int height, Camera.Parameters parameters) {
-        Camera.Size result = null;
-        for (Camera.Size size: parameters.getSupportedPreviewSizes()) {
-            if (size.width <= width && size.height <= height) {
-                if (result == null) {
-                    result = size;
-                } else {
-                    int resultArea = result.width * result.height;
-                    int newArea = size.width * size.height;
-                    if (newArea > resultArea) {
-                        result = size;
-                    }
+        AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceModule.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("Take Photo"))
+                {
+                    Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent, 1);
                 }
-            }
-        }
-        return (result);
-    }
+                else if (options[item].equals("Choose from Gallery"))
+                {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, 2);
 
-    SurfaceHolder.Callback surfaceCallback = new SurfaceHolder.Callback() {
-        public void surfaceCreated(SurfaceHolder holder) {
-            try {
-                camera.setPreviewDisplay(previewHolder);
-            } catch (Throwable t) {
-                Log.e("PreviewDemo-surfaceCallback",
-                        "Exception in setPreviewDisplay()", t);
-                Toast.makeText(AttendanceModule.this, t.getMessage(), Toast.LENGTH_LONG)
-                        .show();
-            }
-        }
-
-        public void surfaceChanged(SurfaceHolder holder,
-                                   int format, int width,
-                                   int height) {
-
-            Camera.Parameters parameters = camera.getParameters();
-            Camera.Size size = getBestPreviewSize(width, height,
-                    parameters);
-
-            if (size != null) {
-                parameters.setPreviewSize(size.width, size.height);
-                camera.setParameters(parameters);
-                camera.startPreview();
-                inPreview = true;
-            }
-        }
-
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            // no-op
-        }
-    };
-
-    Camera.PictureCallback photoCallback = new Camera.PictureCallback() {
-        public void onPictureTaken(final byte[] data, final Camera camera) {
-            dialog = ProgressDialog.show(AttendanceModule.this, "", "Saving Photo");
-            new Thread() {
-                public void run() {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception ex) {}
-                    onPictureTake(data, camera);
                 }
-            }.start();
-        }
-    };
-
-
-    public void onPictureTake(byte[] data, Camera camera) {
-
-        bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-        mutableBitmap = bmp.copy(Bitmap.Config.ARGB_8888, true);
-        savePhoto(mutableBitmap);
-        dialog.dismiss();
-    }
-    class SavePhotoTask extends AsyncTask< byte[], String, String > {@Override
-    protected String doInBackground(byte[]...jpeg) {
-        File photo = new File(Environment.getExternalStorageDirectory(), "photo.jpg");
-        if (photo.exists()) {
-            photo.delete();
-        }
-        try {
-            FileOutputStream fos = new FileOutputStream(photo.getPath());
-            fos.write(jpeg[0]);
-            fos.close();
-        } catch (java.io.IOException e) {
-            Log.e("PictureDemo", "Exception in photoCallback", e);
-        }
-        return (null);
-    }
-    }
-    public void savePhoto(Bitmap bmp) {
-        imageFileFolder = new File(Environment.getExternalStorageDirectory(), "Rotate");
-        imageFileFolder.mkdir();
-        FileOutputStream out = null;
-        Calendar c = Calendar.getInstance();
-        String date = fromInt(c.get(Calendar.MONTH)) + fromInt(c.get(Calendar.DAY_OF_MONTH)) + fromInt(c.get(Calendar.YEAR)) + fromInt(c.get(Calendar.HOUR_OF_DAY)) + fromInt(c.get(Calendar.MINUTE)) + fromInt(c.get(Calendar.SECOND));
-        imageFileName = new File(imageFileFolder, date.toString() + ".jpg");
-        try {
-            out = new FileOutputStream(imageFileName);
-            bmp.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-            scanPhoto(imageFileName.toString());
-            out = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public String fromInt(int val) {
-        return String.valueOf(val);
-    }
-
-    public void scanPhoto(final String imageFileName) {
-        msConn = new MediaScannerConnection(AttendanceModule.this, new MediaScannerConnection.MediaScannerConnectionClient() {
-            public void onMediaScannerConnected() {
-                msConn.scanFile(imageFileName, null);
-                Log.i("msClient obj  in Photo Utility", "connection established");
-            }
-            public void onScanCompleted(String path, Uri uri) {
-                msConn.disconnect();
-                Log.i("msClient obj in Photo Utility", "scan completed");
+                else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
             }
         });
-        msConn.connect();
+        builder.show();
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 1) {
+
+                Bitmap photo = (Bitmap) data.getExtras().get("data");
+                //saveToInternalStorage(photo);
+                profileSelectImg.setImageBitmap(photo);
+            }
+            else if (requestCode == 2) {
+
+                Uri uri = data.getData();
+
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+
+                    profileSelectImg.setImageBitmap(bitmap);
+                    //   uploadImage(imageBase64,userId);
+
+                    //    getCustomerDetail(userId);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU && event.getRepeatCount() == 0) {
-            onBack();
+    public void onMapReady(GoogleMap googleMap) {
+
+        mMap = googleMap;
+
+        double innerlat = gpsTracker.getLatitude();
+        double inerlog = gpsTracker.getLongitude();
+
+        LatLng sydney = new LatLng(innerlat, inerlog);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Demo"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f));
+
+        LocationAddress locationAddress = new LocationAddress();
+        locationAddress.getAddressFromLocation(innerlat, inerlog, AttendanceModule.this,
+                new GeocoderHandler());
+    }
+    // get address with the help of lat log
+    private class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+
+
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    break;
+                default:
+                    locationAddress = null;
+            }
+
+
+
+
         }
-        return super.onKeyDown(keyCode, event);
     }
 
-    public void onBack() {
-        Log.e("onBack :", "yes");
-        camera.takePicture(null, null, photoCallback);
-        inPreview = false;
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        overridePendingTransition(R.anim.push_left_in,
+                R.anim.push_right_out);
+
     }
-
-
 
 }
