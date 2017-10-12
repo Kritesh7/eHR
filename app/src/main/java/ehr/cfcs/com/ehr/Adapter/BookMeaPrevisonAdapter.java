@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -57,6 +58,8 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.book_me_a_previoson_item_layout, null);
             holder.tvName = (CheckBox) view.findViewById(R.id.itemcheckbox);
             holder.mainLay = (LinearLayout)view.findViewById(R.id.mainlay);
+            holder.quantityTxt = (EditText)view.findViewById(R.id.edit_quantity);
+            holder.remarkTxt = (EditText)view.findViewById(R.id.remark);
             holder.primory_layout = (LinearLayout)view.findViewById(R.id.primory_layout);
             view.setTag(holder);
         }
@@ -65,6 +68,8 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
         }
 
         holder.tvName.setText(list.get(i).getItemName());
+        holder.remarkTxt.setText(list.get(i).getRemark());
+        holder.quantityTxt.setText(list.get(i).getMaxQuantity());
 
         final ViewHolder finalHolder = holder;
 
@@ -84,12 +89,28 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
             }
         });
 
+        //check check box is check or not
+        if (list.get(i).getCheckValue().equalsIgnoreCase("true"))
+        {
+            holder.tvName.setChecked(true);
+
+            TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
+            finalHolder.mainLay.setVisibility(View.VISIBLE);
+        }else
+            {
+                holder.tvName.setChecked(false);
+
+                TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
+                finalHolder.mainLay.setVisibility(View.GONE);
+            }
+
         return view;
     }
 
     private class ViewHolder {
 
         CheckBox tvName;
+        EditText quantityTxt, remarkTxt;
         LinearLayout mainLay,primory_layout;
     }
 

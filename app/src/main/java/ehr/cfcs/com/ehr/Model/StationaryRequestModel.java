@@ -13,9 +13,12 @@ public class StationaryRequestModel
     public String IdleClousersDate;
     public String followUpDate;
     public String status;
+    public String RID;
+    public String ItemCatID;
 
     public StationaryRequestModel(String employName, String zoneName, String quantity,
-                                  String requestDate, String idleClousersDate, String followUpDate, String status) {
+                                  String requestDate, String idleClousersDate, String followUpDate, String status,
+                                  String RID,String ItemCatID) {
         this.employName = employName;
         this.zoneName = zoneName;
         this.quantity = quantity;
@@ -23,6 +26,16 @@ public class StationaryRequestModel
         IdleClousersDate = idleClousersDate;
         this.followUpDate = followUpDate;
         this.status = status;
+        this.RID = RID;
+        this.ItemCatID = ItemCatID;
+    }
+
+    public String getRID() {
+        return RID;
+    }
+
+    public String getItemCatID() {
+        return ItemCatID;
     }
 
     public String getEmployName() {

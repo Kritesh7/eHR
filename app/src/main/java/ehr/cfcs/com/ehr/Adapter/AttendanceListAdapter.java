@@ -2,6 +2,7 @@ package ehr.cfcs.com.ehr.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ehr.cfcs.com.ehr.Main.ViewAttendanceDetailsActivity;
+import ehr.cfcs.com.ehr.Main.ViewLeavemangementActivity;
 import ehr.cfcs.com.ehr.Model.AttendanceListModel;
 import ehr.cfcs.com.ehr.R;
 
@@ -42,7 +45,7 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        AttendanceListModel model = list.get(position);
+        final AttendanceListModel model = list.get(position);
 
         holder.dateTxt.setText(model.getDate());
         holder.inTimeTxt.setText(model.getInTime());
@@ -52,6 +55,17 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
         holder.lateArivalTxt.setText(model.getLateArrival());
         holder.earlyLeavingTxt.setText(model.getEarlyLeaving());
         holder.statusTxt.setText(model.getStatus());
+
+        holder.mainLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(context, ViewAttendanceDetailsActivity.class);
+                i.putExtra("AttendnaceLogId",model.getAttendanceLogID());
+                activity.startActivity(i);
+                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
     }
 
     @Override
@@ -77,7 +91,7 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
             statusTxt = (TextView)itemView.findViewById(R.id.attendacelist_status);
 
 
-            mainLay = (LinearLayout)itemView.findViewById(R.id.leave_management_main_lay);
+            mainLay = (LinearLayout)itemView.findViewById(R.id.attendacelistlay);
 
 
 

@@ -29,4 +29,6 @@
     <string name="title_activity_for_got_password">ForGotPasswordActivity</string>
     <string name="title_activity_view_short_leave_history">ViewShortLeaveHistoryActivity</string>
     <string name="title_activity_apply_short_leave">ApplyShortLeaveActivity</string>
+    <string name="title_activity_view_attendance_details">ViewAttendanceDetailsActivity</string>
+    <string name="title_activity_view_request_details">ViewRequestDetailsActivity</string>
 </resources>

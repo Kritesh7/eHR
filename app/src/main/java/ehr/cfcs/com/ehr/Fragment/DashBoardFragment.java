@@ -123,6 +123,7 @@ public class DashBoardFragment extends Fragment {
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
                         .commit();
+
             }
         });
 

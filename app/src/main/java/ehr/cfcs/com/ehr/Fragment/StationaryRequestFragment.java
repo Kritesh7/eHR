@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,20 +10,42 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.StatinaryRequestAdapter;
 import ehr.cfcs.com.ehr.Adapter.TraningAdapter;
 import ehr.cfcs.com.ehr.Main.AddNewStationaryRequestActivity;
 import ehr.cfcs.com.ehr.Main.AddandEditTraningActivity;
 import ehr.cfcs.com.ehr.Main.NewAddLeaveMangementActivity;
+import ehr.cfcs.com.ehr.Model.BookMeaPrevisionModel;
+import ehr.cfcs.com.ehr.Model.LeaveManagementModel;
 import ehr.cfcs.com.ehr.Model.StationaryRequestModel;
 import ehr.cfcs.com.ehr.Model.TraningModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +69,10 @@ public class StationaryRequestFragment extends Fragment {
     public StatinaryRequestAdapter adapter;
     public ArrayList<StationaryRequestModel> list = new ArrayList<>();
     public FloatingActionButton fab;
+    public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestList";
+    public ConnectionDetector conn;
+    public String userId = "",authCode = "";
+    public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -89,7 +116,11 @@ public class StationaryRequestFragment extends Fragment {
         stainoryRecy = (RecyclerView)rootView.findViewById(R.id.stationary_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
 
-        adapter = new StatinaryRequestAdapter(getActivity(),list);
+        conn = new ConnectionDetector(getActivity());
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
+
+        adapter = new StatinaryRequestAdapter(getActivity(),list,getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         stainoryRecy.setLayoutManager(mLayoutManager);
         stainoryRecy.setItemAnimator(new DefaultItemAnimator());
@@ -97,13 +128,22 @@ public class StationaryRequestFragment extends Fragment {
 
         stainoryRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        prepareInsDetails();
+        if (conn.getConnectivityStatus()>0) {
+
+            stationryData(authCode,userId,"0","1");
+
+        }else
+            {
+                conn.showNoInternetAlret();
+            }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), AddNewStationaryRequestActivity.class);
+                i.putExtra("Mode", "Add");
+                i.putExtra("mylist", itemBindList);
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -112,7 +152,7 @@ public class StationaryRequestFragment extends Fragment {
         return rootView;
     }
 
-    private void prepareInsDetails() {
+    /*private void prepareInsDetails() {
 
         StationaryRequestModel model = new StationaryRequestModel("Raman Kumar","East","2","03-09-2017","02-01-2017","10-01-2017",
                 "Approved");
@@ -132,6 +172,87 @@ public class StationaryRequestFragment extends Fragment {
 
 
         adapter.notifyDataSetChanged();
+
+    }*/
+
+    //Staionry Data
+    public void stationryData(final String AuthCode , final String AdminID, final String AppStatus, final String ItemCatID) {
+
+        final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, stationoryUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String EmployeeName = jsonObject.getString("EmployeeName");
+                        String ZoneName = jsonObject.getString("ZoneName");
+                        String Quantity = jsonObject.getString("Items");
+                        String requestDate = jsonObject.getString("AddDateText");
+                        String IdealClosureDateText = jsonObject.getString("IdealClosureDateText");
+                        String followDate = jsonObject.getString("AppDateText");
+                        String AppStatusText = jsonObject.getString("AppStatusText");
+                        String RID = jsonObject.getString("RID");
+                        String ItemCatID = jsonObject.getString("ItemCatID");
+
+                        list.add(new StationaryRequestModel(EmployeeName,ZoneName,Quantity,requestDate,IdealClosureDateText
+                                ,followDate,AppStatusText,RID,ItemCatID));
+
+
+
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+                params.put("AppStatus",AppStatus);
+                params.put("ItemCatID",ItemCatID);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
 

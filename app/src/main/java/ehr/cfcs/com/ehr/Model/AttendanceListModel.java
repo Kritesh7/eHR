@@ -15,10 +15,12 @@ public class AttendanceListModel
     public String LateArrival;
     public String EarlyLeaving;
     public String Status;
+    public String IsRequest;
 
 
     public AttendanceListModel(String attendanceLogID, String date, String inTime,
-                               String outTime, String workTime, String halfday, String lateArrival, String earlyLeaving, String status) {
+                               String outTime, String workTime, String halfday, String lateArrival, String earlyLeaving, String status,
+                               String IsRequest) {
         AttendanceLogID = attendanceLogID;
         Date = date;
         InTime = inTime;
@@ -28,6 +30,11 @@ public class AttendanceListModel
         LateArrival = lateArrival;
         EarlyLeaving = earlyLeaving;
         Status = status;
+        IsRequest = IsRequest;
+    }
+
+    public String getIsRequest() {
+        return IsRequest;
     }
 
     public String getAttendanceLogID() {

@@ -28,6 +28,7 @@
 
 
         <EditText
+            android:id="@+id/edit_quantity"
             android:inputType="number"
             android:textColor="@color/purple700"
             android:layout_width="match_parent"
@@ -35,6 +36,7 @@
             android:hint="Quantity"/>
 
         <EditText
+            android:id="@+id/remark"
             android:layout_marginTop="10dp"
             android:textColor="@color/purple700"
             android:inputType="textMultiLine"

@@ -65,13 +65,13 @@ public class AddDocumentActivity extends AppCompatActivity {
         adapter = new BookMeaPrevisonAdapter(list,AddDocumentActivity.this);
         listView.setAdapter(adapter);
 
-        prepareInsDetails();
+       // prepareInsDetails();
 
 
 
     }
 
-    private void prepareInsDetails() {
+   /* private void prepareInsDetails() {
 
         BookMeaPrevisionModel model = new BookMeaPrevisionModel("10th Marksheet");
         list.add(model);
@@ -86,7 +86,7 @@ public class AddDocumentActivity extends AppCompatActivity {
 
         adapter.notifyDataSetChanged();
 
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
