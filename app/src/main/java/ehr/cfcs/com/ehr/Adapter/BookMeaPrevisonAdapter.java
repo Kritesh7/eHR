@@ -11,10 +11,13 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import ehr.cfcs.com.ehr.Interface.AddItemInterface;
 import ehr.cfcs.com.ehr.Model.BookMeaPrevisionModel;
+import ehr.cfcs.com.ehr.Model.SendListModel;
 import ehr.cfcs.com.ehr.R;
 
 /**
@@ -24,12 +27,17 @@ import ehr.cfcs.com.ehr.R;
 public class BookMeaPrevisonAdapter extends BaseAdapter {
 
     public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
+    public ArrayList<SendListModel> sendList = new ArrayList<>();
     public Context context;
     LayoutInflater inflater;
+    public boolean flag = false;
+    public int postion;
+    public AddItemInterface ItemInterface;
 
-    public BookMeaPrevisonAdapter(ArrayList<BookMeaPrevisionModel> list, Context context) {
+    public BookMeaPrevisonAdapter(ArrayList<BookMeaPrevisionModel> list, Context context,AddItemInterface ItemInterface) {
         this.list = list;
         this.context = context;
+        this.ItemInterface = ItemInterface;
         inflater = LayoutInflater.from(context);
     }
 
@@ -49,8 +57,11 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder holder = null;
+        CheckBox checkBox = null;
+
+
 
         if (view == null) {
 
@@ -61,6 +72,8 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
             holder.quantityTxt = (EditText)view.findViewById(R.id.edit_quantity);
             holder.remarkTxt = (EditText)view.findViewById(R.id.remark);
             holder.primory_layout = (LinearLayout)view.findViewById(R.id.primory_layout);
+
+
             view.setTag(holder);
         }
         else {
@@ -73,24 +86,72 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
 
         final ViewHolder finalHolder = holder;
 
+
+
+       /* //check check box is check or not
+        if (list.get(i).getCheckValue().equalsIgnoreCase("true"))
+        {
+            holder.tvName.setChecked(true);
+
+            //visibile widget
+            TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
+            finalHolder.mainLay.setVisibility(View.VISIBLE);
+
+
+        }else
+            {
+                holder.tvName.setChecked(false);
+
+                //invisibile widgit
+                TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
+                finalHolder.mainLay.setVisibility(View.GONE);
+            }
+*/
+
+
+
+        //add data in a list
+        final ViewHolder finalHolder1 = holder;
+
+       /* //holder.tvName.setTag(R.integer.btnplusview, view);
+        holder.tvName.setTag(i);
         holder.tvName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
                 if (b)
                 {
+
+                    sendList.add(new SendListModel(list.get(postion).getItemID(), list.get(postion).getItemName(), finalHolder1.quantityTxt.getText().toString(),
+                            finalHolder1.remarkTxt.getText().toString()));
+
+                    //save in interface
+                    ItemInterface.getAllItem(sendList);
+
+                    //visibile View
                     TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
                     finalHolder.mainLay.setVisibility(View.VISIBLE);
+
+                    flag = true;
+                    postion = i;
+                    list.get(i).setToKill(true);
+
+
                 }else
                     {
+                        //visibile Gone Widget
                         TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
                         finalHolder.mainLay.setVisibility(View.GONE);
+
+                        flag = false;
                     }
             }
-        });
+        });*/
 
-        //check check box is check or not
-        if (list.get(i).getCheckValue().equalsIgnoreCase("true"))
+
+        holder.tvName.setChecked(list.get(i).isToKill() );
+
+        if (list.get(i).isToKill() == true || list.get(i).getCheckValue().equalsIgnoreCase("true"))
         {
             holder.tvName.setChecked(true);
 
@@ -103,6 +164,40 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
                 TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
                 finalHolder.mainLay.setVisibility(View.GONE);
             }
+
+        //holder.tvName.setTag(R.integer.btnplusview, view);
+        holder.tvName.setTag(i);
+        final ViewHolder finalHolder2 = holder;
+        holder.tvName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+              //  View tempview = (View) finalHolder2.tvName.getTag(R.integer.btnplusview);
+                Integer pos = (Integer)  finalHolder2.tvName.getTag();
+                Toast.makeText(context, "Checkbox " + pos + " clicked!", Toast.LENGTH_SHORT).show();
+
+                if (list.get(pos).isToKill()){
+                    list.get(pos).setToKill(false);
+                    //visibile Gone Widget
+                    TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
+                    finalHolder.mainLay.setVisibility(View.GONE);
+                }
+                else {
+                    list.get(pos).setToKill(true);
+                    //visibile View
+                    TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
+                    finalHolder.mainLay.setVisibility(View.VISIBLE);
+
+                    sendList.add(new SendListModel(list.get(postion).getItemID(), list.get(postion).getItemName(), finalHolder2.quantityTxt.getText().toString(),
+                            finalHolder2.remarkTxt.getText().toString()));
+
+                    //save in interface
+                    ItemInterface.getAllItem(sendList);
+
+                }
+
+            }
+        });
 
         return view;
     }

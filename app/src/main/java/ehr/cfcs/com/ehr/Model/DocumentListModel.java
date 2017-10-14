@@ -9,21 +9,26 @@ public class DocumentListModel
 
     public String employName;
     public String zoneName;
-    public String qunatity;
-    public String rquestDate;
-    public String idleClosersDate;
-    public String folllowUpDate;
+    public String quantity;
+    public String RequestDate;
+    public String IdleClousersDate;
+    public String followUpDate;
     public String status;
+    public String RID;
+    public String ItemCatID;
 
-    public DocumentListModel(String employName, String zoneName, String qunatity, String rquestDate,
-                             String idleClosersDate, String folllowUpDate, String status) {
+
+    public DocumentListModel(String employName, String zoneName, String quantity, String requestDate,
+                             String idleClousersDate, String followUpDate, String status, String RID, String itemCatID) {
         this.employName = employName;
         this.zoneName = zoneName;
-        this.qunatity = qunatity;
-        this.rquestDate = rquestDate;
-        this.idleClosersDate = idleClosersDate;
-        this.folllowUpDate = folllowUpDate;
+        this.quantity = quantity;
+        RequestDate = requestDate;
+        IdleClousersDate = idleClousersDate;
+        this.followUpDate = followUpDate;
         this.status = status;
+        this.RID = RID;
+        ItemCatID = itemCatID;
     }
 
     public String getEmployName() {
@@ -34,23 +39,31 @@ public class DocumentListModel
         return zoneName;
     }
 
-    public String getQunatity() {
-        return qunatity;
+    public String getQuantity() {
+        return quantity;
     }
 
-    public String getRquestDate() {
-        return rquestDate;
+    public String getRequestDate() {
+        return RequestDate;
     }
 
-    public String getIdleClosersDate() {
-        return idleClosersDate;
+    public String getIdleClousersDate() {
+        return IdleClousersDate;
     }
 
-    public String getFolllowUpDate() {
-        return folllowUpDate;
+    public String getFollowUpDate() {
+        return followUpDate;
     }
 
     public String getStatus() {
         return status;
+    }
+
+    public String getRID() {
+        return RID;
+    }
+
+    public String getItemCatID() {
+        return ItemCatID;
     }
 }

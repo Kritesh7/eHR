@@ -128,14 +128,7 @@ public class StationaryRequestFragment extends Fragment {
 
         stainoryRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        if (conn.getConnectivityStatus()>0) {
 
-            stationryData(authCode,userId,"0","1");
-
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +143,19 @@ public class StationaryRequestFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0) {
+
+            stationryData(authCode,userId,"0","1");
+
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
     }
 
     /*private void prepareInsDetails() {

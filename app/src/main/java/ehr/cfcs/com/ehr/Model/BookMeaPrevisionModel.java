@@ -14,6 +14,15 @@ public class BookMeaPrevisionModel implements Serializable {
     public String remark;
     public String checkValue;
 
+    private boolean toKill;
+    ///getters/setters
+    public boolean isToKill() {
+        return toKill;
+    }
+    public void setToKill(boolean toKill) {
+        this.toKill = toKill;
+    }
+
 
     public BookMeaPrevisionModel(String itemName,String ItemID,String MaxQuantity,String remark,String checkValue) {
         this.itemName = itemName;

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ehr.cfcs.com.ehr.Main.ViewRequestDetailsActivity"
-    tools:showIn="@layout/activity_view_request_details">
+    tools:context="ehr.cfcs.com.ehr.Main.ViewDocumentDetailsActivity"
+    tools:showIn="@layout/activity_view_document_details">
 
     <LinearLayout
         android:padding="10dp"
@@ -50,7 +50,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Request By"
+                    android:text="Approved By"
                     android:textColor="@color/status_color"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
@@ -333,15 +333,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         >
 
-    <Button
-        android:id="@+id/editstaionry"
-        android:background="@color/purple700"
-        android:textColor="@color/white"
-        android:layout_width="0dp"
-        android:layout_weight=".5"
-        android:layout_height="wrap_content"
-        android:text="Edit"
-        android:layout_marginRight="10dp"/>
+        <Button
+            android:id="@+id/editstaionry"
+            android:background="@color/purple700"
+            android:textColor="@color/white"
+            android:layout_width="0dp"
+            android:layout_weight=".5"
+            android:layout_height="wrap_content"
+            android:text="Edit"
+            android:layout_marginRight="10dp"/>
 
         <Button
             android:id="@+id/deleteBtn"
@@ -355,5 +355,6 @@
 
 
     </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>

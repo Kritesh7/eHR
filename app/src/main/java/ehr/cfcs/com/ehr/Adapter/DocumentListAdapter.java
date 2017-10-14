@@ -1,15 +1,20 @@
 package ehr.cfcs.com.ehr.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ehr.cfcs.com.ehr.Main.ViewDocumentDetailsActivity;
+import ehr.cfcs.com.ehr.Main.ViewRequestDetailsActivity;
 import ehr.cfcs.com.ehr.Model.DocumentListModel;
 import ehr.cfcs.com.ehr.Model.StationaryRequestModel;
 import ehr.cfcs.com.ehr.R;
@@ -23,10 +28,12 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
 
     public Context context;
     public ArrayList<DocumentListModel> list = new ArrayList<>();
+    public Activity activity;
 
-    public DocumentListAdapter(Context context, ArrayList<DocumentListModel> list) {
+    public DocumentListAdapter(Context context, ArrayList<DocumentListModel> list, Activity activity) {
         this.context = context;
         this.list = list;
+        this.activity = activity;
     }
 
     @Override
@@ -39,15 +46,26 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        DocumentListModel model = list.get(position);
+        final DocumentListModel model = list.get(position);
 
         holder.empNameTxt.setText(model.getEmployName());
         holder.zoneNameTxt.setText(model.getZoneName());
-        holder.qunatityTxt.setText(model.getQunatity());
-        holder.idleclouserDateTxt.setText(model.getIdleClosersDate());
-        holder.requestDateTxt.setText(model.getRquestDate());
-        holder.followupDateTxt.setText(model.getFolllowUpDate());
+        holder.qunatityTxt.setText(model.getQuantity());
+        holder.idleclouserDateTxt.setText(model.getIdleClousersDate());
+        holder.requestDateTxt.setText(model.getRequestDate());
+        holder.followupDateTxt.setText(model.getIdleClousersDate());
         holder.statusTxt.setText(model.getStatus());
+
+        holder.mainLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(context, ViewDocumentDetailsActivity.class);
+                i.putExtra("Rid",model.getRID());
+                activity.startActivity(i);
+                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
 
         /*if (position % 2 == 1) {
             holder.mainLay.setCardBackgroundColor(context.getResources().getColor(R.color.col1));
@@ -65,7 +83,7 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView empNameTxt,zoneNameTxt,qunatityTxt,requestDateTxt, idleclouserDateTxt,followupDateTxt,statusTxt;
 
-        public CardView mainLay;
+        public LinearLayout mainLay;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -78,7 +96,7 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
             followupDateTxt = (TextView)itemView.findViewById(R.id.document_followupdate);
             statusTxt = (TextView)itemView.findViewById(R.id.document_statinarystatus);
 
-            mainLay = (CardView)itemView.findViewById(R.id.document_main_lay);
+            mainLay = (LinearLayout)itemView.findViewById(R.id.document_main_lay);
         }
     }
 }

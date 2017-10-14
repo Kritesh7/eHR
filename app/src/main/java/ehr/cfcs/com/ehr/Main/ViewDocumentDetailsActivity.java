@@ -3,6 +3,8 @@ package ehr.cfcs.com.ehr.Main;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,10 +41,9 @@ import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
-import ehr.cfcs.com.ehr.Source.MyListLayout;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
-public class ViewRequestDetailsActivity extends AppCompatActivity {
+public class ViewDocumentDetailsActivity extends AppCompatActivity {
 
     public TextView titleTxt,requestByTxt, requestDateTxt,empNameTxt,statusTxt,hrCommentTxt ,closerDateTxt, hrTxt;
     public ehr.cfcs.com.ehr.Source.MyListLayout requestItemList;
@@ -50,14 +51,14 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
     public ArrayList<RequestItemModel> list = new ArrayList<>();
     public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
     public ConnectionDetector conn;
-    public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDetail";
-    public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDelete";
     public String authCode = "", rid="";
     public Button updateDetails,deleteBtn;
+    public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDetail";
+    public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDelete";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_request_details);
+        setContentView(R.layout.activity_view_document_details);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -86,15 +87,16 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Stationary Request Details");
+        titleTxt.setText("Document Details");
 
         Intent intent = getIntent();
         if (intent != null)
         {
             rid = intent.getStringExtra("Rid");
         }
-        conn = new ConnectionDetector(ViewRequestDetailsActivity.this);
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewRequestDetailsActivity.this)));
+
+        conn = new ConnectionDetector(ViewDocumentDetailsActivity.this);
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewDocumentDetailsActivity.this)));
 
         requestItemList = (ehr.cfcs.com.ehr.Source.MyListLayout) findViewById(R.id.request_item_list);
         requestByTxt = (TextView) findViewById(R.id.staionory_request);
@@ -106,32 +108,29 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
         hrTxt = (TextView)findViewById(R.id.hrcommenttxt);
         updateDetails = (Button)findViewById(R.id.editstaionry);
         deleteBtn = (Button) findViewById(R.id.deleteBtn);
-
-        adapter = new RequestedItemAdapter(list,ViewRequestDetailsActivity.this);
+        adapter = new RequestedItemAdapter(list,ViewDocumentDetailsActivity.this);
 
         requestItemList.setAdapter(adapter);
-       // MyListLayout.setListViewHeightBasedOnChildren(requestItemList);
 
         if (conn.getConnectivityStatus()>0)
         {
-            viewStationryDetails(authCode,rid,"1");
+            viewStationryDetails(authCode,rid,"2");
         }else
-            {
-                conn.showNoInternetAlret();
+        {
+            conn.showNoInternetAlret();
+        }
+
+        updateDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(ViewDocumentDetailsActivity.this, AddDocumentActivity.class);
+                i.putExtra("Mode", "Edit");
+                i.putExtra("mylist", itemBindList);
+                startActivity(i);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
-
-
-     updateDetails.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View view) {
-
-             Intent i = new Intent(ViewRequestDetailsActivity.this, AddNewStationaryRequestActivity.class);
-             i.putExtra("Mode", "Edit");
-             i.putExtra("mylist", itemBindList);
-             startActivity(i);
-             overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-         }
-     });
+        });
 
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,20 +139,27 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
                 if (conn.getConnectivityStatus()>0) {
                     deleteMethod(authCode, rid);
                 }else
-                    {
-                        conn.showNoInternetAlret();
-                    }
+                {
+                    conn.showNoInternetAlret();
+                }
             }
         });
 
 
-
+       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });*/
     }
 
     //View Stationry Details
     public void viewStationryDetails(final String AuthCode ,final String RID, final String ItemCatID) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ViewRequestDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(ViewDocumentDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -252,7 +258,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
                 VolleyLog.d("Login", "Error: " + error.getMessage());
                 // Log.e("checking now ",error.getMessage());
 
-                Toast.makeText(ViewRequestDetailsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewDocumentDetailsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
 
 
@@ -280,7 +286,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
     //delete the Details
     public void deleteMethod(final String AuthCode ,final String RID) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ViewRequestDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(ViewDocumentDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -317,7 +323,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
                 VolleyLog.d("Login", "Error: " + error.getMessage());
                 // Log.e("checking now ",error.getMessage());
 
-                Toast.makeText(ViewRequestDetailsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ViewDocumentDetailsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
 
 
@@ -352,6 +358,4 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
 
     }
 
-
 }
-
