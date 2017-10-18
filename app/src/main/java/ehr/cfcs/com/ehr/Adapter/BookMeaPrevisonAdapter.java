@@ -2,6 +2,8 @@ package ehr.cfcs.com.ehr.Adapter;
 
 import android.content.Context;
 import android.support.transition.TransitionManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +29,15 @@ import ehr.cfcs.com.ehr.R;
 public class BookMeaPrevisonAdapter extends BaseAdapter {
 
     public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
-    public ArrayList<SendListModel> sendList = new ArrayList<>();
+    public static ArrayList<SendListModel> sendList = new ArrayList<>();
     public Context context;
     LayoutInflater inflater;
     public boolean flag = false;
     public int postion;
     public AddItemInterface ItemInterface;
+    public Integer pos;
+    public boolean isFlag;
+
 
     public BookMeaPrevisonAdapter(ArrayList<BookMeaPrevisionModel> list, Context context,AddItemInterface ItemInterface) {
         this.list = list;
@@ -168,13 +173,76 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
         //holder.tvName.setTag(R.integer.btnplusview, view);
         holder.tvName.setTag(i);
         final ViewHolder finalHolder2 = holder;
-        holder.tvName.setOnClickListener(new View.OnClickListener() {
+
+        holder.tvName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                pos = (Integer)  finalHolder2.tvName.getTag();
+
+                if (b)
+                {
+                    postion = i;
+                    isFlag = true;
+                    list.get(pos).setToKill(true);
+                    //visibile View
+                    TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
+                    finalHolder.mainLay.setVisibility(View.VISIBLE);
+
+                    sendList.add(new SendListModel(list.get(i).getItemID(),list.get(i).getItemName(),finalHolder2.quantityTxt.getText().toString(),
+                            finalHolder2.remarkTxt.getText().toString()));
+                  /*  sendList.add(new SendListModel(list.get(i).getItemID(), list.get(i).getItemName(), finalHolder1.quantityTxt.getText().toString(),
+                            finalHolder1.remarkTxt.getText().toString()));
+
+                    //save in interface
+                    ItemInterface.getAllItem(i);*/
+
+                    ItemInterface.getAllItem(sendList);
+                }else
+                    {
+                        isFlag = false;
+                        list.get(pos).setToKill(false);
+
+                        TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
+                        finalHolder.mainLay.setVisibility(View.GONE);
+                    }
+
+            }
+        });
+
+       /* holder.quantityTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if (isFlag)
+                {
+
+                    sendList.add(new SendListModel(list.get(pos).getItemID(), list.get(pos).getItemName(), finalHolder2.quantityTxt.getText().toString(),
+                            finalHolder2.remarkTxt.getText().toString()));
+
+                    //save in interface
+                    ItemInterface.getAllItem(sendList);
+
+                }
+            }
+        });*/
+        /*holder.tvName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
               //  View tempview = (View) finalHolder2.tvName.getTag(R.integer.btnplusview);
                 Integer pos = (Integer)  finalHolder2.tvName.getTag();
-                Toast.makeText(context, "Checkbox " + pos + " clicked!", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, "Checkbox " + pos + " clicked!", Toast.LENGTH_SHORT).show();
 
                 if (list.get(pos).isToKill()){
                     list.get(pos).setToKill(false);
@@ -197,9 +265,13 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
                 }
 
             }
-        });
+        });*/
 
         return view;
+    }
+
+    public  ArrayList<SendListModel> getSelectedString(){
+        return sendList;
     }
 
     private class ViewHolder {
@@ -209,4 +281,6 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
         LinearLayout mainLay,primory_layout;
     }
 
+
 }
+

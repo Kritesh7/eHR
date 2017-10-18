@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,7 +45,7 @@ import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
-public class AddNewStationaryRequestActivity extends AppCompatActivity implements AddItemInterface {
+public class AddNewStationaryRequestActivity extends AppCompatActivity implements AddItemInterface  {
 
     public TextView titleTxt;
     public BookMeaPrevisonAdapter adapter;
@@ -56,7 +57,9 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
     public String authCode = "",modeString = "",editList = "",userId = "";
     public ArrayList<BookMeaPrevisionModel> myList = new ArrayList<>();
     public Button addBtn;
-    public ArrayList<SendListModel> sendList = new ArrayList<>();
+    public ArrayList<SendListModel> sendListInner = new ArrayList<>();
+    public  int testingpos;
+
 
 
     @Override
@@ -135,6 +138,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             @Override
             public void onClick(View view) {
 
+                sendListInner = adapter.getSelectedString();
                 addStaionoryItem(userId,"","1","14-10-2017",authCode);
 
                /* JSONArray mainArray = new JSONArray();
@@ -159,6 +163,18 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             }
         });
 
+
+      /*  listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                String name = list.get(i).getItemName();
+                String id = list.get(i).getItemID();
+
+                sendList.add(new SendListModel(id,name,"",""));
+            }
+        });
+*/
 
 
     }
@@ -315,11 +331,11 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                 JSONObject object = new JSONObject();
                 try {
 
-                    for (int i =0; i<sendList.size(); i++) {
-                        object.put("ItemID", sendList.get(i).getItemID());
-                        object.put("ItemName", sendList.get(i).getItemName());
-                        object.put("Qty", sendList.get(i).getQty());
-                        object.put("Remark", sendList.get(i).getRemark());
+                    for (int i =0; i<sendListInner.size(); i++) {
+                        object.put("ItemID", sendListInner.get(i).getItemID());
+                        object.put("ItemName", sendListInner.get(i).getItemName());
+                        object.put("Qty", sendListInner.get(i).getQty());
+                        object.put("Remark", sendListInner.get(i).getRemark());
 
                         mainArray.put(object);
                     }
@@ -346,11 +362,28 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
     }
 
+   /* @Override
+    public void getAllItem(int pos) {
+
+      *//*  testingpos = pos;
+        sendList.add(new SendListModel("",testingpos+"","",""));*//*
+
+
+    }
+*/
 
     @Override
+    public void getAllItem(ArrayList<SendListModel> sendList) {
+
+      //  sendListInner = sendList;
+        Log.e("checking the size",sendListInner.size()+"");
+    }
+
+
+    /*@Override
     public void getAllItem(ArrayList<SendListModel> songList) {
 
         sendList = songList;
         Log.e("checking the list size",sendList.size() + "");
-    }
+    }*/
 }

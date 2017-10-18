@@ -32,6 +32,8 @@ public class BookMeaPrevisionModel implements Serializable {
         this.checkValue = checkValue;
     }
 
+
+
     public String getRemark() {
         return remark;
     }

@@ -210,7 +210,13 @@ public class AddDocumentActivity extends AppCompatActivity implements AddItemInt
 
 
     @Override
-    public void getAllItem(ArrayList<SendListModel> songList) {
+    public void getAllItem(ArrayList<SendListModel> sendList) {
 
     }
+
+
+  /*  @Override
+    public void getAllItem(ArrayList<SendListModel> songList) {
+
+    }*/
 }

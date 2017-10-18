@@ -11,5 +11,5 @@ import ehr.cfcs.com.ehr.Model.SendListModel;
 
 public interface AddItemInterface
 {
-    void getAllItem(ArrayList<SendListModel> songList);
+    void getAllItem( ArrayList<SendListModel> sendList);
 }
