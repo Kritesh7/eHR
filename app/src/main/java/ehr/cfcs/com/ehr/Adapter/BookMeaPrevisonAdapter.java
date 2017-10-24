@@ -132,7 +132,7 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
 
         final ViewHolder finalHolder = holder;
 
-        //holder.tvName.setTag(R.integer.btnplusview, view);
+
         holder.tvName.setTag(i);
         holder.tvName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
