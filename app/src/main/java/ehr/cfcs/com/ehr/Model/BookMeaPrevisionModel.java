@@ -50,6 +50,10 @@ public class BookMeaPrevisionModel implements Serializable {
         return MaxQuantity;
     }
 
+    public void setMaxQuantity(String maxQuantity) {
+        MaxQuantity = maxQuantity;
+    }
+
     public String getItemName() {
         return itemName;
     }

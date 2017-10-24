@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -58,9 +59,9 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
     public ArrayList<BookMeaPrevisionModel> myList = new ArrayList<>();
     public Button addBtn;
     public ArrayList<SendListModel> sendListInner = new ArrayList<>();
-    public  int testingpos;
-
-
+    public ArrayList<SendListModel> emptyList = new ArrayList<>();
+    public AddItemInterface itemInterface;
+    ArrayList<String> secondQuant = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +123,8 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             }
 
 
-        listView.setAdapter(adapter);
+            listView.setItemsCanFocus(true);
+            listView.setAdapter(adapter);
 
         if (conn.getConnectivityStatus()>0) {
 
@@ -138,63 +140,69 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             @Override
             public void onClick(View view) {
 
-                sendListInner = adapter.getSelectedString();
-                addStaionoryItem(userId,"","1","14-10-2017",authCode);
 
-               /* JSONArray mainArray = new JSONArray();
-                JSONObject object = new JSONObject();
+                String splitString  = String.valueOf(adapter.getSelectedString());
+                String id = String.valueOf(adapter.getSelectedId());
+
+
+                String quanty = String.valueOf(secondQuant);
+                String remark = String.valueOf(adapter.getSelectedRemark());
+
+                //remove first and last character
+                String removeHip = splitString.substring(1, splitString.length() - 1);
+                String removeId = id.substring(1, id.length() - 1);
+                String removeQuant = quanty.substring(1, quanty.length() - 1);
+                String removeRemark = remark.substring(1, remark.length() - 1);
+
+               // str.replaceAll("\[|\]", "");
+                String[] separated = removeHip.split(",");
+                String[] separatedId = removeId.split(",");
+                String[] separatedquant = removeQuant.split(",");
+                String[] separatedRemark = removeRemark.split(",");
+
+
+                JSONArray mainArray = new JSONArray();
+                //JSONObject object = new JSONObject();
                 try {
 
-                    for (int i =0; i<3; i++) {
-                        object.put("ItemID", "2");
-                        object.put("ItemName", "3");
-                        object.put("Qty", "2");
-                        object.put("Remark", "test");
+                    Log.e("Split  of string",quanty);
+                    Log.e("lenth of string",adapter.getSelectedQuan().size() + "");
+                    Log.e("checking first",separated[0]);
 
-                        mainArray.put(object);
+                    for (int i =0; i<separated.length; i++) {
+
+                        JSONObject filterJson = new JSONObject();
+                        filterJson.put("ItemID", separatedId[i]);
+                        filterJson.put("ItemName", separated[i]);
+                        filterJson.put("Qty", secondQuant.get(i));
+                        filterJson.put("Remark", separatedRemark[i]);
+
+                        mainArray.put(filterJson);
                     }
+
+
+
+                  /*  JSONObject finalobject = new JSONObject();
+                    finalobject.put("student", mainArray);*/
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
 
+                Log.e("checking the json is",mainArray.toString());
 
-                Log.e("checking and making json",mainArray.toString());*/
+
+
+
+                //addStaionoryItem(userId,"","1","14-10-2017",authCode,splitString,separated);
+
+
             }
         });
-
-
-      /*  listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                String name = list.get(i).getItemName();
-                String id = list.get(i).getItemID();
-
-                sendList.add(new SendListModel(id,name,"",""));
-            }
-        });
-*/
-
 
     }
 
-   /* private void prepareInsDetails() {
-
-        BookMeaPrevisionModel model = new BookMeaPrevisionModel("Pencil");
-        list.add(model);
-        model = new BookMeaPrevisionModel("Shopener");
-        list.add(model);
-        model = new BookMeaPrevisionModel("Notepad");
-        list.add(model);
-        model = new BookMeaPrevisionModel("Bag");
-        list.add(model);
-
-
-
-        adapter.notifyDataSetChanged();
-
-    }*/
 
     //Stationary Item Data
     public void stationryData(final String AuthCode , final String ItemCatID) {
@@ -279,7 +287,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
     //add new staionry Data
     public void addStaionoryItem(final String AdminID  ,final String RID, final String ItemCatID, final String IdealCosureDate,
-                                 final String AuthCode) {
+                                 final String AuthCode, final String splitString, final String[] separated)  {
 
         final ProgressDialog pDialog = new ProgressDialog(AddNewStationaryRequestActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -327,27 +335,11 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                JSONArray mainArray = new JSONArray();
-                JSONObject object = new JSONObject();
-                try {
-
-                    for (int i =0; i<sendListInner.size(); i++) {
-                        object.put("ItemID", sendListInner.get(i).getItemID());
-                        object.put("ItemName", sendListInner.get(i).getItemName());
-                        object.put("Qty", sendListInner.get(i).getQty());
-                        object.put("Remark", sendListInner.get(i).getRemark());
-
-                        mainArray.put(object);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
                 params.put("AdminID",AdminID);
                 params.put("RID",RID);
                 params.put("ItemCatID",ItemCatID);
                 params.put("IdealCosureDate",IdealCosureDate);
-                params.put("ItemDetailJson",mainArray.toString());
+              //  params.put("ItemDetailJson",mainArray.toString());
                 params.put("AuthCode",AuthCode);
 
                 Log.e("Parms", params.toString());
@@ -362,28 +354,12 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
     }
 
-   /* @Override
-    public void getAllItem(int pos) {
-
-      *//*  testingpos = pos;
-        sendList.add(new SendListModel("",testingpos+"","",""));*//*
-
-
-    }
-*/
-
     @Override
-    public void getAllItem(ArrayList<SendListModel> sendList) {
+    public void getAllItem(ArrayList<String> sendList) {
 
-      //  sendListInner = sendList;
-        Log.e("checking the size",sendListInner.size()+"");
+       // sendListInner = sendList;
+
+        secondQuant = sendList;
+        Log.e("checking the size",secondQuant.size()+"");
     }
-
-
-    /*@Override
-    public void getAllItem(ArrayList<SendListModel> songList) {
-
-        sendList = songList;
-        Log.e("checking the list size",sendList.size() + "");
-    }*/
 }

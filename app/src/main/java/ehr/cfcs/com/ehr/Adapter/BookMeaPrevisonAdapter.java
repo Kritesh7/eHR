@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.transition.TransitionManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,20 +31,26 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
 
     public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
     public static ArrayList<SendListModel> sendList = new ArrayList<>();
+    ArrayList<String> selectedStrings = new ArrayList<String>();
+    ArrayList<String> selectedId = new ArrayList<String>();
+    ArrayList<ListItem> selectedqunty = new ArrayList<ListItem>();
+    ArrayList<String> secondQuant = new ArrayList<String>();
+    ArrayList<String> selectedremark = new ArrayList<String>();
     public Context context;
     LayoutInflater inflater;
     public boolean flag = false;
     public int postion;
+    private int editingPosition = 0;
     public AddItemInterface ItemInterface;
-    public Integer pos;
-    public boolean isFlag;
 
 
     public BookMeaPrevisonAdapter(ArrayList<BookMeaPrevisionModel> list, Context context,AddItemInterface ItemInterface) {
+
         this.list = list;
         this.context = context;
         this.ItemInterface = ItemInterface;
         inflater = LayoutInflater.from(context);
+
     }
 
     @Override
@@ -53,20 +60,17 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int i) {
-        return i;
+        return list.get(i);
     }
 
     @Override
     public long getItemId(int i) {
-        return i;
+        return 0;
     }
 
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder holder = null;
-        CheckBox checkBox = null;
-
-
 
         if (view == null) {
 
@@ -87,38 +91,48 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
 
         holder.tvName.setText(list.get(i).getItemName());
         holder.remarkTxt.setText(list.get(i).getRemark());
+      //  holder.quantityTxt.setText(list.get(i).getMaxQuantity());
+
+
+
+
+
+        //we need to update adapter once we finish with editing
+     /*   holder.quantityTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    final int id = v.getId();
+                    BookMeaPrevisionModel item = list.get(id);
+                    final EditText field = ((EditText) v);
+                    list.get(id).setMaxQuantity(field.getText().toString());
+                    secondQuant.add(field.getText().toString());
+
+                    //save in interface
+
+                }
+            }
+        });*/
+
+
+        holder.quantityTxt.setTag(i);
         holder.quantityTxt.setText(list.get(i).getMaxQuantity());
+        holder.quantityTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                list.get(i).setMaxQuantity(s.toString());
+            }
+        });
 
         final ViewHolder finalHolder = holder;
 
-
-
-       /* //check check box is check or not
-        if (list.get(i).getCheckValue().equalsIgnoreCase("true"))
-        {
-            holder.tvName.setChecked(true);
-
-            //visibile widget
-            TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-            finalHolder.mainLay.setVisibility(View.VISIBLE);
-
-
-        }else
-            {
-                holder.tvName.setChecked(false);
-
-                //invisibile widgit
-                TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-                finalHolder.mainLay.setVisibility(View.GONE);
-            }
-*/
-
-
-
-        //add data in a list
-        final ViewHolder finalHolder1 = holder;
-
-       /* //holder.tvName.setTag(R.integer.btnplusview, view);
+        //holder.tvName.setTag(R.integer.btnplusview, view);
         holder.tvName.setTag(i);
         holder.tvName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -127,11 +141,20 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
                 if (b)
                 {
 
-                    sendList.add(new SendListModel(list.get(postion).getItemID(), list.get(postion).getItemName(), finalHolder1.quantityTxt.getText().toString(),
-                            finalHolder1.remarkTxt.getText().toString()));
 
-                    //save in interface
-                    ItemInterface.getAllItem(sendList);
+                    //testing mode
+
+                    selectedStrings.add(finalHolder.tvName.getText().toString());
+                    selectedId.add(list.get(i).getItemID());
+
+
+
+                    sendList.add(new SendListModel(list.get(i).getItemID(), list.get(i).getItemName(), finalHolder.quantityTxt.getText().toString(),
+                            finalHolder.remarkTxt.getText().toString()));
+
+                    Log.e("adapter list size",sendList.size()+"");
+
+
 
                     //visibile View
                     TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
@@ -141,18 +164,40 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
                     postion = i;
                     list.get(i).setToKill(true);
 
-
                 }else
                     {
+                        //sendList.remove(i);
+
                         //visibile Gone Widget
+
+                        selectedStrings.remove(finalHolder.tvName.getText().toString());
+                        selectedId.remove(list.get(i).getItemID());
+                       // selectedqunty.remove(finalHolder.quantityTxt.getText().toString());
+                        selectedremark.remove(finalHolder.remarkTxt.getText().toString());
+
+
                         TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
                         finalHolder.mainLay.setVisibility(View.GONE);
 
                         flag = false;
                     }
             }
-        });*/
+        });
 
+       /* int quantity = Integer.parseInt(finalHolder.quantityTxt.getText().toString());
+        int givenQuant = Integer.parseInt(list.get(i).getMaxQuantity());
+
+        //check condtion is quantity is same as max quantiity
+        if (quantity<= givenQuant)
+        {
+            finalHolder.quantityTxt.setText(list.get(i).getMaxQuantity());
+            Toast.makeText(context, "Please fill quantity under Maxquantity", Toast.LENGTH_SHORT).show();
+        }*/
+
+
+
+        //set the quantity
+        selectedremark.add(finalHolder.remarkTxt.getText().toString());
 
         holder.tvName.setChecked(list.get(i).isToKill() );
 
@@ -170,109 +215,9 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
                 finalHolder.mainLay.setVisibility(View.GONE);
             }
 
-        //holder.tvName.setTag(R.integer.btnplusview, view);
-        holder.tvName.setTag(i);
-        final ViewHolder finalHolder2 = holder;
-
-        holder.tvName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
-                pos = (Integer)  finalHolder2.tvName.getTag();
-
-                if (b)
-                {
-                    postion = i;
-                    isFlag = true;
-                    list.get(pos).setToKill(true);
-                    //visibile View
-                    TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-                    finalHolder.mainLay.setVisibility(View.VISIBLE);
-
-                    sendList.add(new SendListModel(list.get(i).getItemID(),list.get(i).getItemName(),finalHolder2.quantityTxt.getText().toString(),
-                            finalHolder2.remarkTxt.getText().toString()));
-                  /*  sendList.add(new SendListModel(list.get(i).getItemID(), list.get(i).getItemName(), finalHolder1.quantityTxt.getText().toString(),
-                            finalHolder1.remarkTxt.getText().toString()));
-
-                    //save in interface
-                    ItemInterface.getAllItem(i);*/
-
-                    ItemInterface.getAllItem(sendList);
-                }else
-                    {
-                        isFlag = false;
-                        list.get(pos).setToKill(false);
-
-                        TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-                        finalHolder.mainLay.setVisibility(View.GONE);
-                    }
-
-            }
-        });
-
-       /* holder.quantityTxt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                if (isFlag)
-                {
-
-                    sendList.add(new SendListModel(list.get(pos).getItemID(), list.get(pos).getItemName(), finalHolder2.quantityTxt.getText().toString(),
-                            finalHolder2.remarkTxt.getText().toString()));
-
-                    //save in interface
-                    ItemInterface.getAllItem(sendList);
-
-                }
-            }
-        });*/
-        /*holder.tvName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-              //  View tempview = (View) finalHolder2.tvName.getTag(R.integer.btnplusview);
-                Integer pos = (Integer)  finalHolder2.tvName.getTag();
-               // Toast.makeText(context, "Checkbox " + pos + " clicked!", Toast.LENGTH_SHORT).show();
-
-                if (list.get(pos).isToKill()){
-                    list.get(pos).setToKill(false);
-                    //visibile Gone Widget
-                    TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-                    finalHolder.mainLay.setVisibility(View.GONE);
-                }
-                else {
-                    list.get(pos).setToKill(true);
-                    //visibile View
-                    TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-                    finalHolder.mainLay.setVisibility(View.VISIBLE);
-
-                    sendList.add(new SendListModel(list.get(postion).getItemID(), list.get(postion).getItemName(), finalHolder2.quantityTxt.getText().toString(),
-                            finalHolder2.remarkTxt.getText().toString()));
-
-                    //save in interface
-                    ItemInterface.getAllItem(sendList);
-
-                }
-
-            }
-        });*/
-
-        return view;
+            return view;
     }
 
-    public  ArrayList<SendListModel> getSelectedString(){
-        return sendList;
-    }
 
     private class ViewHolder {
 
@@ -281,6 +226,22 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
         LinearLayout mainLay,primory_layout;
     }
 
+    //get the data
+    public ArrayList<String> getSelectedString(){
+        return selectedStrings;
+    }
+    public ArrayList<String> getSelectedId(){
+        return selectedId;
+    }
+    public ArrayList<String> getSelectedQuan(){
+        return secondQuant;
+    }
+    public ArrayList<String> getSelectedRemark(){
+        return selectedremark;
+    }
 
+   public class ListItem {
+        String caption;
+    }
 }
 
