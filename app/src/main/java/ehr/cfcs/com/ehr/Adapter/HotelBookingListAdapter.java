@@ -41,7 +41,7 @@ public class HotelBookingListAdapter extends RecyclerView.Adapter<HotelBookingLi
 
         HotelBookingListModel model = list.get(position);
 
-        holder.empNameTxt.setText(model.getEmployeDate());
+        holder.empNameTxt.setText(model.getEmplName());
         holder.cityNameTXT.setText(model.getCityName());
         holder.requestDateTxt.setText(model.getRequestDate());
         holder.checkInDate.setText(model.getCheckInDate());

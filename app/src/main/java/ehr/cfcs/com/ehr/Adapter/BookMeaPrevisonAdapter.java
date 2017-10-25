@@ -33,14 +33,12 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
     public static ArrayList<SendListModel> sendList = new ArrayList<>();
     ArrayList<String> selectedStrings = new ArrayList<String>();
     ArrayList<String> selectedId = new ArrayList<String>();
-    ArrayList<ListItem> selectedqunty = new ArrayList<ListItem>();
     ArrayList<String> secondQuant = new ArrayList<String>();
     ArrayList<String> selectedremark = new ArrayList<String>();
     public Context context;
     LayoutInflater inflater;
     public boolean flag = false;
     public int postion;
-    private int editingPosition = 0;
     public AddItemInterface ItemInterface;
 
 
@@ -144,25 +142,27 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
 
                     //testing mode
 
-                    selectedStrings.add(finalHolder.tvName.getText().toString());
-                    selectedId.add(list.get(i).getItemID());
 
 
-
-                    sendList.add(new SendListModel(list.get(i).getItemID(), list.get(i).getItemName(), finalHolder.quantityTxt.getText().toString(),
-                            finalHolder.remarkTxt.getText().toString()));
-
-                    Log.e("adapter list size",sendList.size()+"");
+                        selectedStrings.add(finalHolder.tvName.getText().toString());
+                        selectedId.add(list.get(i).getItemID());
 
 
+                        sendList.add(new SendListModel(list.get(i).getItemID(), list.get(i).getItemName(), finalHolder.quantityTxt.getText().toString(),
+                                finalHolder.remarkTxt.getText().toString()));
 
-                    //visibile View
-                    TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-                    finalHolder.mainLay.setVisibility(View.VISIBLE);
+                        Log.e("adapter list size", sendList.size() + "");
 
-                    flag = true;
-                    postion = i;
-                    list.get(i).setToKill(true);
+
+                        //visibile View
+                        TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
+                        finalHolder.mainLay.setVisibility(View.VISIBLE);
+
+                        flag = true;
+                        postion = i;
+                        list.get(i).setToKill(true);
+
+
 
                 }else
                     {
@@ -184,15 +184,15 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
             }
         });
 
-       /* int quantity = Integer.parseInt(finalHolder.quantityTxt.getText().toString());
+        int quantity = Integer.parseInt(finalHolder.quantityTxt.getText().toString());
         int givenQuant = Integer.parseInt(list.get(i).getMaxQuantity());
 
         //check condtion is quantity is same as max quantiity
         if (quantity<= givenQuant)
         {
             finalHolder.quantityTxt.setText(list.get(i).getMaxQuantity());
-            Toast.makeText(context, "Please fill quantity under Maxquantity", Toast.LENGTH_SHORT).show();
-        }*/
+           // Toast.makeText(context, "Please fill quantity under Maxquantity", Toast.LENGTH_SHORT).show();
+        }
 
 
 
@@ -240,8 +240,5 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
         return selectedremark;
     }
 
-   public class ListItem {
-        String caption;
-    }
 }
 

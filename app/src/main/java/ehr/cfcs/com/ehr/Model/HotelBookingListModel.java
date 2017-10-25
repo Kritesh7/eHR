@@ -6,7 +6,7 @@ package ehr.cfcs.com.ehr.Model;
 
 public class HotelBookingListModel
 {
-    public String employeDate;
+    public String empName;
     public String cityName;
     public String requestDate;
     public String checkInDate;
@@ -15,9 +15,9 @@ public class HotelBookingListModel
     public String staus;
     public String followUpDate;
 
-    public HotelBookingListModel(String employeDate, String cityName, String requestDate, String checkInDate,
+    public HotelBookingListModel(String empName, String cityName, String requestDate, String checkInDate,
                                  String checkInTime, String checkOutDate, String staus, String followUpDate) {
-        this.employeDate = employeDate;
+        this.empName = empName;
         this.cityName = cityName;
         this.requestDate = requestDate;
         this.checkInDate = checkInDate;
@@ -27,8 +27,8 @@ public class HotelBookingListModel
         this.followUpDate = followUpDate;
     }
 
-    public String getEmployeDate() {
-        return employeDate;
+    public String getEmplName() {
+        return empName;
     }
 
     public String getCityName() {

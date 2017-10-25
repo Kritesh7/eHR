@@ -174,16 +174,11 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                         JSONObject filterJson = new JSONObject();
                         filterJson.put("ItemID", separatedId[i]);
                         filterJson.put("ItemName", separated[i]);
-                        filterJson.put("Qty", secondQuant.get(i));
+                        filterJson.put("Qty", "testing");
                         filterJson.put("Remark", separatedRemark[i]);
 
                         mainArray.put(filterJson);
                     }
-
-
-
-                  /*  JSONObject finalobject = new JSONObject();
-                    finalobject.put("student", mainArray);*/
 
                 } catch (JSONException e) {
                     e.printStackTrace();
