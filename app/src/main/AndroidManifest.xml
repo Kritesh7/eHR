@@ -97,7 +97,8 @@
         <activity
             android:name=".Main.AddMedicalandAnssuranceActivity"
             android:label="@string/title_activity_medicaland_anssurance"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".Main.AddQualificationActivity"
             android:label="@string/title_activity_add_qualification"

@@ -64,14 +64,14 @@
                     app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
                     <EditText
-                        android:id="@+id/confirmpass"
+                        android:id="@+id/policy_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/linebelowedittext"
                         android:backgroundTint="@color/purple700"
-                        android:hint="Policy NUmber"
-                        android:inputType="number"
+                        android:hint="Policy Number"
+                        android:inputType="textCapCharacters"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:textColor="@color/purple500"
@@ -88,6 +88,7 @@
                     app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
                     <EditText
+                        android:id="@+id/policy_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -111,13 +112,14 @@
                     app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
                     <EditText
+                        android:id="@+id/policy_duration"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:background="@drawable/linebelowedittext"
                         android:backgroundTint="@color/purple700"
                         android:hint="Policy Duration"
-                        android:inputType="textPersonName"
+                        android:inputType="numberDecimal"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:textColor="@color/purple500"
@@ -134,6 +136,7 @@
                     app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
                     <EditText
+                        android:id="@+id/policy_by"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -149,29 +152,29 @@
                         android:theme="@style/MyEditText" />
                 </android.support.design.widget.TextInputLayout>
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_marginTop="20dp"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textColorHint="#0D47A1"
+                    app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
-                    <TextView
-                        android:textStyle="bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Insurance Company"
-                        android:textSize="16sp"
-                        android:textColor="@color/purple700"/>
-
-                    <Spinner
-                        android:id="@+id/policycompanynamespinner"
-                        android:layout_marginTop="5dp"
+                    <EditText
+                        android:id="@+id/policy_insurance"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                    </Spinner>
-
-                </LinearLayout>
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/linebelowedittext"
+                        android:backgroundTint="@color/purple700"
+                        android:hint="Insurance Company"
+                        android:inputType="textPersonName"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:textColor="@color/purple500"
+                        android:textColorHint="@color/purple700"
+                        android:textSize="16dp"
+                        android:theme="@style/MyEditText" />
+                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -181,6 +184,7 @@
                     app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
                     <EditText
+                        android:id="@+id/policy_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -203,6 +207,7 @@
                     android:orientation="horizontal">
 
                     <EditText
+                        android:id="@+id/startdatetxt"
                         android:layout_width="0dp"
                         android:layout_weight=".8"
                         android:layout_height="wrap_content"
@@ -219,6 +224,7 @@
                         android:theme="@style/MyEditText" />
 
                     <ImageView
+                        android:id="@+id/policy_startdate"
                         android:layout_width="0dp"
                         android:layout_weight=".2"
                         android:layout_height="wrap_content"
@@ -233,6 +239,7 @@
                     android:orientation="horizontal">
 
                     <EditText
+                        android:id="@+id/enddatetxt"
                         android:layout_width="0dp"
                         android:layout_weight=".8"
                         android:layout_height="wrap_content"
@@ -249,6 +256,7 @@
                         android:theme="@style/MyEditText" />
 
                     <ImageView
+                        android:id="@+id/policy_enddate"
                         android:layout_width="0dp"
                         android:layout_weight=".2"
                         android:layout_height="wrap_content"

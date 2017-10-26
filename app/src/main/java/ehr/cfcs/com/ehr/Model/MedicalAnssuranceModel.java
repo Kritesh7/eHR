@@ -11,14 +11,45 @@ public class MedicalAnssuranceModel
     public String policyDuration;
     public String policyName;
     public String policyInsured;
+    public String policyBy;
+    public String recordId;
+    public String insuranceComp;
+    public String startDate;
+    public String endDate;
 
-    public MedicalAnssuranceModel(String policyType, String policyNumber, String policyDuration,
-                                  String policyName, String policyInsured) {
+    public MedicalAnssuranceModel(String policyType, String policyNumber, String policyDuration, String policyName,
+                                  String policyInsured, String policyBy, String recordId, String insuranceComp, String startDate,
+                                  String endDate) {
         this.policyType = policyType;
         this.policyNumber = policyNumber;
         this.policyDuration = policyDuration;
         this.policyName = policyName;
         this.policyInsured = policyInsured;
+        this.policyBy = policyBy;
+        this.recordId = recordId;
+        this.insuranceComp = insuranceComp;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public String getInsuranceComp() {
+        return insuranceComp;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getPolicyBy() {
+        return policyBy;
+    }
+
+    public String getRecordId() {
+        return recordId;
     }
 
     public String getPolicyType() {

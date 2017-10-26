@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,19 +10,40 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.LeaveMangementAdapter;
 import ehr.cfcs.com.ehr.Adapter.MedicalAnssuredAdapter;
 import ehr.cfcs.com.ehr.Main.AddCabActivity;
 import ehr.cfcs.com.ehr.Main.AddMedicalandAnssuranceActivity;
+import ehr.cfcs.com.ehr.Model.CabListModel;
 import ehr.cfcs.com.ehr.Model.LeaveManagementModel;
 import ehr.cfcs.com.ehr.Model.MedicalAnssuranceModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,7 +67,9 @@ public class MedicalAndEnsuranceFragment extends Fragment {
     public ArrayList<MedicalAnssuranceModel> list = new ArrayList<>();
     public RecyclerView medicalAnssuredRecy;
     public FloatingActionButton fab;
-
+    public String policyUrl = SettingConstant.BaseUrl + "AppEmployeeMedicalPolicy";
+    public ConnectionDetector conn;
+    public String userId = "",authCode = "";
 
     private OnFragmentInteractionListener mListener;
 
@@ -89,7 +113,12 @@ public class MedicalAndEnsuranceFragment extends Fragment {
         medicalAnssuredRecy = (RecyclerView)rootView.findViewById(R.id.medical_anssured_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
 
-        adapter = new MedicalAnssuredAdapter(getActivity(),list);
+        conn = new ConnectionDetector(getActivity());
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
+
+
+        adapter = new MedicalAnssuredAdapter(getActivity(),list, getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         medicalAnssuredRecy.setLayoutManager(mLayoutManager);
         medicalAnssuredRecy.setItemAnimator(new DefaultItemAnimator());
@@ -97,13 +126,24 @@ public class MedicalAndEnsuranceFragment extends Fragment {
 
         medicalAnssuredRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        prepareInsDetails();
+        //prepareInsDetails();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), AddMedicalandAnssuranceActivity.class);
+                i.putExtra("RecordId","0");
+                i.putExtra("Mode","AddMode");
+                i.putExtra("PolicyType","");
+                i.putExtra("PolicyName","");
+                i.putExtra("PolicyNumber","");
+                i.putExtra("PolicyDuration","");
+                i.putExtra("PolicyBy","");
+                i.putExtra("InsuranceCompany","");
+                i.putExtra("AmountInsured","");
+                i.putExtra("StartDate","");
+                i.putExtra("EndDate", "");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -112,7 +152,19 @@ public class MedicalAndEnsuranceFragment extends Fragment {
         return rootView;
     }
 
-    private void prepareInsDetails() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0) {
+
+            medicalAndAnssuranceList(authCode,userId);
+
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
+    }
+   /* private void prepareInsDetails() {
 
         MedicalAnssuranceModel model = new MedicalAnssuranceModel("Full Time","28032017","6 Months","Adahr Policy","5000 Rs.");
         list.add(model);
@@ -126,6 +178,88 @@ public class MedicalAndEnsuranceFragment extends Fragment {
         list.add(model);
 
         adapter.notifyDataSetChanged();
+
+    }*/
+
+    // Medical and Anssurance data
+    public void medicalAndAnssuranceList(final String AuthCode , final String AdminID) {
+
+        final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, policyUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String Name = jsonObject.getString("Name");
+                        String Number = jsonObject.getString("Number");
+                        String Duration = jsonObject.getString("Duration");
+                        String AmountInsured = jsonObject.getString("AmountInsured");
+                        String PolicyTypeName = jsonObject.getString("PolicyTypeName");
+                        String PolicyBy = jsonObject.getString("PolicyBy");
+                        String RecordID = jsonObject.getString("RecordID");
+                        String InsuranceCompany = jsonObject.getString("InsuranceCompany");
+                        String StartDate = jsonObject.getString("StartDate");
+                        String EndDate = jsonObject.getString("EndDate");
+
+
+
+                        list.add(new MedicalAnssuranceModel(PolicyTypeName,Number,Duration,Name,AmountInsured,PolicyBy,RecordID,
+                                InsuranceCompany,StartDate,EndDate));
+
+
+
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
 

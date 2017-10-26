@@ -113,6 +113,7 @@ public class TaxiListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_taxi_list, container, false);
         cabrecycler = (RecyclerView)rootView.findViewById(R.id.cab_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
