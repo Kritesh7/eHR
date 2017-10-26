@@ -32,4 +32,6 @@
     <string name="title_activity_view_attendance_details">ViewAttendanceDetailsActivity</string>
     <string name="title_activity_view_request_details">ViewRequestDetailsActivity</string>
     <string name="title_activity_view_document_details">ViewDocumentDetailsActivity</string>
+    <string name="title_activity_view_cab_details">ViewCabDetailsActivity</string>
+    <string name="title_activity_view_hotel_detail">ViewHotelDetailActivity</string>
 </resources>

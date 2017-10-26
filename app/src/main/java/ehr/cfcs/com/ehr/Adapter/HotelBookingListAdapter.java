@@ -1,16 +1,21 @@
 package ehr.cfcs.com.ehr.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import ehr.cfcs.com.ehr.Fragment.HotelBookingListFragment;
+import ehr.cfcs.com.ehr.Main.ViewCabDetailsActivity;
+import ehr.cfcs.com.ehr.Main.ViewHotelDetailActivity;
 import ehr.cfcs.com.ehr.Model.HotelBookingListModel;
 import ehr.cfcs.com.ehr.R;
 
@@ -23,10 +28,12 @@ public class HotelBookingListAdapter extends RecyclerView.Adapter<HotelBookingLi
 
     public Context context;
     public ArrayList<HotelBookingListModel> list = new ArrayList<>();
+    public Activity activity;
 
-    public HotelBookingListAdapter(Context context, ArrayList<HotelBookingListModel> list) {
+    public HotelBookingListAdapter(Context context, ArrayList<HotelBookingListModel> list, Activity activity) {
         this.context = context;
         this.list = list;
+        this.activity = activity;
     }
 
     @Override
@@ -41,7 +48,7 @@ public class HotelBookingListAdapter extends RecyclerView.Adapter<HotelBookingLi
 
         HotelBookingListModel model = list.get(position);
 
-        holder.empNameTxt.setText(model.getEmplName());
+        holder.empNameTxt.setText(model.getEmpName());
         holder.cityNameTXT.setText(model.getCityName());
         holder.requestDateTxt.setText(model.getRequestDate());
         holder.checkInDate.setText(model.getCheckInDate());
@@ -49,6 +56,17 @@ public class HotelBookingListAdapter extends RecyclerView.Adapter<HotelBookingLi
         holder.checkOutDate.setText(model.getCheckOutDate());
         holder.followupDateTxt.setText(model.getFollowUpDate());
         holder.statusTxt.setText(model.getStaus());
+
+        holder.mainLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(context, ViewHotelDetailActivity.class);
+                i.putExtra("Bid",model.getBID());
+                activity.startActivity(i);
+                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
 
        /* if (position % 2 == 1) {
             holder.mainLay.setCardBackgroundColor(context.getResources().getColor(R.color.col1));
@@ -66,7 +84,7 @@ public class HotelBookingListAdapter extends RecyclerView.Adapter<HotelBookingLi
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView empNameTxt,cityNameTXT,requestDateTxt, checkInDate,checkInTime,checkOutDate,followupDateTxt,statusTxt;
 
-        public CardView mainLay;
+        public LinearLayout mainLay;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -80,7 +98,7 @@ public class HotelBookingListAdapter extends RecyclerView.Adapter<HotelBookingLi
             followupDateTxt = (TextView)itemView.findViewById(R.id.hotelfollowdate);
             statusTxt = (TextView)itemView.findViewById(R.id.hotel_status);
 
-            mainLay = (CardView)itemView.findViewById(R.id.hotel_main_lay);
+            mainLay = (LinearLayout)itemView.findViewById(R.id.hotel_main_lay);
         }
     }
 }

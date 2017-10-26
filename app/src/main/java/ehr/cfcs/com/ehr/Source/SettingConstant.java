@@ -8,8 +8,8 @@ public class SettingConstant {
 
 
     //Server
-       public static final String BASEURL_FOR_LOGIN = "http://192.168.1.62:8086/WEBAPI/LoginHRMSService.ASMX/";
-       public static final String BaseUrl = "http://192.168.1.62:8086/WEBAPI/HRMSWebService.ASMX/";
+       public static final String BASEURL_FOR_LOGIN = "http://192.168.1.60:8086/WEBAPI/LoginHRMSService.ASMX/";
+       public static final String BaseUrl = "http://192.168.1.60:8086/WEBAPI/HRMSWebService.ASMX/";
        public static final String ImageUrl= "http://card.nmtronics.in/";
 
       //Local

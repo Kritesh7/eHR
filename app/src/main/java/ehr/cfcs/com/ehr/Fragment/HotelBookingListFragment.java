@@ -116,7 +116,7 @@ public class HotelBookingListFragment extends Fragment {
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
-        adapter = new HotelBookingListAdapter(getActivity(),list);
+        adapter = new HotelBookingListAdapter(getActivity(),list,getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         hotelRecycler.setLayoutManager(mLayoutManager);
         hotelRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -139,7 +139,7 @@ public class HotelBookingListFragment extends Fragment {
         return rootView;
     }
 
-    private void prepareInsDetails() {
+   /* private void prepareInsDetails() {
 
         HotelBookingListModel model = new HotelBookingListModel("Raman Kumar","Delhi","03-09-2017","02-01-2017","10:05 AM","10-01-2017",
                 "Approved","20-12-2017");
@@ -160,7 +160,7 @@ public class HotelBookingListFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
 
-    }
+    }*/
     @Override
     public void onResume() {
         super.onResume();
@@ -208,7 +208,7 @@ public class HotelBookingListFragment extends Fragment {
 
 
                         list.add(new HotelBookingListModel(EmployeeName,CityName,requestDate,CheckInDateText
-                                ,CheckInTime,CheckOutDateText,AppStatusText,followUpDate));
+                                ,CheckInTime,CheckOutDateText,AppStatusText,followUpDate,BID));
 
 
 

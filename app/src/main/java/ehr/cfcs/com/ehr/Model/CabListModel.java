@@ -13,9 +13,10 @@ public class CabListModel
     public String bookingDate;
     public String status;
     public String followUpDate;
+    public String BID;
 
     public CabListModel(String employName, String zoneName, String cityName, String requestDate,
-                        String bookingDate, String status, String followUpDate) {
+                        String bookingDate, String status, String followUpDate,String BID) {
         this.employName = employName;
         this.zoneName = zoneName;
         this.cityName = cityName;
@@ -23,6 +24,11 @@ public class CabListModel
         this.bookingDate = bookingDate;
         this.status = status;
         this.followUpDate = followUpDate;
+        this.BID = BID;
+    }
+
+    public String getBID() {
+        return BID;
     }
 
     public String getEmployName() {

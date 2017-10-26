@@ -14,9 +14,10 @@ public class HotelBookingListModel
     public String checkOutDate;
     public String staus;
     public String followUpDate;
+    public String BID;
 
     public HotelBookingListModel(String empName, String cityName, String requestDate, String checkInDate,
-                                 String checkInTime, String checkOutDate, String staus, String followUpDate) {
+                                 String checkInTime, String checkOutDate, String staus, String followUpDate, String BID) {
         this.empName = empName;
         this.cityName = cityName;
         this.requestDate = requestDate;
@@ -25,10 +26,15 @@ public class HotelBookingListModel
         this.checkOutDate = checkOutDate;
         this.staus = staus;
         this.followUpDate = followUpDate;
+        this.BID = BID;
     }
 
-    public String getEmplName() {
+    public String getEmpName() {
         return empName;
+    }
+
+    public String getBID() {
+        return BID;
     }
 
     public String getCityName() {

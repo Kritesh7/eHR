@@ -1,29 +1,82 @@
 package ehr.cfcs.com.ehr.Main;
 
+import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.graphics.PorterDuff;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
+import ehr.cfcs.com.ehr.Model.CabCityModel;
+import ehr.cfcs.com.ehr.Model.HotelNameModel;
+import ehr.cfcs.com.ehr.Model.HotelTypeModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 public class AddHotelActivity extends AppCompatActivity {
 
     public TextView titleTxt;
     public Spinner hotelTypeSpinner, cityofBookingSpinner,hotelSpinner;
-    public ArrayList<String> cityList = new ArrayList<>();
-    public ArrayList<String> hotelTypeList = new ArrayList<>();
-    public ArrayList<String> hotelList = new ArrayList<>();
+    public ArrayList<CabCityModel> cityList = new ArrayList<>();
+    public ArrayList<HotelTypeModel> hotelTypeList = new ArrayList<>();
+    public ArrayList<HotelNameModel> hotelList = new ArrayList<>();
+    public String ddlBindTxt = SettingConstant.BaseUrl + "AppddlBookMeAProvision";
+    public String ddlBindNameAndCityTxt = SettingConstant.BaseUrl + "AppddlHotelList";
+    public String addUrl = SettingConstant.BaseUrl + "AppEmployeeHotelBookingInsUpdt";
+    public ArrayAdapter<CabCityModel> cityAdapter;
+    public ArrayAdapter<HotelTypeModel> hotelTypeAdapter;
+    public ArrayAdapter<HotelNameModel> hotelAdapter;
+    public ConnectionDetector conn;
+    public String hotelTypeID = "", hotelCityId = "", authcode = "", userId = "", hotelId = "";
+    public ImageView checkInDateBtn, checkOutDateBtn, checkInTimeBtn;
+    public EditText checkinTimeTxt, checkOutDateTxt, checkInDateTxt, remarkTxt;
+    private int yy, mm, dd;
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    public Button addBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,64 +112,557 @@ public class AddHotelActivity extends AppCompatActivity {
 
         titleTxt.setText("Add New Hotel Booking");
 
+        conn = new ConnectionDetector(AddHotelActivity.this);
+        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddHotelActivity.this)));
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddHotelActivity.this)));
+
+
         hotelTypeSpinner = (Spinner)findViewById(R.id.hoteltypespinner);
         cityofBookingSpinner = (Spinner)findViewById(R.id.cityofbookingspinner);
         hotelSpinner = (Spinner)findViewById(R.id.hotelspinner);
+        checkInDateBtn = (ImageView) findViewById(R.id.hotel_checkindateBtn);
+        checkInTimeBtn = (ImageView) findViewById(R.id.hotel_checkinTimeBtn);
+        checkOutDateBtn = (ImageView) findViewById(R.id.hotel_checkoutdateBtn);
+        checkInDateTxt = (EditText) findViewById(R.id.hotel_checkindatetxt);
+        checkinTimeTxt = (EditText) findViewById(R.id.hotel_checkintimetxt);
+        checkOutDateTxt = (EditText) findViewById(R.id.hotel_checkoutdatetxt);
+        remarkTxt = (EditText) findViewById(R.id.hotel_emp_remark);
+        addBtn = (Button) findViewById(R.id.newrequestbtn);
 
         //City List Spinner
-        if (cityList.size()>0)
-        {
-            cityList.clear();
-        }
-        cityList.add("Please Select City");
-        cityList.add("Noida");
-        cityList.add("Delhi");
-        cityList.add("Agra");
-
         //change spinner arrow color
         cityofBookingSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
 
-        ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(AddHotelActivity.this, R.layout.customizespinner,
+        cityAdapter = new ArrayAdapter<CabCityModel>(AddHotelActivity.this, R.layout.customizespinner,
                 cityList);
         cityAdapter.setDropDownViewResource(R.layout.customizespinner);
         cityofBookingSpinner.setAdapter(cityAdapter);
 
         //hotel Type Spinner
-        if (hotelTypeList.size()>0)
-        {
-            hotelTypeList.clear();
-        }
-        hotelTypeList.add("Please Select Hotel Type");
-        hotelTypeList.add("5 Star");
-        hotelTypeList.add("4 Star");
-        hotelTypeList.add("2 Star");
-
         //change spinner arrow color
         hotelTypeSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
 
-        ArrayAdapter<String> hotelTypeAdapter = new ArrayAdapter<String>(AddHotelActivity.this, R.layout.customizespinner,
+        hotelTypeAdapter = new ArrayAdapter<HotelTypeModel>(AddHotelActivity.this, R.layout.customizespinner,
                 hotelTypeList);
         hotelTypeAdapter.setDropDownViewResource(R.layout.customizespinner);
         hotelTypeSpinner.setAdapter(hotelTypeAdapter);
 
         //hotel Spinner
-        if (hotelList.size()>0)
-        {
-            hotelList.clear();
-        }
-        hotelList.add("Please Select Hotel");
-        hotelList.add("Mx Hotel");
-        hotelList.add("Vaibhav Hotel");
-        hotelList.add("Abhinav Hotel");
-
         //change spinner arrow color
         hotelSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
 
-        ArrayAdapter<String> hotelAdapter = new ArrayAdapter<String>(AddHotelActivity.this, R.layout.customizespinner,
+        hotelAdapter = new ArrayAdapter<HotelNameModel>(AddHotelActivity.this, R.layout.customizespinner,
                 hotelList);
         hotelAdapter.setDropDownViewResource(R.layout.customizespinner);
         hotelSpinner.setAdapter(hotelAdapter);
+
+
+        //select hotel type
+        hotelTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                hotelTypeID = hotelTypeList.get(i).getHotelTypeId();
+                hotelNameANDCity(hotelTypeID,"");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        cityofBookingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                hotelCityId = cityList.get(i).getCityId();
+
+                hotelNameANDCity(hotelTypeID,hotelCityId);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //get hotel Id
+        hotelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                hotelId = hotelList.get(i).getHotelId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //select current date
+        checkOutDateTxt.setText(getCurrentTime());
+
+        //checkInDate DatePicker
+        checkInDateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddHotelActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                yy = year;
+                                mm = monthOfYear;
+                                dd = dayOfMonth;
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(Calendar.MONTH, monthOfYear);
+                                String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(calendar.getTime());
+                                sdf = new DateFormatSymbols().getShortMonths()[monthOfYear];
+
+                                Log.e("checking,............", sdf + " null");
+                                checkInDateTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            }
+        });
+
+        //checkOut Date Picker
+        checkOutDateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddHotelActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                yy = year;
+                                mm = monthOfYear;
+                                dd = dayOfMonth;
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(Calendar.MONTH, monthOfYear);
+                                String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(calendar.getTime());
+                                sdf = new DateFormatSymbols().getShortMonths()[monthOfYear];
+
+                                Log.e("checking,............", sdf + " null");
+                                checkOutDateTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+            }
+        });
+
+        //check In Time Picker
+        checkInTimeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AddHotelActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+
+                              /*  hh = hourOfDay;
+                                m = minute;*/
+                                // ro = checking + hourOfDay  + minute;
+
+                                updateTime(hourOfDay,minute);
+
+                                //timeTxt.setText(String.format("%02d:%02d", hourOfDay, minute));
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
+
+        //bind data
+        if (conn.getConnectivityStatus()>0)
+        {
+            personalDdlDetails();
+        }else
+            {
+                conn.showNoInternetAlret();
+            }
+
+            // add Hotel Reequest
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if (hotelTypeID.equalsIgnoreCase(""))
+                {
+                    Toast.makeText(AddHotelActivity.this, "Please Select Hotel Type", Toast.LENGTH_SHORT).show();
+                }else if (hotelCityId.equalsIgnoreCase(""))
+                {
+                    Toast.makeText(AddHotelActivity.this, "Please Select City", Toast.LENGTH_SHORT).show();
+                }else if (hotelId.equalsIgnoreCase(""))
+                {
+                    Toast.makeText(AddHotelActivity.this, "Please Select Hotel", Toast.LENGTH_SHORT).show();
+                }else if (checkOutDateTxt.getText().toString().equalsIgnoreCase(""))
+                {
+                    checkOutDateTxt.setError("Please enter check in date");
+                }else if (checkinTimeTxt.getText().toString().equalsIgnoreCase(""))
+                {
+                    checkinTimeTxt.setError("Please enter check in time");
+                }else if (checkOutDateTxt.getText().toString().equalsIgnoreCase(""))
+                {
+                    checkOutDateTxt.setError("Please enter check out date");
+                }else {
+
+                    if (conn.getConnectivityStatus() > 0) {
+
+                        addHotelRequest(userId, "", hotelId, hotelCityId, checkInDateTxt.getText().toString(), checkinTimeTxt.getText().toString(),
+                                checkOutDateTxt.getText().toString(), authcode, remarkTxt.getText().toString());
+                    } else {
+                        conn.showNoInternetAlret();
+                    }
+
+                }
+
+            }
+        });
     }
+
+    // Used to convert 24hr format to 12hr format with AM/PM values
+    private void updateTime(int hours, int mins) {
+
+        String timeSet = "";
+        if (hours > 12) {
+            hours -= 12;
+            timeSet = "PM";
+        } else if (hours == 0) {
+            hours += 12;
+            timeSet = "AM";
+        } else if (hours == 12)
+            timeSet = "PM";
+        else
+            timeSet = "AM";
+
+
+        String minutes = "";
+        if (mins < 10)
+            minutes = "0" + mins;
+        else
+            minutes = String.valueOf(mins);
+
+        // Append in a StringBuilder
+        String aTime = new StringBuilder().append(hours).append(':')
+                .append(minutes).append(" ").append(timeSet).toString();
+
+        checkinTimeTxt.setText(aTime);
+    }
+
+
+    //add Hotel Booking
+    public void addHotelRequest(final String AdminID  ,final String BID, final String HID, final String CityID,
+                              final String CheckInDate, final String CheckInTime, final String CheckOutDate ,
+                                final String AuthCode, final String EmpRemark)  {
+
+        final ProgressDialog pDialog = new ProgressDialog(AddHotelActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, addUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    if (jsonObject.has("status"))
+                    {
+                        String status = jsonObject.getString("status");
+
+                        if (status.equalsIgnoreCase("success"))
+                        {
+                            onBackPressed();
+                        }
+                    }
+
+
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(AddHotelActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("AdminID",AdminID);
+                params.put("BID",BID);
+                params.put("HID",HID);
+                params.put("CityID",CityID);
+                params.put("CheckInDate",CheckInDate);
+                params.put("CheckInTime",CheckInTime);
+                params.put("CheckOutDate",CheckOutDate);
+                params.put("EmpRemark",EmpRemark);
+                params.put("AuthCode",AuthCode);
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+    //bind the hotel Type
+    public void personalDdlDetails() {
+
+        final ProgressDialog pDialog = new ProgressDialog(AddHotelActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, ddlBindTxt, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                  /*  //bind material List
+                    if (cityList.size()>0)
+                    {
+                        cityList.clear();
+                    }
+                    cityList.add(new CabCityModel("Please Select City",""));
+                    JSONArray cityObj = jsonObject.getJSONArray("TaxiCityName");
+                    for (int i =0; i<cityObj.length(); i++)
+                    {
+                        JSONObject object = cityObj.getJSONObject(i);
+
+                        String CityName = object.getString("CityName");
+                        String CityID = object.getString("CityID");
+
+                        cityList.add(new CabCityModel(CityName,CityID));
+
+
+                    }*/
+
+
+                    if (hotelTypeList.size()>0)
+                    {
+                        hotelTypeList.clear();
+                    }
+                    hotelTypeList.add(new HotelTypeModel("Please Select Hotel Type",""));
+                    JSONArray hotelObj = jsonObject.getJSONArray("HotelType");
+                    for (int k = 0; k<hotelObj.length(); k++)
+                    {
+                        JSONObject object = hotelObj.getJSONObject(k);
+
+                        String HotelType = object.getString("HotelType");
+                        String HotelTypeID = object.getString("HotelTypeID");
+
+                        hotelTypeList.add(new HotelTypeModel(HotelType,HotelTypeID));
+                    }
+
+                    hotelTypeAdapter.notifyDataSetChanged();
+                    cityAdapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(AddHotelActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        });
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+
+    //bind the city and hotel name
+    public void hotelNameANDCity(final String HotelType, final String HotelCityID ) {
+
+        final ProgressDialog pDialog = new ProgressDialog(AddHotelActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, ddlBindNameAndCityTxt, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    //bind material List
+                    if (cityList.size()>0)
+                    {
+                        cityList.clear();
+                    }
+                    cityList.add(new CabCityModel("Please Select City",""));
+                    JSONArray cityObj = jsonObject.getJSONArray("HotelCityName");
+                    for (int i =0; i<cityObj.length(); i++)
+                    {
+                        JSONObject object = cityObj.getJSONObject(i);
+
+                        String CityName = object.getString("CityName");
+                        String CityID = object.getString("CityID");
+
+                        cityList.add(new CabCityModel(CityName,CityID));
+
+
+                    }
+
+
+                    if (hotelList.size()>0)
+                    {
+                        hotelList.clear();
+                    }
+                    hotelList.add(new HotelNameModel("Please Select Hotel",""));
+                    JSONArray hotelObj = jsonObject.getJSONArray("HotelName");
+                    for (int k = 0; k<hotelObj.length(); k++)
+                    {
+                        JSONObject object = hotelObj.getJSONObject(k);
+
+                        String HotelType = object.getString("HotelName");
+                        String HotelTypeID = object.getString("HotelID");
+
+                        hotelList.add(new HotelNameModel(HotelType,HotelTypeID));
+                    }
+
+                    hotelAdapter.notifyDataSetChanged();
+                    cityAdapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(AddHotelActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("HotelType",HotelType);
+                params.put("HotelCityID",HotelCityID);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+    //get current time
+    public static String getCurrentTime() {
+        //date output format
+        DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+
+        Calendar cal = Calendar.getInstance();
+        String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(cal.getTime());
+        //sdf = new DateFormatSymbols().getShortMonths()[month];
+
+        return dateFormat.format(cal.getTime());
+    }
+
+
 
     @Override
     public void onBackPressed() {

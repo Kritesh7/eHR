@@ -118,7 +118,7 @@ public class TaxiListFragment extends Fragment {
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
 
-        adapter = new CabListAdapter(getActivity(),list);
+        adapter = new CabListAdapter(getActivity(),list,getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         cabrecycler.setLayoutManager(mLayoutManager);
         cabrecycler.setItemAnimator(new DefaultItemAnimator());
@@ -143,7 +143,7 @@ public class TaxiListFragment extends Fragment {
         return rootView;
     }
 
-    private void prepareInsDetails() {
+   /* private void prepareInsDetails() {
 
         CabListModel model = new CabListModel("Raman Kumar","East","Delhi","03-09-2017","02-01-2017","10-01-2017",
                 "Approved");
@@ -165,7 +165,7 @@ public class TaxiListFragment extends Fragment {
         adapter.notifyDataSetChanged();
 
     }
-
+*/
     @Override
     public void onResume() {
         super.onResume();
@@ -213,7 +213,7 @@ public class TaxiListFragment extends Fragment {
 
 
                         list.add(new CabListModel(EmployeeName,ZoneName,CityName,requestDate,BookDateText
-                                ,AppStatusText,followDate));
+                                ,AppStatusText,followDate,BID));
 
 
 

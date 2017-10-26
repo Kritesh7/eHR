@@ -137,6 +137,14 @@
         <activity
             android:name=".Main.ViewDocumentDetailsActivity"
             android:label="@string/title_activity_view_document_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Main.ViewCabDetailsActivity"
+            android:label="@string/title_activity_view_cab_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Main.ViewHotelDetailActivity"
+            android:label="@string/title_activity_view_hotel_detail"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
