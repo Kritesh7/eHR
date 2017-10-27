@@ -397,7 +397,7 @@ public class AddDependentActivity extends AppCompatActivity {
 
                     }
 
-
+//
                     for (int k =0; k<relationshipList.size(); k++)
                     {
                         if (actionMode.equalsIgnoreCase("EditMode"))
