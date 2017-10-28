@@ -56,7 +56,7 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/linebelowedittext"
                 android:backgroundTint="@color/purple700"
-                android:hint="Number Of Documents"
+                android:hint="Number"
                 android:inputType="textMultiLine"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
@@ -127,6 +127,36 @@
                 android:src="@drawable/cal" />
 
         </LinearLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textColorHint="#0D47A1"
+            app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/linebelowedittext"
+                android:backgroundTint="@color/purple700"
+                android:hint="Place of issue"
+                android:inputType="textMultiLine"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/purple500"
+                android:textColorHint="@color/purple700"
+                android:textSize="16dp"
+                android:theme="@style/MyEditText" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/uploaddocsbtn"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload"/>
 
 
 

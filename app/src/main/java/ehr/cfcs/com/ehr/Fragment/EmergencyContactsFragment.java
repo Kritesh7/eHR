@@ -1,12 +1,19 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.design.widget.FloatingActionButton;
 import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +22,35 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import ehr.cfcs.com.ehr.Adapter.DependentAdapter;
+import ehr.cfcs.com.ehr.Adapter.EmergencyContactAdapter;
+import ehr.cfcs.com.ehr.Main.AddHotelActivity;
+import ehr.cfcs.com.ehr.Main.AddNewEmergencyContactDetailsActivity;
+import ehr.cfcs.com.ehr.Model.DependentModel;
+import ehr.cfcs.com.ehr.Model.EmergencyContactModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,15 +70,14 @@ public class EmergencyContactsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public LinearLayout primoryLay, secondaryLay,mainLay;
-    public RadioGroup emergencyGroup;
-    public RadioButton primoryBtn, secondaryBtn;
-    public Spinner relationShipSpinner,citySpinner,stateSpinner;
-    boolean visible;
+    public RecyclerView emergencyContactRecyler;
+    public FloatingActionButton fab;
+    public ArrayList<EmergencyContactModel> list = new ArrayList<>();
+    public ConnectionDetector conn;
+    public EmergencyContactAdapter adapter;
+    public String userId = "", authCode = "";
+    public String emergencyContactUrl = SettingConstant.BaseUrl + "AppEmployeeEmergencyContactList";
 
-    public ArrayList<String> relationshipList = new ArrayList<>();
-    public ArrayList<String> cityList = new ArrayList<>();
-    public ArrayList<String> stateList = new ArrayList<>();
 
 
     private OnFragmentInteractionListener mListener;
@@ -89,112 +120,147 @@ public class EmergencyContactsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_emergency_contacts, container, false);
 
-        primoryLay = (LinearLayout)rootView.findViewById(R.id.primory_layout);
-        secondaryLay = (LinearLayout)rootView.findViewById(R.id.secondary_layout);
-        mainLay = (LinearLayout)rootView.findViewById(R.id.mainlay);
+        emergencyContactRecyler = (RecyclerView) rootView.findViewById(R.id.emergency_contact_recycler);
+        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
 
-        primoryBtn = (RadioButton)rootView.findViewById(R.id.primory_radiobtn);
-        secondaryBtn = (RadioButton)rootView.findViewById(R.id.secondary_radiobtn);
+        conn = new ConnectionDetector(getActivity());
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
-        emergencyGroup = (RadioGroup)rootView.findViewById(R.id.emergency_radiogroup);
+        adapter = new EmergencyContactAdapter(getActivity(),list,getActivity());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        emergencyContactRecyler.setLayoutManager(mLayoutManager);
+        emergencyContactRecyler.setItemAnimator(new DefaultItemAnimator());
+        emergencyContactRecyler.setAdapter(adapter);
 
-        relationShipSpinner = (Spinner)rootView.findViewById(R.id.relationshipspinner);
-        citySpinner = (Spinner)rootView.findViewById(R.id.cityspinner);
-        stateSpinner = (Spinner)rootView.findViewById(R.id.statespinner);
-
-        if (relationshipList.size()>0)
-        {
-            relationshipList.clear();
-        }
-
-        relationshipList.add("Please Select Relationship");
-        relationshipList.add("Father");
-        relationshipList.add("Mother");
-        relationshipList.add("Brother");
-        relationshipList.add("Freind");
+        emergencyContactRecyler.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
 
-        //change spinner arrow color
-
-        relationShipSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
-
-        ArrayAdapter<String> assignToAdapter = new ArrayAdapter<String>(getActivity(), R.layout.customizespinner,
-                relationshipList);
-        assignToAdapter.setDropDownViewResource(R.layout.customizespinner);
-        relationShipSpinner.setAdapter(assignToAdapter);
-
-        if (cityList.size()>0)
-        {
-            cityList.clear();
-        }
-
-        cityList.add("Please Select City");
-        cityList.add("Delhi");
-        cityList.add("Agra");
-        cityList.add("Mathura");
-        cityList.add("Haryana");
-
-
-        //change spinner arrow color
-
-        citySpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
-
-        ArrayAdapter<String> cityAdapter = new ArrayAdapter<String>(getActivity(), R.layout.customizespinner,
-                cityList);
-        cityAdapter.setDropDownViewResource(R.layout.customizespinner);
-        citySpinner.setAdapter(cityAdapter);
-
-
-        if (stateList.size()>0)
-        {
-            stateList.clear();
-        }
-
-        stateList.add("Please Select State");
-        stateList.add("UP");
-        stateList.add("Punjab");
-        stateList.add("MP");
-        stateList.add("Haryana");
-
-
-        //change spinner arrow color
-
-        stateSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
-
-        ArrayAdapter<String> stateAdapter = new ArrayAdapter<String>(getActivity(), R.layout.customizespinner,
-                stateList);
-        stateAdapter.setDropDownViewResource(R.layout.customizespinner);
-        stateSpinner.setAdapter(stateAdapter);
-
-
-
-
-        primoryBtn.setChecked(true);
-
-        emergencyGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+            public void onClick(View view) {
 
-
-                if (checkedId == R.id.primory_radiobtn)
-                {
-                    TransitionManager.beginDelayedTransition(mainLay);
-                    visible = !visible;
-                    primoryLay.setVisibility(View.VISIBLE);
-                    secondaryLay.setVisibility(View.GONE);
-                }
-                else if (checkedId == R.id.secondary_radiobtn)
-                {
-                    TransitionManager.beginDelayedTransition(mainLay);
-                    visible = !visible;
-                    primoryLay.setVisibility(View.GONE);
-                    secondaryLay.setVisibility(View.VISIBLE);
-                }
+                Intent i = new Intent(getActivity(), AddNewEmergencyContactDetailsActivity.class);
+                i.putExtra("RecordId","0");
+                i.putExtra("Mode","AddMode");
+                i.putExtra("Title","");
+                i.putExtra("Name","");
+                i.putExtra("Type","");
+                i.putExtra("RelationshipName","");
+                i.putExtra("Address","");
+                i.putExtra("City","");
+                i.putExtra("State", "");
+                i.putExtra("PostalCode", "");
+                i.putExtra("CountryName","");
+                i.putExtra("TelephoneNumber","");
+                i.putExtra("MobileNumber","");
+                i.putExtra("Email","");
+                startActivity(i);
+                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
         });
 
-
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0) {
+
+            emergencyContactDetailsList(authCode,userId);
+
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
+    }
+
+
+    // dependent List
+    public void emergencyContactDetailsList(final String AuthCode , final String AdminID) {
+
+        final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, emergencyContactUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                        String Title = jsonObject.getString("Title");
+                        String Name = jsonObject.getString("Name");
+                        String Address = jsonObject.getString("Address");
+                        String City = jsonObject.getString("City");
+                        String State = jsonObject.getString("State");
+                        String CountryName = jsonObject.getString("CountryName");
+                        String PostCode = jsonObject.getString("PostCode");
+                        String PhoneNo = jsonObject.getString("PhoneNo");
+                        String MobileNo = jsonObject.getString("MobileNo");
+                        String Email = jsonObject.getString("Email");
+                        String RelationshipName = jsonObject.getString("RelationshipName");
+                        String Type = jsonObject.getString("Type");
+                        String LastUpdate = jsonObject.getString("LastUpdate");
+                        String RecordID = jsonObject.getString("RecordID");
+
+
+
+                        list.add(new EmergencyContactModel(Title , Name ,Address,City,State,PostCode,CountryName,PhoneNo,MobileNo,
+                                Email,RelationshipName,LastUpdate,Type,RecordID));
+
+
+
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
     }
 
     /*// TODO: Rename method, update argument and hook method into UI event

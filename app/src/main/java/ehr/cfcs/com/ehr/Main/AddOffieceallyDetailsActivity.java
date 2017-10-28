@@ -1,19 +1,27 @@
 package ehr.cfcs.com.ehr.Main;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import ehr.cfcs.com.ehr.R;
 
@@ -22,6 +30,12 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
     public TextView titleTxt;
     public Spinner documentTypeSpinner;
     public ArrayList<String> documentTypeList = new ArrayList<>();
+    public Button uploadBtn;
+    public StringTokenizer tokens;
+    public String uploadedFileName = "", first = "",file_1 = "";
+    public File file1 ;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +51,11 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.offecalytollbar);
         setSupportActionBar(toolbar);
 
-        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
+        titleTxt = (TextView) toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -56,11 +70,11 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
         titleTxt.setText("Add Officially Detail");
 
-        documentTypeSpinner = (Spinner)findViewById(R.id.documenttypespinner);
+        documentTypeSpinner = (Spinner) findViewById(R.id.documenttypespinner);
+        uploadBtn = (Button) findViewById(R.id.uploaddocsbtn);
 
         //DOcument Type List Spinner
-        if (documentTypeList.size()>0)
-        {
+        if (documentTypeList.size() > 0) {
             documentTypeList.clear();
         }
         documentTypeList.add("Please Select Document Type");
@@ -76,14 +90,28 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
         documentAdapter.setDropDownViewResource(R.layout.customizespinner);
         documentTypeSpinner.setAdapter(documentAdapter);
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        uploadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                showFileChooser();
             }
-        });*/
+        });
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    1);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(AddOffieceallyDetailsActivity.this, "Please install a File Manager.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -95,4 +123,33 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+
+                Uri selectedFileURI = data.getData();
+
+                if (data.getData() != null)
+                {
+                    Log.e("Checking Null",selectedFileURI.getPath().toString());
+
+                }else
+                    {
+                        Log.e("Checking Null","Null");
+                    }
+
+                File file = new File(selectedFileURI.getPath().toString());
+                Log.d("", "File : " + file.getName());
+                uploadedFileName = file.getName().toString();
+                tokens = new StringTokenizer(uploadedFileName, ":");
+
+                Log.e("File Name",uploadedFileName);
+                first = tokens.nextToken();
+                //file_1 = tokens.nextToken().trim();
+                // txt_file_name_1.setText(file_1);
+            }
+        }
+    }
 }

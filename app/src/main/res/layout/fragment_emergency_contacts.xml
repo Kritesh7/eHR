@@ -5,252 +5,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="ehr.cfcs.com.ehr.Fragment.EmergencyContactsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
     <LinearLayout
-        android:layout_above="@+id/emergency_contactBtn"
-        android:id="@+id/mainlay"
-        android:padding="10dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:padding="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Emergency Contact"
-            android:textColor="@color/status_color"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-
-        <RadioGroup
-            android:id="@+id/emergency_radiogroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/primory_radiobtn"
-                android:layout_width="0dp"
-                android:layout_weight=".5"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/purple700"
-                android:text="Primory Contact"/>
-
-            <RadioButton
-                android:id="@+id/secondary_radiobtn"
-                android:layout_width="0dp"
-                android:layout_weight=".5"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/purple700"
-                android:text="Secondary Contact"/>
-
-        </RadioGroup>
-
-        <LinearLayout
-            android:id="@+id/primory_layout"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textColorHint="#0D47A1"
-                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/linebelowedittext"
-                    android:backgroundTint="@color/purple700"
-                    android:hint="Name"
-                    android:inputType="textPersonName"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:text="Demo"
-                    android:textColor="@color/purple500"
-                    android:textColorHint="@color/purple700"
-                    android:textSize="16dp"
-                    android:theme="@style/MyEditText" />
-            </android.support.design.widget.TextInputLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Relationship"
-                    android:textSize="16sp"
-                    android:textColor="@color/purple700"/>
-
-                <Spinner
-                    android:layout_marginTop="5dp"
-                    android:id="@+id/relationshipspinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </Spinner>
-
-                </LinearLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textColorHint="#0D47A1"
-                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/linebelowedittext"
-                    android:backgroundTint="@color/purple700"
-                    android:hint="Address"
-                    android:inputType="textPersonName"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:text="Demo"
-                    android:textColor="@color/purple500"
-                    android:textColorHint="@color/purple700"
-                    android:textSize="16dp"
-                    android:theme="@style/MyEditText" />
-            </android.support.design.widget.TextInputLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="City"
-                    android:textSize="16sp"
-                    android:textColor="@color/purple700"/>
-
-                <Spinner
-                    android:id="@+id/cityspinner"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </Spinner>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_marginTop="20dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="State"
-                    android:textSize="16sp"
-                    android:textColor="@color/purple700"/>
-
-                <Spinner
-                    android:id="@+id/statespinner"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </Spinner>
-
-            </LinearLayout>
-
-
-            </LinearLayout>
-
-
-        <LinearLayout
-            android:visibility="gone"
-            android:id="@+id/secondary_layout"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textColorHint="#0D47A1"
-                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/linebelowedittext"
-                    android:backgroundTint="@color/purple700"
-                    android:hint="Buddy Employ Name"
-                    android:inputType="textPersonName"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:text="Demo"
-                    android:textColor="@color/purple500"
-                    android:textColorHint="@color/purple700"
-                    android:textSize="16dp"
-                    android:theme="@style/MyEditText" />
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textColorHint="#0D47A1"
-                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/linebelowedittext"
-                    android:backgroundTint="@color/purple700"
-                    android:hint="Buddy Contact Details"
-                    android:inputType="textPersonName"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:text="Demo"
-                    android:textColor="@color/purple500"
-                    android:textColorHint="@color/purple700"
-                    android:textSize="16dp"
-                    android:theme="@style/MyEditText" />
-            </android.support.design.widget.TextInputLayout>
-
-
-        </LinearLayout>
-
+        android:layout_height="100dp"
+        android:background="@color/purple500">
 
     </LinearLayout>
 
-        <Button
-            android:id="@+id/emergency_contactBtn"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/purple700"
-            android:text="Emergency Contact"
-            android:textColor="@color/white"/>
 
-    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/emergency_contact_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/plus" />
+
 
 </FrameLayout>

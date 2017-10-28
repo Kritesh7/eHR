@@ -98,7 +98,7 @@
             android:name=".Main.AddMedicalandAnssuranceActivity"
             android:label="@string/title_activity_medicaland_anssurance"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Main.AddQualificationActivity"
             android:label="@string/title_activity_add_qualification"
@@ -146,6 +146,10 @@
         <activity
             android:name=".Main.ViewHotelDetailActivity"
             android:label="@string/title_activity_view_hotel_detail"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Main.AddNewEmergencyContactDetailsActivity"
+            android:label="@string/title_activity_add_new_emergency_contact_details"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

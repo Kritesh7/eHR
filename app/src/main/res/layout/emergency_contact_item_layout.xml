@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
-
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -16,6 +15,7 @@
 
 
     <LinearLayout
+        android:id="@+id/main_lay"
         android:padding="10dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
@@ -23,6 +23,45 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Contact Type"/>
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text=":"/>
+
+            <TextView
+                android:id="@+id/emergency_contact_type"
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Leave Type"/>
+        </LinearLayout>
+
+        <View
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,22 +73,24 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Policy Type"/>
+                android:text="Contact Name"/>
 
             <TextView
                 android:textColor="@color/status_color"
                 android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/policytype"
+                android:id="@+id/emergency_contact_name"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Leave Type"/>
         </LinearLayout>
 
@@ -71,22 +112,26 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Policy Number"/>
+                android:layout_gravity="center"
+                android:text="Full Address"/>
 
             <TextView
                 android:textColor="@color/status_color"
                 android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/policynumber"
+                android:id="@+id/emergency_contact_address"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:inputType="textMultiLine"
                 android:text="Leave Type"/>
         </LinearLayout>
 
@@ -108,22 +153,24 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Policy Duration"/>
+                android:text="Country Name"/>
 
             <TextView
                 android:textColor="@color/status_color"
                 android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/policy_duration"
+                android:id="@+id/emergency_contact_countryname"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Leave Type"/>
         </LinearLayout>
 
@@ -145,22 +192,24 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Policy Name"/>
+                android:text="Tel Number"/>
 
             <TextView
                 android:textColor="@color/status_color"
                 android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/policyname"
+                android:id="@+id/emergency_contact_telno"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Leave Type"/>
         </LinearLayout>
 
@@ -182,22 +231,24 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Policy By"/>
+                android:text="Mobile Number"/>
 
             <TextView
                 android:textColor="@color/status_color"
                 android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/policyby"
+                android:id="@+id/emergency_contact_mobileno"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Leave Type"/>
         </LinearLayout>
 
@@ -220,22 +271,24 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Amount Insured"/>
+                android:text="Email"/>
 
             <TextView
                 android:textColor="@color/status_color"
                 android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/amountinsured"
+                android:id="@+id/emergency_contact_email"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Leave Type"/>
         </LinearLayout>
 
@@ -251,26 +304,70 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-
-            <ImageView
-                android:id="@+id/main_lay"
-                android:padding="5dp"
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
                 android:layout_width="0dp"
-                android:layout_weight=".5"
+                android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:src="@drawable/editbtn"
-                />
+                android:text="RelationShip Name"/>
 
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text=":"/>
 
-        <ImageView
-            android:id="@+id/delbtn"
-            android:padding="5dp"
-            android:layout_width="0dp"
-            android:layout_weight=".5"
-            android:layout_height="wrap_content"
-            android:src="@drawable/delbtn"
-            />
+            <TextView
+                android:id="@+id/emergecncy_contact_relationshipname"
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Leave Type"/>
+        </LinearLayout>
 
+        <View
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:text="Last Update"/>
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text=":"/>
+
+            <TextView
+                android:id="@+id/emergency_contact_lastupdate"
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Leave Type"/>
         </LinearLayout>
 
 

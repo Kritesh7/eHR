@@ -34,4 +34,7 @@
     <string name="title_activity_view_document_details">ViewDocumentDetailsActivity</string>
     <string name="title_activity_view_cab_details">ViewCabDetailsActivity</string>
     <string name="title_activity_view_hotel_detail">ViewHotelDetailActivity</string>
+    <string name="title_activity_add_new_emergency_contact_details">
+        AddNewEmergencyContactDetailsActivity
+    </string>
 </resources>
