@@ -162,6 +162,7 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/view"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -169,6 +170,7 @@
             android:elevation=".5dp"/>
 
         <LinearLayout
+            android:id="@+id/currentused"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -179,6 +181,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Current Used"/>
 
             <TextView
@@ -187,15 +190,22 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text=":"/>
 
-            <TextView
-                android:id="@+id/currentused"
-                android:textColor="@color/dahboard_textcolor"
+            <LinearLayout
+
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
+                android:layout_height="wrap_content">
+
+            <ImageView
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Leave Type"/>
+                android:src="@drawable/tick"/>
+
+            </LinearLayout>
         </LinearLayout>
 
 

@@ -1,5 +1,8 @@
 package ehr.cfcs.com.ehr.Main;
 
+import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -8,30 +11,78 @@ import android.support.design.widget.Snackbar;
 import android.support.transition.TransitionManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
+import ehr.cfcs.com.ehr.Model.DocumentTypeModel;
+import ehr.cfcs.com.ehr.Model.ProficiencySpiinerModel;
+import ehr.cfcs.com.ehr.Model.SkillsModel;
+import ehr.cfcs.com.ehr.Model.SkillsSpinnerModel;
+import ehr.cfcs.com.ehr.Model.SourceSpinnerModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 public class AddNewSkilActivity extends AppCompatActivity {
 
     public TextView titleTxt;
     public Spinner skillSpinner, proficenacySpinner, sourceSpinner;
-    public ArrayList<String> skillList = new ArrayList<>();
-    public ArrayList<String> profyList = new ArrayList<>();
-    public ArrayList<String> sourceList = new ArrayList<>();
+    public ArrayList<SkillsSpinnerModel> skillList = new ArrayList<>();
+    public ArrayList<ProficiencySpiinerModel> profyList = new ArrayList<>();
+    public ArrayList<SourceSpinnerModel> sourceList = new ArrayList<>();
     public RadioGroup radioGroup;
     public RadioButton lastUsedBtn, currentUsedBtn;
     public LinearLayout mainLay, lastUsedLay;
+    public String personalDdlDetailsUrl = SettingConstant.BaseUrl + "AppddlEmployeeSkillANDLanguage";
+    public String addUrl = SettingConstant.BaseUrl + "AppEmployeeSkillInsUpdt";
+    public  ArrayAdapter<SkillsSpinnerModel> skillAdapter;
+    public ArrayAdapter<ProficiencySpiinerModel> profyAdapter;
+    public  ArrayAdapter<SourceSpinnerModel> sourceAdapter;
+    public ConnectionDetector conn;
+    public ImageView lastUsedCalBtn;
+    public EditText lastUsedTxt;
+    private int yy, mm, dd;
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    public Button addBtn;
+    public String authcode = "", userId = "", skillId = "", proficieancyId = "", sourceId = "", checkUsed = "true";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +118,11 @@ public class AddNewSkilActivity extends AppCompatActivity {
 
         titleTxt.setText("Add New Skill");
 
+        conn = new ConnectionDetector(AddNewSkilActivity.this);
+        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddNewSkilActivity.this)));
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddNewSkilActivity.this)));
+
+
         skillSpinner = (Spinner)findViewById(R.id.skillspinner);
         proficenacySpinner = (Spinner)findViewById(R.id.proficenacySpinner);
         sourceSpinner = (Spinner)findViewById(R.id.sourceSpinner);
@@ -75,66 +131,38 @@ public class AddNewSkilActivity extends AppCompatActivity {
         currentUsedBtn = (RadioButton)findViewById(R.id.currentused);
         lastUsedLay = (LinearLayout)findViewById(R.id.lastusedlay);
         mainLay = (LinearLayout)findViewById(R.id.mainlay);
+        lastUsedCalBtn = (ImageView) findViewById(R.id.lastusedbtn);
+        lastUsedTxt = (EditText) findViewById(R.id.lastusedtxt);
+        addBtn = (Button) findViewById(R.id.newrequestbtn);
 
 
 
         //Skill Spinner List Spinner
-        if (skillList.size()>0)
-        {
-            skillList.clear();
-        }
-        skillList.add("Please Select Skill");
-        skillList.add(".Net");
-        skillList.add("Java");
-        skillList.add("Web Technology");
-        skillList.add("Other");
-
-        //change spinner arrow color
+        // change spinner arrow color
         skillSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
-
-        ArrayAdapter<String> skillAdapter = new ArrayAdapter<String>(AddNewSkilActivity.this, R.layout.customizespinner,
+        skillAdapter = new ArrayAdapter<SkillsSpinnerModel>(AddNewSkilActivity.this, R.layout.customizespinner,
                 skillList);
         skillAdapter.setDropDownViewResource(R.layout.customizespinner);
         skillSpinner.setAdapter(skillAdapter);
 
         //Proficeancy Spinner
-        if (profyList.size()>0)
-        {
-            profyList.clear();
-        }
-        profyList.add("Please Select Proficiency");
-        profyList.add("Beginner");
-        profyList.add("Medium");
-        profyList.add("Expert");
-        profyList.add("Other");
-
         //change spinner arrow color
         proficenacySpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
-
-        ArrayAdapter<String> profyAdapter = new ArrayAdapter<String>(AddNewSkilActivity.this, R.layout.customizespinner,
+        profyAdapter = new ArrayAdapter<ProficiencySpiinerModel>(AddNewSkilActivity.this, R.layout.customizespinner,
                 profyList);
         profyAdapter.setDropDownViewResource(R.layout.customizespinner);
         proficenacySpinner.setAdapter(profyAdapter);
 
         //Source Spinner
-        if (sourceList.size()>0)
-        {
-            sourceList.clear();
-        }
-        sourceList.add("Please Select Source");
-        sourceList.add("By Internet");
-        sourceList.add("Training");
-        sourceList.add("Institute");
-        sourceList.add("Other");
-
         //change spinner arrow color
         sourceSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
-
-        ArrayAdapter<String> sourceAdapter = new ArrayAdapter<String>(AddNewSkilActivity.this, R.layout.customizespinner,
+        sourceAdapter = new ArrayAdapter<SourceSpinnerModel>(AddNewSkilActivity.this, R.layout.customizespinner,
                 sourceList);
         sourceAdapter.setDropDownViewResource(R.layout.customizespinner);
         sourceSpinner.setAdapter(sourceAdapter);
 
+
+        currentUsedBtn.setChecked(true);
         //Radio Group Work
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -145,16 +173,361 @@ public class AddNewSkilActivity extends AppCompatActivity {
                     TransitionManager.beginDelayedTransition(mainLay);
                     lastUsedLay.setVisibility(View.VISIBLE);
 
+                    checkUsed = "false";
+
                 }
                 else if (i == R.id.currentused)
                 {
                     TransitionManager.beginDelayedTransition(mainLay);
                     lastUsedLay.setVisibility(View.GONE);
 
+                    checkUsed = "true";
+
+                }
+            }
+        });
+
+
+        //Last Used Date Picker
+        lastUsedCalBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+               /* inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);*/
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddNewSkilActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                yy = year;
+                                mm = monthOfYear;
+                                dd = dayOfMonth;
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(Calendar.MONTH, monthOfYear);
+                                String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(calendar.getTime());
+                                sdf = new DateFormatSymbols().getShortMonths()[monthOfYear];
+
+                                Log.e("checking,............", sdf + " null");
+                                lastUsedTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            }
+        });
+
+        // spinner Bind
+        if (conn.getConnectivityStatus()>0)
+        {
+            personalDdlDetails();
+        }else
+            {
+                conn.showNoInternetAlret();
+            }
+
+
+        //get skill Id
+        skillSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                skillId = skillList.get(i).getSkillsId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //get proficieancy Id
+        proficenacySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                proficieancyId = profyList.get(i).getProficiencyId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //get source Id
+        sourceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                sourceId = sourceList.get(i).getSourceId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        //Add New Skills
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (skillId.equalsIgnoreCase(""))
+                {
+                    Toast.makeText(AddNewSkilActivity.this, "Please select skills", Toast.LENGTH_SHORT).show();
+                }else if (proficieancyId.equalsIgnoreCase(""))
+                {
+                    Toast.makeText(AddNewSkilActivity.this, "Please select proficiency", Toast.LENGTH_SHORT).show();
+                }else if (sourceId.equalsIgnoreCase(""))
+                {
+                    Toast.makeText(AddNewSkilActivity.this, "Please select source", Toast.LENGTH_SHORT).show();
+                }else {
+
+                    if (conn.getConnectivityStatus() > 0) {
+
+                        if (checkUsed.equalsIgnoreCase("true")) {
+
+                            addSkillsDetails(userId, "0", skillId, proficieancyId, sourceId, getCurrentTime(), authcode, checkUsed);
+
+                        } else {
+                            addSkillsDetails(userId, "0", skillId, proficieancyId, sourceId, lastUsedTxt.getText().toString()
+                                    , authcode, checkUsed);
+                        }
+
+                    } else {
+                        conn.showNoInternetAlret();
+                    }
                 }
             }
         });
 
     }
+
+    //bind all spiiner data
+    public void personalDdlDetails() {
+
+
+        final ProgressDialog pDialog = new ProgressDialog(AddNewSkilActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, personalDdlDetailsUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    //bind Skills List
+                    if (skillList.size()>0)
+                    {
+                        skillList.clear();
+                    }
+                    skillList.add(new SkillsSpinnerModel("Please Select Skills",""));
+
+                    JSONArray skillsObj = jsonObject.getJSONArray("SkillMaster");
+                    for (int i =0; i<skillsObj.length(); i++)
+                    {
+                        JSONObject object = skillsObj.getJSONObject(i);
+
+                        String SkillID = object.getString("SkillID");
+                        String SkillName = object.getString("SkillName");
+
+                        skillList.add(new SkillsSpinnerModel(SkillName,SkillID));
+
+                    }
+
+                    //bind Proficeancy
+                    if (profyList.size()>0)
+                    {
+                        profyList.clear();
+                    }
+                    profyList.add(new ProficiencySpiinerModel("Please Select Proficiency",""));
+
+                    JSONArray proficiencyObj = jsonObject.getJSONArray("ProficiencyMaste");
+                    for (int i =0; i<proficiencyObj.length(); i++)
+                    {
+                        JSONObject object = proficiencyObj.getJSONObject(i);
+
+                        String ProficiencyID = object.getString("ProficiencyID");
+                        String ProficiencyName = object.getString("ProficiencyName");
+
+                        profyList.add(new ProficiencySpiinerModel(ProficiencyName,ProficiencyID));
+
+                    }
+
+                    //bind source
+                    if (sourceList.size()>0)
+                    {
+                        sourceList.clear();
+                    }
+                    sourceList.add(new SourceSpinnerModel("Please Select Proficiency",""));
+
+                    JSONArray sourceObj = jsonObject.getJSONArray("SkillSourceMaster");
+                    for (int i =0; i<sourceObj.length(); i++)
+                    {
+                        JSONObject object = sourceObj.getJSONObject(i);
+
+                        String SkillSourceID = object.getString("SkillSourceID");
+                        String SkillSourceName = object.getString("SkillSourceName");
+
+                        sourceList.add(new SourceSpinnerModel(SkillSourceName,SkillSourceID));
+
+                    }
+
+
+                   /* for (int k =0; k<policyTypeList.size(); k++)
+                    {
+                        if (actionMode.equalsIgnoreCase("EditMode"))
+                        {
+                            if (policyTypeList.get(k).getPolicyType().equalsIgnoreCase(policyTypeStr))
+                            {
+                                policyTypeSpinner.setSelection(k);
+                            }
+                        }
+                    }*/
+
+                   sourceAdapter.notifyDataSetChanged();
+                   profyAdapter.notifyDataSetChanged();
+                    skillAdapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(AddNewSkilActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        });
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+    //Add skill
+    public void addSkillsDetails(final String AdminID  ,final String RecordID, final String SkillID, final String ProficiencyID,
+                                final String SourceID, final String LastUsed , final String AuthCode, final String CurrentlyUsed)  {
+
+        final ProgressDialog pDialog = new ProgressDialog(AddNewSkilActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, addUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    if (jsonObject.has("status"))
+                    {
+                        String status = jsonObject.getString("status");
+
+                        if (status.equalsIgnoreCase("success"))
+                        {
+                            onBackPressed();
+                        }
+                    }
+
+
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(AddNewSkilActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("AdminID",AdminID);
+                params.put("AuthCode",AuthCode);
+                params.put("RecordID",RecordID);
+                params.put("SkillID",SkillID);
+                params.put("ProficiencyID",ProficiencyID);
+                params.put("SourceID",SourceID);
+                params.put("LastUsed",LastUsed);
+                params.put("CurrentlyUsed",CurrentlyUsed);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+    //get current time
+    public static String getCurrentTime() {
+        //date output format
+        DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+
+        Calendar cal = Calendar.getInstance();
+        String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(cal.getTime());
+        //sdf = new DateFormatSymbols().getShortMonths()[month];
+
+        return dateFormat.format(cal.getTime());
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        overridePendingTransition(R.anim.push_left_in,
+                R.anim.push_right_out);
+
+    }
+
 
 }

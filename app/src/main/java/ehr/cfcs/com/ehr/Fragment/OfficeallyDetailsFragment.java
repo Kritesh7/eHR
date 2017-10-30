@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,19 +10,40 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.OfficelyAdapter;
 import ehr.cfcs.com.ehr.Adapter.TraningAdapter;
 import ehr.cfcs.com.ehr.Main.AddCabActivity;
 import ehr.cfcs.com.ehr.Main.AddOffieceallyDetailsActivity;
+import ehr.cfcs.com.ehr.Model.HotelBookingListModel;
 import ehr.cfcs.com.ehr.Model.OfficealyModel;
 import ehr.cfcs.com.ehr.Model.TraningModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +68,10 @@ public class OfficeallyDetailsFragment extends Fragment {
     public ArrayList<OfficealyModel> list = new ArrayList<>();
     public RecyclerView officelyRecycler;
     public FloatingActionButton fab;
+    public String officealyDocsUrl = SettingConstant.BaseUrl + "AppEmployeeOfficeDocumentList";
+    public ConnectionDetector conn;
+    public String userId = "",authCode = "";
+
 
     public OfficeallyDetailsFragment() {
         // Required empty public constructor
@@ -87,6 +113,10 @@ public class OfficeallyDetailsFragment extends Fragment {
         officelyRecycler = (RecyclerView)rootView.findViewById(R.id.officely_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
 
+        conn = new ConnectionDetector(getActivity());
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
+
         adapter = new OfficelyAdapter(getActivity(),list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         officelyRecycler.setLayoutManager(mLayoutManager);
@@ -95,7 +125,7 @@ public class OfficeallyDetailsFragment extends Fragment {
 
         officelyRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        prepareInsDetails();
+       // prepareInsDetails();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +155,95 @@ public class OfficeallyDetailsFragment extends Fragment {
 
 
         adapter.notifyDataSetChanged();
+
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0) {
+
+            officeallyDocsList(authCode,userId,"0");
+
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
+    }
+
+
+    //Officeally docs List Api
+    public void officeallyDocsList(final String AuthCode , final String AdminID, final String AppStatus) {
+
+        final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, officealyDocsUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String DocumentTypeName = jsonObject.getString("DocumentTypeName");
+                        String IssueDate = jsonObject.getString("IssueDate");
+                        String ExpiryDate = jsonObject.getString("ExpiryDate");
+                        String IssuePlace = jsonObject.getString("IssuePlace");
+                        String Number = jsonObject.getString("Number");
+
+
+
+                        list.add(new OfficealyModel(DocumentTypeName,Number,IssueDate,ExpiryDate,IssuePlace));
+
+
+
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+                params.put("AppStatus",AppStatus);
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
 

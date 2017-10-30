@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -44,7 +45,15 @@ public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.ViewHolder>
         holder.proficencyTxt.setText(model.getProficency());
         holder.sourceTxt.setText(model.getSource());
         holder.lastUsedTxt.setText(model.getLastUsed());
-        holder.currentUsedTxt.setText(model.getCurrentUsed());
+
+        if (model.getCurrentUsed().equalsIgnoreCase("true")) {
+            holder.currentUsedTxt.setVisibility(View.VISIBLE);
+            holder.view.setVisibility(View.VISIBLE);
+        }else
+            {
+                holder.currentUsedTxt.setVisibility(View.GONE);
+                holder.view.setVisibility(View.GONE);
+            }
     }
 
     @Override
@@ -53,9 +62,9 @@ public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.ViewHolder>
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView skillTxt,proficencyTxt,sourceTxt,lastUsedTxt, currentUsedTxt;
-
-        public CardView mainLay;
+        public TextView skillTxt,proficencyTxt,sourceTxt,lastUsedTxt;
+        public View view;
+        public LinearLayout currentUsedTxt;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -64,7 +73,8 @@ public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.ViewHolder>
             proficencyTxt = (TextView)itemView.findViewById(R.id.proficiency);
             sourceTxt = (TextView)itemView.findViewById(R.id.source);
             lastUsedTxt = (TextView)itemView.findViewById(R.id.lastused);
-            currentUsedTxt = (TextView)itemView.findViewById(R.id.currentused);
+            currentUsedTxt = (LinearLayout)itemView.findViewById(R.id.currentused);
+            view = (View) itemView.findViewById(R.id.view);
 
            // mainLay = (CardView)itemView.findViewById(R.id.traning_main_lay);
         }

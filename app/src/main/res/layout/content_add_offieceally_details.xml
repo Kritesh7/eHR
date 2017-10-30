@@ -51,13 +51,14 @@
             app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
             <EditText
+                android:id="@+id/number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/linebelowedittext"
                 android:backgroundTint="@color/purple700"
                 android:hint="Number"
-                android:inputType="textMultiLine"
+                android:inputType="textCapCharacters"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
                 android:textColor="@color/purple500"
@@ -73,7 +74,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/issuedatetxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -90,6 +91,7 @@
                 android:theme="@style/MyEditText" />
 
             <ImageView
+                android:id="@+id/issuesdatebtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".2"
@@ -104,7 +106,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/expirydatetxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -121,6 +123,7 @@
                 android:theme="@style/MyEditText" />
 
             <ImageView
+                android:id="@+id/expirydatebtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".2"
@@ -136,13 +139,14 @@
             app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
             <EditText
+                android:id="@+id/issueplace"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/linebelowedittext"
                 android:backgroundTint="@color/purple700"
                 android:hint="Place of issue"
-                android:inputType="textMultiLine"
+                android:inputType="text"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
                 android:textColor="@color/purple500"
