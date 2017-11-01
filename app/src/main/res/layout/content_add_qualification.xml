@@ -84,7 +84,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/passdateTxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -101,6 +101,7 @@
                 android:theme="@style/MyEditText" />
 
             <ImageView
+                android:id="@+id/passdateCalBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".2"
@@ -116,6 +117,7 @@
             app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
             <EditText
+                android:id="@+id/institutetxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -155,7 +157,7 @@
 
         </LinearLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <!--<android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -172,11 +174,19 @@
                 android:inputType="textMultiLine"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:textColor="@color/purple500"
+
                 android:textColorHint="@color/purple700"
                 android:textSize="16dp"
                 android:theme="@style/MyEditText" />
-        </android.support.design.widget.TextInputLayout>
+        </android.support.design.widget.TextInputLayout>-->
+
+            <CheckBox
+                android:id="@+id/checkHighest"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Highest Degree"
+                android:textColor="@color/purple500"/>
 
 
 

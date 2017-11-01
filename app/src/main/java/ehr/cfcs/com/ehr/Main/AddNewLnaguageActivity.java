@@ -1,27 +1,68 @@
 package ehr.cfcs.com.ehr.Main;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import ehr.cfcs.com.ehr.Model.LangaugaeSpinnerModel;
+import ehr.cfcs.com.ehr.Model.ProficiencySpiinerModel;
+import ehr.cfcs.com.ehr.Model.SkillsSpinnerModel;
+import ehr.cfcs.com.ehr.Model.SourceSpinnerModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 public class AddNewLnaguageActivity extends AppCompatActivity {
 
     public TextView titleTxt;
     public Spinner langageSpinner;
-    public ArrayList<String> langageList = new ArrayList<>();
+    public ArrayList<LangaugaeSpinnerModel> langageList = new ArrayList<>();
+    public String personalDdlDetailsUrl = SettingConstant.BaseUrl + "AppddlEmployeeSkillANDLanguage";
+    public String addUrl = SettingConstant.BaseUrl + "AppEmployeeLanguageInsUpdt";
+    public ArrayAdapter<LangaugaeSpinnerModel> langageTypeAdapter;
+    public ConnectionDetector conn;
+    public String authcode = "", userId = "";
+    public Button addBtn;
+    public CheckBox readBtn, writeBtn, speakBtn;
+    public String readLang = "false", writeLang = "false" , spealLang = "false", langaigeId = "", actionMode = "", langageNameStr = ""
+            ,readStr = "", writeStr = "", speakStr = "", recordId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,26 +98,153 @@ public class AddNewLnaguageActivity extends AppCompatActivity {
 
         titleTxt.setText("Add New Language");
 
+        Intent intent = getIntent();
+        if (intent != null)
+        {
+            actionMode = intent.getStringExtra("ActionMode");
+            recordId = intent.getStringExtra("RecordId");
+            langageNameStr = intent.getStringExtra("LangageName");
+            readStr = intent.getStringExtra("Read");
+            writeStr = intent.getStringExtra("Write");
+            speakStr = intent.getStringExtra("Speak");
+        }
+
+        conn = new ConnectionDetector(AddNewLnaguageActivity.this);
+        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddNewLnaguageActivity.this)));
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddNewLnaguageActivity.this)));
+
+
         langageSpinner = (Spinner)findViewById(R.id.langaugaespinner);
+        //langaugeRadioGroup = (RadioGroup) findViewById(R.id.langaugeRadioGroup);
+        readBtn = (CheckBox) findViewById(R.id.readbtn);
+        writeBtn = (CheckBox) findViewById(R.id.writebtn);
+        speakBtn = (CheckBox) findViewById(R.id.speakbtn);
+        addBtn = (Button) findViewById(R.id.newrequestbtn);
+
+        if (actionMode.equalsIgnoreCase("EditMode"))
+        {
+            if (readStr.equalsIgnoreCase("true"))
+            {
+                readBtn.setChecked(true);
+                readLang = "true";
+            }
+
+            if (writeStr.equalsIgnoreCase("true"))
+            {
+                writeBtn.setChecked(true);
+                writeLang = "true";
+            }
+
+            if (speakStr.equalsIgnoreCase("true"))
+            {
+                speakBtn.setChecked(true);
+                spealLang = "true";
+            }
+
+            addBtn.setText("Update Language");
+            titleTxt.setText("Update Language");
+        }
 
 
         //Langage Spinner List Spinner
-        if (langageList.size()>0)
-        {
-            langageList.clear();
-        }
-        langageList.add("Please Select Language");
-        langageList.add("English");
-        langageList.add("Hindi");
-        langageList.add("Chines");
-
         //change spinner arrow color
         langageSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
 
-        ArrayAdapter<String> policyTypeAdapter = new ArrayAdapter<String>(AddNewLnaguageActivity.this, R.layout.customizespinner,
+        langageTypeAdapter = new ArrayAdapter<LangaugaeSpinnerModel>(AddNewLnaguageActivity.this, R.layout.customizespinner,
                 langageList);
-        policyTypeAdapter.setDropDownViewResource(R.layout.customizespinner);
-        langageSpinner.setAdapter(policyTypeAdapter);
+        langageTypeAdapter.setDropDownViewResource(R.layout.customizespinner);
+        langageSpinner.setAdapter(langageTypeAdapter);
+
+        //bind spinner
+        if (conn.getConnectivityStatus()>0)
+        {
+            personalDdlDetails(userId,authcode);
+        }else
+            {
+                conn.showNoInternetAlret();
+            }
+
+
+
+        //get langage Type
+        readBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if (b)
+                {
+                    readLang = "true";
+                }else
+                    {
+                        readLang = "false";
+                    }
+            }
+        });
+
+        writeBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if (b)
+                {
+                    writeLang = "true";
+                }else
+                    {
+                        writeLang = "false";
+                    }
+            }
+        });
+
+        speakBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                if (b)
+                {
+                    spealLang = "true";
+                }else
+                    {
+                        spealLang = "false";
+                    }
+            }
+        });
+
+        //get lanage id
+        langageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                langaigeId = langageList.get(i).getLangaugeId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (langaigeId.equalsIgnoreCase(""))
+                {
+                    Toast.makeText(AddNewLnaguageActivity.this, "Please select Language", Toast.LENGTH_SHORT).show();
+                }else if (readLang.equalsIgnoreCase("false") && writeLang.equalsIgnoreCase("false") &&
+                          spealLang.equalsIgnoreCase("false"))
+                {
+                    Toast.makeText(AddNewLnaguageActivity.this, "Please select Language Type", Toast.LENGTH_SHORT).show();
+                }else {
+
+                    if (conn.getConnectivityStatus()>0) {
+                        addSkillsDetails(userId, recordId, langaigeId, writeLang, readLang, spealLang, authcode);
+                    }else
+                        {
+                            conn.showNoInternetAlret();
+                        }
+                }
+            }
+        });
     }
 
     @Override
@@ -85,6 +253,172 @@ public class AddNewLnaguageActivity extends AppCompatActivity {
         super.onBackPressed();
         overridePendingTransition(R.anim.push_left_in,
                 R.anim.push_right_out);
+
+    }
+
+    //bind all spiiner data
+    public void personalDdlDetails(final String AdminID,final String AuthCode ) {
+
+
+        final ProgressDialog pDialog = new ProgressDialog(AddNewLnaguageActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, personalDdlDetailsUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    //bind Skills List
+                    if (langageList.size()>0)
+                    {
+                        langageList.clear();
+                    }
+                    langageList.add(new LangaugaeSpinnerModel("Please Select Language",""));
+
+                    JSONArray languageObj = jsonObject.getJSONArray("LanguageMaster");
+                    for (int i =0; i<languageObj.length(); i++)
+                    {
+                        JSONObject object = languageObj.getJSONObject(i);
+
+                        String LanguageID = object.getString("LanguageID");
+                        String LanguageName = object.getString("LanguageName");
+
+                        langageList.add(new LangaugaeSpinnerModel(LanguageName,LanguageID));
+
+                    }
+
+
+
+
+                    //Edit Mode
+                    for (int k =0; k<langageList.size(); k++)
+                    {
+                        if (actionMode.equalsIgnoreCase("EditMode"))
+                        {
+                            if (langageList.get(k).getLangaugeName().equalsIgnoreCase(langageNameStr))
+                            {
+                                langageSpinner.setSelection(k);
+                                langaigeId = langageList.get(k).getLangaugeId();
+                            }
+                        }
+                    }
+
+
+                    langageTypeAdapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(AddNewLnaguageActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("AdminID",AdminID);
+                params.put("AuthCode",AuthCode);
+
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+    //Add skill
+    public void addSkillsDetails(final String AdminID  ,final String RecordID, final String LanguageID, final String Write,
+                                 final String Read, final String Speak , final String AuthCode)  {
+
+        final ProgressDialog pDialog = new ProgressDialog(AddNewLnaguageActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, addUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    if (jsonObject.has("status"))
+                    {
+                        String status = jsonObject.getString("status");
+
+                        if (status.equalsIgnoreCase("success"))
+                        {
+                            onBackPressed();
+                        }
+                    }
+
+
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(AddNewLnaguageActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("AdminID",AdminID);
+                params.put("AuthCode",AuthCode);
+                params.put("RecordID",RecordID);
+                params.put("LanguageID",LanguageID);
+                params.put("Read",Read);
+                params.put("Write",Write);
+                params.put("Speak",Speak);
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
 

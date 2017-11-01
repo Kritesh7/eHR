@@ -11,13 +11,19 @@ public class SkillsModel
     public String source;
     public String lastUsed;
     public String currentUsed;
+    public String RecordID;
 
-    public SkillsModel(String skill, String proficency, String source, String lastUsed, String currentUsed) {
+    public SkillsModel(String skill, String proficency, String source, String lastUsed, String currentUsed, String RecordID) {
         this.skill = skill;
         this.proficency = proficency;
         this.source = source;
         this.lastUsed = lastUsed;
         this.currentUsed = currentUsed;
+        this.RecordID = RecordID;
+    }
+
+    public String getRecordID() {
+        return RecordID;
     }
 
     public String getSkill() {

@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,17 +8,39 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.AssestsDetailsAdapter;
 import ehr.cfcs.com.ehr.Adapter.TraningAdapter;
 import ehr.cfcs.com.ehr.Model.AssestDetailsModel;
+import ehr.cfcs.com.ehr.Model.EducationModel;
 import ehr.cfcs.com.ehr.Model.TraningModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +65,10 @@ public class AssestDetailsFragment extends Fragment {
     public RecyclerView assetsRecycler;
     public AssestsDetailsAdapter adapter;
     public ArrayList<AssestDetailsModel> list = new ArrayList<>();
+    public String assestsUrl = SettingConstant.BaseUrl + "AppEmployeeAssetList";
+    public TextView noCust ;
+    public ConnectionDetector conn;
+    public String userId = "",authCode = "";
 
     public AssestDetailsFragment() {
         // Required empty public constructor
@@ -81,6 +108,12 @@ public class AssestDetailsFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_assest_details, container, false);
 
         assetsRecycler = (RecyclerView)rootView.findViewById(R.id.assets_recycler);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
+
+        conn = new ConnectionDetector(getActivity());
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
+
 
         adapter = new AssestsDetailsAdapter(getActivity(),list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -90,12 +123,12 @@ public class AssestDetailsFragment extends Fragment {
 
         assetsRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        prepareInsDetails();
+        //prepareInsDetails();
 
         return rootView;
     }
 
-    private void prepareInsDetails() {
+    /*private void prepareInsDetails() {
 
         AssestDetailsModel model = new AssestDetailsModel("Laptop","Lenovo","03-09-2017","02-01-2017","For Meeting","Comment to Employ");
         list.add(model);
@@ -111,7 +144,115 @@ public class AssestDetailsFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
 
+    }*/
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0) {
+
+            educationList(authCode,userId);
+
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
     }
+
+
+    //Assets list
+    public void educationList(final String AuthCode , final String AdminID) {
+
+        final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, assestsUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        String AssetsHolder = object.getString("AssetsHolder");
+                        String Assets = object.getString("AssetsName");
+                        String IssueDate = object.getString("IssueDate");
+                        String ExpReturnDate = object.getString("ExpReturnDate");
+                        String BrandName = object.getString("BrandName");
+                        String SerialNo = object.getString("SerialNo");
+                        String Reasion = object.getString("Reasion");
+                        String Remarks = object.getString("Remarks");
+
+
+
+
+
+                        list.add(new AssestDetailsModel(AssetsHolder,Assets,BrandName + " " +SerialNo ,IssueDate
+                                ,ExpReturnDate,Reasion, Remarks));
+
+
+
+                    }
+
+
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        assetsRecycler.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        assetsRecycler.setVisibility(View.VISIBLE);
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     /*public void onButtonPressed(Uri uri) {

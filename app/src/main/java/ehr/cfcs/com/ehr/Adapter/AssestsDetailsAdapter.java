@@ -47,6 +47,7 @@ public class AssestsDetailsAdapter extends RecyclerView.Adapter<AssestsDetailsAd
         holder.estimatedReturnDateTxt.setText(model.getExpectedReturnDate());
         holder.issuesReasonsTxt.setText(model.getIssuesReason());
         holder.remarkTxt.setText(model.getRemark());
+        holder.holderNameTxt.setText(model.getName());
 
        /* if (position % 2 == 1) {
             holder.mainLay.setCardBackgroundColor(context.getResources().getColor(R.color.col1));
@@ -63,7 +64,7 @@ public class AssestsDetailsAdapter extends RecyclerView.Adapter<AssestsDetailsAd
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView assestsNameTxt,brandNameTxt,issuesDateTxt,estimatedReturnDateTxt, issuesReasonsTxt, remarkTxt;
+        public TextView assestsNameTxt,brandNameTxt,issuesDateTxt,estimatedReturnDateTxt, issuesReasonsTxt, remarkTxt, holderNameTxt;
 
         public CardView mainLay;
 
@@ -76,6 +77,7 @@ public class AssestsDetailsAdapter extends RecyclerView.Adapter<AssestsDetailsAd
             estimatedReturnDateTxt = (TextView)itemView.findViewById(R.id.estimated_return_date);
             issuesReasonsTxt = (TextView)itemView.findViewById(R.id.issuesreasons);
             remarkTxt = (TextView)itemView.findViewById(R.id.remark);
+            holderNameTxt = (TextView)itemView.findViewById(R.id.username);
 
             mainLay = (CardView)itemView.findViewById(R.id.assets_main_lay);
         }

@@ -8,10 +8,16 @@ public class WarningModel
 {
     public String warningDate;
     public String warningDetails;
+    public String warningTitle;
 
-    public WarningModel(String warningDate, String warningDetails) {
+    public WarningModel(String warningDate, String warningDetails, String warningTitle) {
         this.warningDate = warningDate;
         this.warningDetails = warningDetails;
+        this.warningTitle = warningTitle;
+    }
+
+    public String getWarningTitle() {
+        return warningTitle;
     }
 
     public String getWarningDate() {

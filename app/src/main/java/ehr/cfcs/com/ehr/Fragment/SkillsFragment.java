@@ -120,7 +120,7 @@ public class SkillsFragment extends Fragment {
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
 
-        adapter = new SkillAdapter(getActivity(),list);
+        adapter = new SkillAdapter(getActivity(),list,getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         skillRecycler.setLayoutManager(mLayoutManager);
         skillRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -135,6 +135,13 @@ public class SkillsFragment extends Fragment {
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), AddNewSkilActivity.class);
+                i.putExtra("ActionMode", "AddMode");
+                i.putExtra("RecordId", "");
+                i.putExtra("SkillName", "");
+                i.putExtra("ProficeiancyName","");
+                i.putExtra("SourceName","");
+                i.putExtra("CurrentelyUsed","");
+                i.putExtra("LastUsedDate", "");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -143,7 +150,7 @@ public class SkillsFragment extends Fragment {
         return rootView;
     }
 
-    private void prepareInsDetails() {
+  /*  private void prepareInsDetails() {
 
         SkillsModel model = new SkillsModel("Java","Beginner","By Internet","03-09-2017","Present");
         list.add(model);
@@ -159,7 +166,7 @@ public class SkillsFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
 
-    }
+    }*/
     @Override
     public void onResume() {
         super.onResume();
@@ -202,10 +209,11 @@ public class SkillsFragment extends Fragment {
                         String SkillSourceName = jsonObject.getString("SkillSourceName");
                         String LastUsed = jsonObject.getString("LastUsed");
                         String CurrentlyUsed = jsonObject.getString("CurrentlyUsed");
+                        String RecordID = jsonObject.getString("RecordID");
 
 
 
-                        list.add(new SkillsModel(SkillName,ProficiencyName,SkillSourceName,LastUsed,CurrentlyUsed));
+                        list.add(new SkillsModel(SkillName,ProficiencyName,SkillSourceName,LastUsed,CurrentlyUsed,RecordID));
 
 
 

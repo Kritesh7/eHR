@@ -3,6 +3,7 @@ package ehr.cfcs.com.ehr.Main;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -82,7 +83,9 @@ public class AddNewSkilActivity extends AppCompatActivity {
     private int yy, mm, dd;
     private int mYear, mMonth, mDay, mHour, mMinute;
     public Button addBtn;
-    public String authcode = "", userId = "", skillId = "", proficieancyId = "", sourceId = "", checkUsed = "true";
+    public String authcode = "", userId = "", skillId = "", proficieancyId = "", sourceId = "", checkUsed = "true"
+            ,actionMode = "", skillNameStr = "", proficeiancyNameStr, sourceNameStr = "", useSkillStr = "", lastDateStr = ""
+            , recordId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +121,19 @@ public class AddNewSkilActivity extends AppCompatActivity {
 
         titleTxt.setText("Add New Skill");
 
+        Intent intent = getIntent();
+        if (intent != null)
+        {
+            actionMode = intent.getStringExtra("ActionMode");
+            skillNameStr = intent.getStringExtra("SkillName");
+            recordId = intent.getStringExtra("RecordId");
+            proficeiancyNameStr = intent.getStringExtra("ProficeiancyName");
+            sourceNameStr = intent.getStringExtra("SourceName");
+            useSkillStr = intent.getStringExtra("CurrentelyUsed");
+            lastDateStr = intent.getStringExtra("LastUsedDate");
+
+        }
+
         conn = new ConnectionDetector(AddNewSkilActivity.this);
         authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddNewSkilActivity.this)));
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddNewSkilActivity.this)));
@@ -136,6 +152,35 @@ public class AddNewSkilActivity extends AppCompatActivity {
         addBtn = (Button) findViewById(R.id.newrequestbtn);
 
 
+        if (actionMode.equalsIgnoreCase("EditMode"))
+        {
+            if (useSkillStr.equalsIgnoreCase("true"))
+            {
+                currentUsedBtn.setChecked(true);
+                checkUsed = "true";
+
+                TransitionManager.beginDelayedTransition(mainLay);
+                lastUsedLay.setVisibility(View.GONE);
+
+
+            }else
+                {
+                    lastUsedBtn.setChecked(true);
+                    checkUsed = "false";
+
+                    TransitionManager.beginDelayedTransition(mainLay);
+                    lastUsedLay.setVisibility(View.VISIBLE);
+
+                }
+
+                lastUsedTxt.setText(lastDateStr);
+
+            addBtn.setText("Update Skill");
+            titleTxt.setText("Update Skill");
+        }else
+        {
+            currentUsedBtn.setChecked(true);
+        }
 
         //Skill Spinner List Spinner
         // change spinner arrow color
@@ -162,7 +207,7 @@ public class AddNewSkilActivity extends AppCompatActivity {
         sourceSpinner.setAdapter(sourceAdapter);
 
 
-        currentUsedBtn.setChecked(true);
+
         //Radio Group Work
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -235,7 +280,7 @@ public class AddNewSkilActivity extends AppCompatActivity {
         // spinner Bind
         if (conn.getConnectivityStatus()>0)
         {
-            personalDdlDetails();
+            personalDdlDetails(userId,authcode);
         }else
             {
                 conn.showNoInternetAlret();
@@ -303,10 +348,10 @@ public class AddNewSkilActivity extends AppCompatActivity {
 
                         if (checkUsed.equalsIgnoreCase("true")) {
 
-                            addSkillsDetails(userId, "0", skillId, proficieancyId, sourceId, getCurrentTime(), authcode, checkUsed);
+                            addSkillsDetails(userId, recordId, skillId, proficieancyId, sourceId, getCurrentTime(), authcode, checkUsed);
 
                         } else {
-                            addSkillsDetails(userId, "0", skillId, proficieancyId, sourceId, lastUsedTxt.getText().toString()
+                            addSkillsDetails(userId, recordId, skillId, proficieancyId, sourceId, lastUsedTxt.getText().toString()
                                     , authcode, checkUsed);
                         }
 
@@ -320,7 +365,7 @@ public class AddNewSkilActivity extends AppCompatActivity {
     }
 
     //bind all spiiner data
-    public void personalDdlDetails() {
+    public void personalDdlDetails(final String AdminID,final String AuthCode ) {
 
 
         final ProgressDialog pDialog = new ProgressDialog(AddNewSkilActivity.this,R.style.AppCompatAlertDialogStyle);
@@ -394,16 +439,43 @@ public class AddNewSkilActivity extends AppCompatActivity {
                     }
 
 
-                   /* for (int k =0; k<policyTypeList.size(); k++)
+                    for (int k =0; k<skillList.size(); k++)
                     {
                         if (actionMode.equalsIgnoreCase("EditMode"))
                         {
-                            if (policyTypeList.get(k).getPolicyType().equalsIgnoreCase(policyTypeStr))
+                            if (skillList.get(k).getSkillsName().equalsIgnoreCase(skillNameStr))
                             {
-                                policyTypeSpinner.setSelection(k);
+                                skillSpinner.setSelection(k);
+
+                                skillId = skillList.get(k).getSkillsId();
                             }
                         }
-                    }*/
+                    }
+
+                    for (int k =0; k<profyList.size(); k++)
+                    {
+                        if (actionMode.equalsIgnoreCase("EditMode"))
+                        {
+                            if (profyList.get(k).getProficiencyName().equalsIgnoreCase(proficeiancyNameStr))
+                            {
+                                proficenacySpinner.setSelection(k);
+
+                                proficieancyId = profyList.get(k).getProficiencyId();
+                            }
+                        }
+                    }
+
+                    for (int k =0; k<sourceList.size(); k++)
+                    {
+                        if (actionMode.equalsIgnoreCase("EditMode"))
+                        {
+                            if (sourceList.get(k).getSourceName().equalsIgnoreCase(sourceNameStr))
+                            {
+                                sourceSpinner.setSelection(k);
+                                sourceId = sourceList.get(k).getSourceId();
+                            }
+                        }
+                    }
 
                    sourceAdapter.notifyDataSetChanged();
                    profyAdapter.notifyDataSetChanged();
@@ -427,7 +499,21 @@ public class AddNewSkilActivity extends AppCompatActivity {
 
 
             }
-        });
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("AdminID",AdminID);
+                params.put("AuthCode",AuthCode);
+
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
         historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

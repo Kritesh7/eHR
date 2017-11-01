@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,19 +10,41 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.EducationDetailsAdapter;
 import ehr.cfcs.com.ehr.Adapter.PreviousExpreinceAdapter;
 import ehr.cfcs.com.ehr.Main.AddCabActivity;
 import ehr.cfcs.com.ehr.Main.AddPreviousExpreinceActivity;
 import ehr.cfcs.com.ehr.Model.EducationModel;
+import ehr.cfcs.com.ehr.Model.LanguageModel;
 import ehr.cfcs.com.ehr.Model.PreviousExpreinceModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +68,10 @@ public class PreviousExprienceFragment extends Fragment {
     public ArrayList<PreviousExpreinceModel> list = new ArrayList<>();
     public RecyclerView prevoisExpRecy;
     public FloatingActionButton fab;
+    public TextView noCust ;
+    public String prevLangUrl = SettingConstant.BaseUrl + "AppEmployeePreviousExperienceList";
+    public ConnectionDetector conn;
+    public String userId = "",authCode = "" , IsAddPreviousExperience = "";
 
     private OnFragmentInteractionListener mListener;
 
@@ -88,8 +115,15 @@ public class PreviousExprienceFragment extends Fragment {
 
         prevoisExpRecy = (RecyclerView)rootView.findViewById(R.id.previous_expreince_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
 
-        adapter = new PreviousExpreinceAdapter(getActivity(),list);
+
+        conn = new ConnectionDetector(getActivity());
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
+
+
+        adapter = new PreviousExpreinceAdapter(getActivity(),list,getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         prevoisExpRecy.setLayoutManager(mLayoutManager);
         prevoisExpRecy.setItemAnimator(new DefaultItemAnimator());
@@ -97,22 +131,42 @@ public class PreviousExprienceFragment extends Fragment {
 
         prevoisExpRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        prepareInsDetails();
+        //prepareInsDetails();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(getActivity(), AddPreviousExpreinceActivity.class);
-                startActivity(i);
-                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                if (IsAddPreviousExperience.equalsIgnoreCase("1"))
+                {
+                    // fab.setVisibility(View.GONE);
+                    //fab.setEnabled(false);
+                    Toast.makeText(getActivity(), "Your Previous request waiting for Hr approval.", Toast.LENGTH_SHORT).show();
+                }else
+                {
+                    // fab.setVisibility(View.VISIBLE);
+
+                    Intent i = new Intent(getActivity(), AddPreviousExpreinceActivity.class);
+                    i.putExtra("ActionMode", "AddMode");
+                    i.putExtra("RecordId", "");
+                    i.putExtra("CompanyName", "");
+                    i.putExtra("JoiningDate","");
+                    i.putExtra("RelivingDate","");
+                    i.putExtra("Designation","");
+                    i.putExtra("JobYearId","");
+                    i.putExtra("JobMonthId","");
+                    i.putExtra("JobDescription","");
+                    startActivity(i);
+                    getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }
+
             }
         });
 
         return rootView;
     }
 
-    private void prepareInsDetails() {
+   /* private void prepareInsDetails() {
 
         PreviousExpreinceModel model = new PreviousExpreinceModel("CFCS","03-09-2017","Mobile App Development","1 Year"
                 ,"Android Developer");
@@ -132,6 +186,126 @@ public class PreviousExprienceFragment extends Fragment {
 
 
         adapter.notifyDataSetChanged();
+
+    }*/
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0) {
+
+            previousExpList(authCode,userId);
+
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
+    }
+
+
+    //Skills list
+    public void previousExpList(final String AuthCode , final String AdminID) {
+
+        final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, prevLangUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
+                    JSONArray jsonArray = jsonObject.getJSONArray("List");
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        String CompName = object.getString("CompName");
+                        String Designation = object.getString("Designation");
+                        String JoiningDate = object.getString("JoiningDate");
+                        String JobPeriod = object.getString("JobPeriod");
+                        String JobDesc = object.getString("JobDesc");
+                        String editable = object.getString("editable");
+                        String Deleteable = object.getString("Deleteable");
+                        String Status = object.getString("Status");
+                        String Comments = object.getString("Comments");
+                        String RecordID = object.getString("RecordID");
+                        String RelievingDate = object.getString("RelievingDate");
+                        String JobPeriodYear = object.getString("JobPeriodYear");
+                        String JobPeriodMonth = object.getString("JobPeriodMonth");
+
+
+
+
+                        list.add(new PreviousExpreinceModel(CompName,JoiningDate,JobDesc,JobPeriod,Designation,editable,Deleteable,
+                                Status,Comments,RecordID,RelievingDate,JobPeriodYear,JobPeriodMonth));
+
+
+
+                    }
+
+                    JSONArray statusArray = jsonObject.getJSONArray("Status");
+                    for (int k=0; k<statusArray.length(); k++)
+                    {
+                        JSONObject obj = statusArray.getJSONObject(k);
+                        IsAddPreviousExperience = obj.getString("IsAddPreviousExperience");
+
+
+                    }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        prevoisExpRecy.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        prevoisExpRecy.setVisibility(View.VISIBLE);
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
 

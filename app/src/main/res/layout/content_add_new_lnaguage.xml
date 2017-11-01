@@ -69,34 +69,38 @@
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
-                    <RadioGroup
+                    <LinearLayout
+                        android:id="@+id/langaugeRadioGroup"
                         android:layout_marginTop="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <RadioButton
+                        <CheckBox
+                            android:id="@+id/readbtn"
                             android:layout_width="0dp"
                             android:layout_weight="3.3"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/status_color"
                             android:text="Read"/>
 
-                        <RadioButton
+                        <CheckBox
+                            android:id="@+id/writebtn"
                             android:layout_width="0dp"
                             android:layout_weight="3.3"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/status_color"
                             android:text="Write"/>
 
-                        <RadioButton
+                        <CheckBox
+                            android:id="@+id/speakbtn"
                             android:layout_width="0dp"
                             android:layout_weight="3.3"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/status_color"
                             android:text="Speak"/>
 
-                    </RadioGroup>
+                    </LinearLayout>
 
 
 

@@ -1,6 +1,8 @@
 package ehr.cfcs.com.ehr.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ehr.cfcs.com.ehr.Main.AddNewSkilActivity;
 import ehr.cfcs.com.ehr.Model.SkillsModel;
 import ehr.cfcs.com.ehr.R;
 
@@ -23,10 +26,12 @@ public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.ViewHolder>
 
     public Context context;
     public ArrayList<SkillsModel> list = new ArrayList<>();
+    public Activity activity;
 
-    public SkillAdapter(Context context, ArrayList<SkillsModel> list) {
+    public SkillAdapter(Context context, ArrayList<SkillsModel> list, Activity activity) {
         this.context = context;
         this.list = list;
+        this.activity = activity;
     }
 
     @Override
@@ -54,6 +59,23 @@ public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.ViewHolder>
                 holder.currentUsedTxt.setVisibility(View.GONE);
                 holder.view.setVisibility(View.GONE);
             }
+
+        holder.mainLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(context, AddNewSkilActivity.class);
+                i.putExtra("ActionMode", "EditMode");
+                i.putExtra("RecordId", model.getRecordID());
+                i.putExtra("SkillName", model.getSkill());
+                i.putExtra("ProficeiancyName",model.getProficency());
+                i.putExtra("SourceName",model.getSource());
+                i.putExtra("CurrentelyUsed",model.getCurrentUsed());
+                i.putExtra("LastUsedDate", model.getLastUsed());
+                activity.startActivity(i);
+                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
     }
 
     @Override
@@ -64,7 +86,7 @@ public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.ViewHolder>
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView skillTxt,proficencyTxt,sourceTxt,lastUsedTxt;
         public View view;
-        public LinearLayout currentUsedTxt;
+        public LinearLayout currentUsedTxt,mainLay;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -76,7 +98,7 @@ public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.ViewHolder>
             currentUsedTxt = (LinearLayout)itemView.findViewById(R.id.currentused);
             view = (View) itemView.findViewById(R.id.view);
 
-           // mainLay = (CardView)itemView.findViewById(R.id.traning_main_lay);
+            mainLay = (LinearLayout)itemView.findViewById(R.id.main_lay);
         }
     }
 }

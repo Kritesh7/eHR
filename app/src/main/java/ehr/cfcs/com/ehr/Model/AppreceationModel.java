@@ -6,12 +6,24 @@ package ehr.cfcs.com.ehr.Model;
 
 public class AppreceationModel
 {
+    public String appreceationTitle;
     public String appreceationDate;
     public String appreceationDetails;
+    public String FileNameText;
 
-    public AppreceationModel(String appreceationDate, String appreceationDetails) {
+    public AppreceationModel(String appreceationTitle,String appreceationDate, String appreceationDetails, String FileNameText) {
+        this.appreceationTitle = appreceationTitle;
         this.appreceationDate = appreceationDate;
         this.appreceationDetails = appreceationDetails;
+        this.FileNameText = FileNameText;
+    }
+
+    public String getFileNameText() {
+        return FileNameText;
+    }
+
+    public String getAppreceationTitle() {
+        return appreceationTitle;
     }
 
     public String getAppreceationDate() {

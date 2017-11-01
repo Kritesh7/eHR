@@ -19,16 +19,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <TextView
-        android:visibility="gone"
-        android:layout_marginTop="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Assets Details List"
-        android:gravity="center"
-        android:textColor="@color/status_color"
-        android:textStyle="bold"
-        android:textSize="18dp"/>
+        <TextView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Record Not Found!"
+            android:textStyle="bold"
+            android:id="@+id/no_record_txt"
+            android:textSize="18sp"
+            android:gravity="center"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/assets_recycler"

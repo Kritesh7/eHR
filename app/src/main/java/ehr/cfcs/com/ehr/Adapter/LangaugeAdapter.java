@@ -1,15 +1,20 @@
 package ehr.cfcs.com.ehr.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import ehr.cfcs.com.ehr.Main.AddNewLnaguageActivity;
+import ehr.cfcs.com.ehr.Main.AddNewSkilActivity;
 import ehr.cfcs.com.ehr.Model.LanguageModel;
 import ehr.cfcs.com.ehr.R;
 
@@ -22,10 +27,12 @@ public class LangaugeAdapter extends RecyclerView.Adapter<LangaugeAdapter.ViewHo
 
     public Context context;
     public ArrayList<LanguageModel> list = new ArrayList<>();
+    public Activity activity;
 
-    public LangaugeAdapter(Context context, ArrayList<LanguageModel> list) {
+    public LangaugeAdapter(Context context, ArrayList<LanguageModel> list, Activity activity) {
         this.context = context;
         this.list = list;
+        this.activity = activity;
     }
 
     @Override
@@ -42,9 +49,50 @@ public class LangaugeAdapter extends RecyclerView.Adapter<LangaugeAdapter.ViewHo
         LanguageModel model = list.get(position);
 
         holder.languageTxt.setText(model.getLangaugae());
-        holder.readTxt.setText(model.getRead());
-        holder.writeTxt.setText(model.getWrite());
-        holder.speakTxt.setText(model.getSpeak());
+
+        if (model.getRead().equalsIgnoreCase("true"))
+        {
+            holder.readTxt.setText("Yes");
+        }else
+            {
+                holder.readTxt.setText("No");
+            }
+
+        if (model.getWrite().equalsIgnoreCase("true"))
+        {
+            holder.writeTxt.setText("Yes");
+        }else
+        {
+            holder.writeTxt.setText("No");
+        }
+
+        if (model.getSpeak().equalsIgnoreCase("true"))
+        {
+            holder.speakTxt.setText("Yes");
+        }else
+        {
+            holder.speakTxt.setText("No");
+        }
+
+
+        holder.mainLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(context, AddNewLnaguageActivity.class);
+                i.putExtra("ActionMode", "EditMode");
+                i.putExtra("RecordId", model.getRecordID());
+                i.putExtra("LangageName", model.getLangaugae());
+                i.putExtra("Read",model.getRead());
+                i.putExtra("Write",model.getWrite());
+                i.putExtra("Speak",model.getSpeak());
+                activity.startActivity(i);
+                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+
+
+
     }
 
     @Override
@@ -55,7 +103,7 @@ public class LangaugeAdapter extends RecyclerView.Adapter<LangaugeAdapter.ViewHo
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView languageTxt,readTxt,writeTxt,speakTxt;
 
-        public CardView mainLay;
+        public LinearLayout mainLay;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -64,6 +112,7 @@ public class LangaugeAdapter extends RecyclerView.Adapter<LangaugeAdapter.ViewHo
             readTxt = (TextView)itemView.findViewById(R.id.read);
             writeTxt = (TextView)itemView.findViewById(R.id.write);
             speakTxt = (TextView)itemView.findViewById(R.id.speak);
+            mainLay = (LinearLayout) itemView.findViewById(R.id.main_lay);
 
         }
     }

@@ -41,6 +41,7 @@ public class WarningAdapter extends RecyclerView.Adapter<WarningAdapter.ViewHold
 
         holder.warningDteTxt.setText(model.getWarningDate());
         holder.warningDetailsTxt.setText(model.getWarningDetails());
+        holder.warningTitileTxt.setText(model.getWarningTitle());
     }
 
     @Override
@@ -49,7 +50,7 @@ public class WarningAdapter extends RecyclerView.Adapter<WarningAdapter.ViewHold
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView warningDteTxt,warningDetailsTxt;
+        public TextView warningDteTxt,warningDetailsTxt, warningTitileTxt;
 
         //public CardView mainLay;
 
@@ -58,6 +59,7 @@ public class WarningAdapter extends RecyclerView.Adapter<WarningAdapter.ViewHold
 
             warningDteTxt = (TextView)itemView.findViewById(R.id.warning_date);
             warningDetailsTxt = (TextView)itemView.findViewById(R.id.warning_details);
+            warningTitileTxt = (TextView)itemView.findViewById(R.id.warning_title);
 
         }
     }

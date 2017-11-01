@@ -17,6 +17,7 @@ import android.support.v7.app.AlertDialog;
 public class UtilsMethods
 {
     private static String imeiNo, mobNo;
+    public static final String downloadDirectory = "HRMS Attachment";
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     public static String getBlankIfStringNull(String toCheck)
     {

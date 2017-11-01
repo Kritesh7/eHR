@@ -6,6 +6,7 @@ package ehr.cfcs.com.ehr.Model;
 
 public class AssestDetailsModel
 {
+    public String name;
     public String assetsName;
     public String brandName;
     public String issuesDate;
@@ -13,14 +14,19 @@ public class AssestDetailsModel
     public String issuesReason;
     public String Remark;
 
-    public AssestDetailsModel(String assetsName, String brandName, String issuesDate,
+    public AssestDetailsModel(String name, String assetsName, String brandName, String issuesDate,
                               String expectedReturnDate, String issuesReason, String remark) {
+        this.name = name;
         this.assetsName = assetsName;
         this.brandName = brandName;
         this.issuesDate = issuesDate;
         this.expectedReturnDate = expectedReturnDate;
         this.issuesReason = issuesReason;
         Remark = remark;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getAssetsName() {

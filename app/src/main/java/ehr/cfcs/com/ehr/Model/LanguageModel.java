@@ -10,12 +10,18 @@ public class LanguageModel
     public String read;
     public String write;
     public String speak;
+    public String RecordID;
 
-    public LanguageModel(String langaugae, String read, String write, String speak) {
+    public LanguageModel(String langaugae, String read, String write, String speak, String RecordID) {
         this.langaugae = langaugae;
         this.read = read;
         this.write = write;
         this.speak = speak;
+        this.RecordID = RecordID;
+    }
+
+    public String getRecordID() {
+        return RecordID;
     }
 
     public String getLangaugae() {

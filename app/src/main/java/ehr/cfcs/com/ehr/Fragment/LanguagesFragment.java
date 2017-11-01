@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,19 +10,41 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.LangaugeAdapter;
 import ehr.cfcs.com.ehr.Adapter.TraningAdapter;
 import ehr.cfcs.com.ehr.Main.AddMedicalandAnssuranceActivity;
 import ehr.cfcs.com.ehr.Main.AddNewLnaguageActivity;
 import ehr.cfcs.com.ehr.Model.LanguageModel;
+import ehr.cfcs.com.ehr.Model.SkillsModel;
 import ehr.cfcs.com.ehr.Model.TraningModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,6 +68,10 @@ public class LanguagesFragment extends Fragment {
     public ArrayList<LanguageModel> list = new ArrayList<>();
     public RecyclerView langauageRecy;
     public FloatingActionButton fab;
+    public String langaugeUrl = SettingConstant.BaseUrl + "AppEmployeeLanguageList";
+    public ConnectionDetector conn;
+    public String userId = "",authCode = "";
+    public TextView noCust ;
 
     private OnFragmentInteractionListener mListener;
 
@@ -87,8 +114,14 @@ public class LanguagesFragment extends Fragment {
 
         langauageRecy = (RecyclerView)rootView.findViewById(R.id.lanagauage_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
 
-        adapter = new LangaugeAdapter(getActivity(),list);
+        conn = new ConnectionDetector(getActivity());
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
+
+
+        adapter = new LangaugeAdapter(getActivity(),list, getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         langauageRecy.setLayoutManager(mLayoutManager);
         langauageRecy.setItemAnimator(new DefaultItemAnimator());
@@ -96,13 +129,19 @@ public class LanguagesFragment extends Fragment {
 
         langauageRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        prepareInsDetails();
+       // prepareInsDetails();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), AddNewLnaguageActivity.class);
+                i.putExtra("ActionMode", "AddMode");
+                i.putExtra("RecordId", "");
+                i.putExtra("LangageName", "");
+                i.putExtra("Read","");
+                i.putExtra("Write","");
+                i.putExtra("Speak","");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -111,7 +150,7 @@ public class LanguagesFragment extends Fragment {
         return rootView;
     }
 
-    private void prepareInsDetails() {
+   /* private void prepareInsDetails() {
 
         LanguageModel model = new LanguageModel("English","Yes","Yes","Yes");
         list.add(model);
@@ -126,6 +165,106 @@ public class LanguagesFragment extends Fragment {
 
 
         adapter.notifyDataSetChanged();
+
+    }*/
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0) {
+
+            langauageList(authCode,userId);
+
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
+    }
+
+
+    //Skills list
+    public void langauageList(final String AuthCode , final String AdminID) {
+
+        final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, langaugeUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String LanguageName = jsonObject.getString("LanguageName");
+                        String Read = jsonObject.getString("Read");
+                        String Write = jsonObject.getString("Write");
+                        String Speak = jsonObject.getString("Speak");
+                        String RecordID = jsonObject.getString("RecordID");
+
+
+
+
+                        list.add(new LanguageModel(LanguageName,Read,Write,Speak,RecordID));
+
+
+
+                    }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        langauageRecy.setVisibility(View.GONE);
+                    }else
+                        {
+                            noCust.setVisibility(View.GONE);
+                            langauageRecy.setVisibility(View.VISIBLE);
+                        }
+
+                    adapter.notifyDataSetChanged();
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
 
