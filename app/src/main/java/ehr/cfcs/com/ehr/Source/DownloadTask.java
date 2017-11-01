@@ -204,7 +204,7 @@ public class DownloadTask
                         Toast.makeText(context, "Right now there is no directory. Please download some file first.", Toast.LENGTH_SHORT).show();
 
                     else {
-
+//
                         //If directory is present Open Folder
 
                         /** Note: Directory will open only if there is a app to open directory like File Manager, etc.  **/
