@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -71,6 +72,7 @@ public class OfficeallyDetailsFragment extends Fragment {
     public String officealyDocsUrl = SettingConstant.BaseUrl + "AppEmployeeOfficeDocumentList";
     public ConnectionDetector conn;
     public String userId = "",authCode = "";
+    public TextView noCust ;
 
 
     public OfficeallyDetailsFragment() {
@@ -112,12 +114,14 @@ public class OfficeallyDetailsFragment extends Fragment {
 
         officelyRecycler = (RecyclerView)rootView.findViewById(R.id.officely_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
+
 
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
-        adapter = new OfficelyAdapter(getActivity(),list);
+        adapter = new OfficelyAdapter(getActivity(),list,getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         officelyRecycler.setLayoutManager(mLayoutManager);
         officelyRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -140,7 +144,7 @@ public class OfficeallyDetailsFragment extends Fragment {
         return rootView;
     }
 
-    private void prepareInsDetails() {
+  /*  private void prepareInsDetails() {
 
         OfficealyModel model = new OfficealyModel("Education Document","4","03-09-2017","02-01-2017","Agra");
         list.add(model);
@@ -156,7 +160,7 @@ public class OfficeallyDetailsFragment extends Fragment {
 
         adapter.notifyDataSetChanged();
 
-    }
+    }*/
     @Override
     public void onResume() {
         super.onResume();
@@ -199,14 +203,29 @@ public class OfficeallyDetailsFragment extends Fragment {
                         String ExpiryDate = jsonObject.getString("ExpiryDate");
                         String IssuePlace = jsonObject.getString("IssuePlace");
                         String Number = jsonObject.getString("Number");
+                        String Deleteable = jsonObject.getString("Deleteable");
+                        String FileNameText = jsonObject.getString("FileNameText");
+                        String RecordID = jsonObject.getString("RecordID");
 
 
 
-                        list.add(new OfficealyModel(DocumentTypeName,Number,IssueDate,ExpiryDate,IssuePlace));
+                        list.add(new OfficealyModel(DocumentTypeName,Number,IssueDate,ExpiryDate,IssuePlace,FileNameText,Deleteable,
+                                RecordID));
 
 
 
                     }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        officelyRecycler.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        officelyRecycler.setVisibility(View.VISIBLE);
+                    }
+
 
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -70,6 +71,7 @@ public class MedicalAndEnsuranceFragment extends Fragment {
     public String policyUrl = SettingConstant.BaseUrl + "AppEmployeeMedicalPolicy";
     public ConnectionDetector conn;
     public String userId = "",authCode = "";
+    public TextView noCust ;
 
     private OnFragmentInteractionListener mListener;
 
@@ -112,6 +114,8 @@ public class MedicalAndEnsuranceFragment extends Fragment {
 
         medicalAnssuredRecy = (RecyclerView)rootView.findViewById(R.id.medical_anssured_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
+
 
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
@@ -133,7 +137,7 @@ public class MedicalAndEnsuranceFragment extends Fragment {
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), AddMedicalandAnssuranceActivity.class);
-                i.putExtra("RecordId","0");
+                i.putExtra("RecordId","");
                 i.putExtra("Mode","AddMode");
                 i.putExtra("PolicyType","");
                 i.putExtra("PolicyName","");
@@ -144,6 +148,7 @@ public class MedicalAndEnsuranceFragment extends Fragment {
                 i.putExtra("AmountInsured","");
                 i.putExtra("StartDate","");
                 i.putExtra("EndDate", "");
+                i.putExtra("File","");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -214,15 +219,26 @@ public class MedicalAndEnsuranceFragment extends Fragment {
                         String InsuranceCompany = jsonObject.getString("InsuranceCompany");
                         String StartDate = jsonObject.getString("StartDate");
                         String EndDate = jsonObject.getString("EndDate");
-
+                        String FileNameText = jsonObject.getString("FileNameText");
 
 
                         list.add(new MedicalAnssuranceModel(PolicyTypeName,Number,Duration,Name,AmountInsured,PolicyBy,RecordID,
-                                InsuranceCompany,StartDate,EndDate));
+                                InsuranceCompany,StartDate,EndDate,FileNameText));
 
 
 
                     }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        medicalAnssuredRecy.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        medicalAnssuredRecy.setVisibility(View.VISIBLE);
+                    }
+
 
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();

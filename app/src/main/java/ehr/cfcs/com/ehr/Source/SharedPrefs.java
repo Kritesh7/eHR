@@ -164,16 +164,16 @@ public class SharedPrefs
 
 
     //get Source Time
-    public static String getSourceTime(Context context)
+    public static String getCompanyId(Context context)
     {
         SharedPreferences sp = getSetting(context);
-        return  sp.getString(SettingConstant.SourceTime, null);
+        return  sp.getString(SettingConstant.CompanyId, null);
     }
-    public static boolean setSourceTime(Context context, String authKey)
+    public static boolean setCompanyId(Context context, String authKey)
     {
         SharedPreferences sp = getSetting(context);
         SharedPreferences.Editor editor = sp.edit();
-        editor.putString(SettingConstant.SourceTime, authKey);
+        editor.putString(SettingConstant.CompanyId, authKey);
         return editor.commit();
     }
 

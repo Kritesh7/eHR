@@ -30,7 +30,7 @@ public class SettingConstant {
     protected static final String UserType = "UserType";
     protected static final String Sourcelog = "Source_Lognitude";
     protected static final String MgrDir = "MgrDir";
-    protected static final String SourceTime = "SourceTime";
+    protected static final String CompanyId = "CompanyId";
 
 
 }

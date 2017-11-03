@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -72,6 +73,8 @@ public class DependnetsFragment extends Fragment {
     public RecyclerView dependetRecy;
     public ConnectionDetector conn;
     public String userId = "",authCode = "";
+    public TextView noCust ;
+
 
     public DependnetsFragment() {
         // Required empty public constructor
@@ -112,6 +115,7 @@ public class DependnetsFragment extends Fragment {
 
         dependetRecy = (RecyclerView)rootView.findViewById(R.id.dependent_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
 
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
@@ -211,9 +215,18 @@ public class DependnetsFragment extends Fragment {
 
                         list.add(new DependentModel(FirstName , LastName ,DOB,GenderName,RelationshipName,RecordID));
 
-
-
                     }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        dependetRecy.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        dependetRecy.setVisibility(View.VISIBLE);
+                    }
+
 
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();

@@ -161,6 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                             String UserName = jsonObject.getString("UserName");
                             String Type = jsonObject.getString("Type");
                             String MgrID = jsonObject.getString("MgrID");
+                            String CompID = jsonObject.getString("CompID");
                             /*String RoleName = jsonObject.getString("RoleName");
                             String EmailID = jsonObject.getString("EmailID");
                             String MobileNo = jsonObject.getString("MobileNo");
@@ -191,9 +192,10 @@ public class LoginActivity extends AppCompatActivity {
                                     Type)));
                             UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setMgrDir(LoginActivity.this,
                                     MgrID)));
-                           /* UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(LoginActivity.this, AuthCode)));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyId(LoginActivity.this,
+                                    CompID)));
 
-                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setZoneId(LoginActivity.this, ZoneID)));*/
+
 
                         }
 

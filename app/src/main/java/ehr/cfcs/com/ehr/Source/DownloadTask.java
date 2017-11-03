@@ -40,12 +40,32 @@ public class DownloadTask
     public static final int progress_bar_type = 0;
     private String downloadUrl = "", downloadFileName = "";
     private Activity activity;
+    public String checkNavigate ;
 
-    public DownloadTask(Context context, String downloadUrl) {
+    public DownloadTask(Context context, String downloadUrl, String checkNavigate) {
         this.context = context;
         this.downloadUrl = downloadUrl;
+        this.checkNavigate = checkNavigate;
 
-        downloadFileName = downloadUrl.replace(SettingConstant.DownloadUrl+"Images/AppreceationFile/", "");//Create file name by picking download file name from URL
+        if (checkNavigate.equalsIgnoreCase("Appreciation")) {
+
+            downloadFileName = downloadUrl.replace(SettingConstant.DownloadUrl + "Images/AppreceationFile/", "");//Create file name by picking download file name from URL
+
+        }else if (checkNavigate.equalsIgnoreCase("Warning"))
+        {
+            downloadFileName = downloadUrl.replace(SettingConstant.DownloadUrl + "Images/WarningFile/", "");//Create file name by picking download file name from URL
+
+        }else if (checkNavigate.equalsIgnoreCase("OfficealDocs"))
+        {
+
+            downloadFileName = downloadUrl.replace(SettingConstant.DownloadUrl + "Images/NMT_Document/", "");//Create file name by picking download file name from URL
+
+
+        }else if (checkNavigate.equalsIgnoreCase("MedialAnssurance"))
+        {
+            downloadFileName = downloadUrl.replace(SettingConstant.DownloadUrl + "Images/MedicalPolicyDocument/", "");//Create file name by picking download file name from URL
+
+        }
         Log.e("Download Url", downloadFileName);
 
         //Start Downloading Task

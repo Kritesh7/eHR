@@ -1,12 +1,16 @@
 package ehr.cfcs.com.ehr.Adapter;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.Image;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,6 +34,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ehr.cfcs.com.ehr.Main.AddMedicalandAnssuranceActivity;
@@ -38,6 +43,7 @@ import ehr.cfcs.com.ehr.Main.ViewRequestDetailsActivity;
 import ehr.cfcs.com.ehr.Model.MedicalAnssuranceModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.DownloadTask;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
@@ -53,6 +59,14 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
     public Activity activity;
     public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeMedicalPolicyDelete";
     public String authCode = "";
+    String[] permissions = new String[]{
+
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+
+    };
+    public String checkNavigateStr = "MedialAnssurance";
+    public String userid = "";
 
     public MedicalAnssuredAdapter(Context context, ArrayList<MedicalAnssuranceModel> list, Activity activity) {
         this.context = context;
@@ -73,6 +87,7 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
         MedicalAnssuranceModel model = list.get(position);
         
         authCode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(context)));
+        userid = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(context)));
 
 
         holder.policyTypeTxt.setText(model.getPolicyType());
@@ -98,6 +113,7 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
                 i.putExtra("AmountInsured",model.getPolicyInsured());
                 i.putExtra("StartDate",model.getStartDate());
                 i.putExtra("EndDate", model.getEndDate());
+                i.putExtra("File",model.getFileNameText());
                 activity.startActivity(i);
                 activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -108,7 +124,27 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
             @Override
             public void onClick(View view) {
 
-                showSettingsAlert(position,authCode,model.getRecordId());
+                showSettingsAlert(position,authCode,model.getRecordId(),userid);
+            }
+        });
+
+        if (model.getFileNameText().equalsIgnoreCase(""))
+        {
+            holder.downloadLay.setVisibility(View.GONE);
+            holder.view.setVisibility(View.GONE);
+        }else
+        {
+            holder.downloadLay.setVisibility(View.VISIBLE);
+            holder.view.setVisibility(View.VISIBLE);
+        }
+
+        holder.downloadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (checkPermissions()) {
+                    new DownloadTask(context, SettingConstant.DownloadUrl + model.getFileNameText(),checkNavigateStr);
+                }
             }
         });
     }
@@ -122,6 +158,9 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
         public TextView policyTypeTxt,policyNumberTxt,policyDurationTxt,policyNameTxt, amountInsuredTxt, policyByTxt;
         public ImageView delBtn;
         public ImageView mainLay;
+        public View view;
+        public LinearLayout downloadLay;
+        public ImageView downloadBtn;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -134,6 +173,9 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
             policyByTxt = (TextView)itemView.findViewById(R.id.policyby);
             delBtn = (ImageView) itemView.findViewById(R.id.delbtn);
             mainLay = (ImageView)itemView.findViewById(R.id.main_lay);
+            downloadLay = (LinearLayout) itemView.findViewById(R.id.downloadOptionLay);
+            view = (View)itemView.findViewById(R.id.view);
+            downloadBtn = (ImageView) itemView.findViewById(R.id.downloadOptionBtn);
 
         }
     }
@@ -148,7 +190,7 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
         notifyDataSetChanged();
     }
 
-    public void showSettingsAlert(final int postion, final String authcode, final String recordId) {
+    public void showSettingsAlert(final int postion, final String authcode, final String recordId, final String userId) {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
@@ -162,7 +204,7 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
-                deleteMethod(authcode,recordId, postion);
+                deleteMethod(authcode,recordId, postion,userId);
             }
         });
 
@@ -177,7 +219,7 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
         alertDialog.show();
     }
     //delete the Details
-    public void deleteMethod(final String AuthCode ,final String RecordID, final int  postion) {
+    public void deleteMethod(final String AuthCode ,final String RecordID, final int  postion, final String AdminID) {
 
         final ProgressDialog pDialog = new ProgressDialog(context,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -228,6 +270,7 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
                 params.put("RecordID",RecordID);
 
                 Log.e("Parms", params.toString());
@@ -241,4 +284,20 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
+    private boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p : permissions) {
+            result = ContextCompat.checkSelfPermission(context, p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(activity, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 100);
+            return false;
+        }
+        return true;
+    }
+
 }

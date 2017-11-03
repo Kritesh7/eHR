@@ -16,10 +16,12 @@ public class MedicalAnssuranceModel
     public String insuranceComp;
     public String startDate;
     public String endDate;
+    public String FileNameText;
+
 
     public MedicalAnssuranceModel(String policyType, String policyNumber, String policyDuration, String policyName,
                                   String policyInsured, String policyBy, String recordId, String insuranceComp, String startDate,
-                                  String endDate) {
+                                  String endDate, String FileNameText) {
         this.policyType = policyType;
         this.policyNumber = policyNumber;
         this.policyDuration = policyDuration;
@@ -30,6 +32,13 @@ public class MedicalAnssuranceModel
         this.insuranceComp = insuranceComp;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.FileNameText = FileNameText;
+
+    }
+
+
+    public String getFileNameText() {
+        return FileNameText;
     }
 
     public String getEndDate() {

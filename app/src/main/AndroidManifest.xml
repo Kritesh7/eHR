@@ -109,7 +109,7 @@
             android:name=".Main.AddPreviousExpreinceActivity"
             android:label="@string/title_activity_add_previous_expreince"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Main.AddNewLnaguageActivity"
             android:label="@string/title_activity_add_new_lnaguage"
@@ -118,7 +118,7 @@
             android:name=".Main.AddNewSkilActivity"
             android:label="@string/title_activity_add_new_skil"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Main.ForGotPasswordActivity"
             android:label="@string/title_activity_for_got_password"
@@ -154,6 +154,11 @@
         <activity
             android:name=".Main.AddNewEmergencyContactDetailsActivity"
             android:label="@string/title_activity_add_new_emergency_contact_details"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".Main.AddNewContactActivity"
+            android:label="@string/title_activity_add_new_contact"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -39,6 +39,7 @@ public class AppreceationAdapter extends RecyclerView.Adapter<AppreceationAdapte
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
 
     };
+    public String checkNavigateStr = "Appreciation";
     public Activity activity;
 
     public AppreceationAdapter(Context context, ArrayList<AppreceationModel> list, Activity activity) {
@@ -79,7 +80,7 @@ public class AppreceationAdapter extends RecyclerView.Adapter<AppreceationAdapte
             public void onClick(View view) {
 
                 if (checkPermissions()) {
-                    new DownloadTask(context, SettingConstant.DownloadUrl + model.getFileNameText());
+                    new DownloadTask(context, SettingConstant.DownloadUrl + model.getFileNameText(),checkNavigateStr);
                 }
 
             }

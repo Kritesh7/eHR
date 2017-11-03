@@ -11,13 +11,32 @@ public class OfficealyModel
     public String issuesDate;
     public String expiryDate;
     public String placeOfIssues;
+    public String FileNameText;
+    public String Deleteable;
+    public String RecordID;
 
-    public OfficealyModel(String documentType, String noOfDocuments, String issuesDate, String expiryDate, String placeOfIssues) {
+    public OfficealyModel(String documentType, String noOfDocuments, String issuesDate, String expiryDate, String placeOfIssues,
+                          String FileNameText, String Deleteable, String RecordID) {
         this.documentType = documentType;
         this.noOfDocuments = noOfDocuments;
         this.issuesDate = issuesDate;
         this.expiryDate = expiryDate;
         this.placeOfIssues = placeOfIssues;
+        this.FileNameText = FileNameText;
+        this.Deleteable = Deleteable;
+        this.RecordID = RecordID;
+    }
+
+    public String getRecordID() {
+        return RecordID;
+    }
+
+    public String getFileNameText() {
+        return FileNameText;
+    }
+
+    public String getDeleteable() {
+        return Deleteable;
     }
 
     public String getDocumentType() {

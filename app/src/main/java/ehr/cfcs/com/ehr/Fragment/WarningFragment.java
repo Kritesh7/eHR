@@ -115,7 +115,7 @@ public class WarningFragment extends Fragment {
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
 
-        adapter = new WarningAdapter(getActivity(),list);
+        adapter = new WarningAdapter(getActivity(),list, getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         warningRecycler.setLayoutManager(mLayoutManager);
         warningRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -184,8 +184,9 @@ public class WarningFragment extends Fragment {
                         String WarningTitle = jsonObject.getString("WarningTitle");
                         String WarningDetail = jsonObject.getString("WarningDetail");
                         String WarningDateText = jsonObject.getString("WarningDateText");
+                        String FileNameText = jsonObject.getString("FileNameText");
 
-                        list.add(new WarningModel(WarningDateText,WarningDetail,WarningTitle));
+                        list.add(new WarningModel(WarningDateText,WarningDetail,WarningTitle,FileNameText));
 
 
 

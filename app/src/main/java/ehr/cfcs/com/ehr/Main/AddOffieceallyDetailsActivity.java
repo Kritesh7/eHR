@@ -37,6 +37,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -108,7 +109,10 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
     public  ArrayAdapter<DocumentTypeModel> documentAdapter;
     public ConnectionDetector conn;
     public Button addBtn;
-    public String userId = "", authcode = "", documentId = "", imageBase64 = "", imageExtenstion = "";
+    public String userId = "", authcode = "", documentId = "", imageBase64 = "", imageExtenstion = "", userNameStr = "", compId = ""
+            ,documentTxt = "";
+    public LinearLayout fileSelectTxt;
+    public ImageView crossBtn;
 
 
     @Override
@@ -148,7 +152,8 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
         conn = new ConnectionDetector(AddOffieceallyDetailsActivity.this);
         authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddOffieceallyDetailsActivity.this)));
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddOffieceallyDetailsActivity.this)));
-
+        userNameStr = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getUserName(AddOffieceallyDetailsActivity.this)));
+        compId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getCompanyId(AddOffieceallyDetailsActivity.this)));
 
         documentTypeSpinner = (Spinner) findViewById(R.id.documenttypespinner);
         uploadBtn = (Button) findViewById(R.id.uploaddocsbtn);
@@ -159,6 +164,8 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
         noTxt = (EditText) findViewById(R.id.number);
         issuesOfPlaceTxt = (EditText) findViewById(R.id.issueplace);
         addBtn = (Button) findViewById(R.id.newrequestbtn);
+        fileSelectTxt = (LinearLayout) findViewById(R.id.file_selecttxt);
+        crossBtn = (ImageView) findViewById(R.id.crossbtn);
 
         //DOcument Type List Spinner
         //change spinner arrow color
@@ -282,6 +289,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 documentId = documentTypeList.get(i).getDocTypeId();
+                documentTxt = documentTypeList.get(i).getDocTypeName();
             }
 
             @Override
@@ -305,13 +313,28 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                     if (conn.getConnectivityStatus() > 0) {
 
                         addOfficealyDocs(userId, "0", documentId, noTxt.getText().toString(), authcode, issuesOfPlaceTxt.getText().toString(),
-                                expiryDateTxt.getText().toString(), issueDateTxt.getText().toString(), imageBase64, imageExtenstion);
+                                expiryDateTxt.getText().toString(), issueDateTxt.getText().toString(), imageBase64, imageExtenstion,
+                                compId,userNameStr,documentTxt);
 
                     } else {
                         conn.showNoInternetAlret();
                     }
 
                 }
+            }
+        });
+
+
+        //cross uploadede docs
+        crossBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                uploadBtn.setVisibility(View.VISIBLE);
+                fileSelectTxt.setVisibility(View.GONE);
+
+                imageBase64 = "";
+                imageExtenstion = "";
             }
         });
     }
@@ -385,6 +408,10 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                                 imageBase64 = convertFileToByteArray(file);
                                 Log.e("checking the frount 64", convertFileToByteArray(file) + "Null");
                             }
+
+                        //File select Successfully Text Visibile
+                        fileSelectTxt.setVisibility(View.VISIBLE);
+                        uploadBtn.setVisibility(View.GONE);
 
                     } catch (IOException e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -631,7 +658,8 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
     // add the officeally document
     public void addOfficealyDocs(final String AdminID  ,final String RecordID, final String DocumentID, final String Number,
                                          final String AuthCode, final String IssuePlace, final String ExpiryDate, final String IssueDate,
-                                         final String FileJson, final String FileExtension)  {
+                                         final String FileJson, final String FileExtension, final String CompID, final String UserName,
+                                 final String Document)  {
 
         final ProgressDialog pDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -689,6 +717,11 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                 params.put("IssueDate",IssueDate);
                 params.put("FileJson",FileJson);
                 params.put("FileExtension",FileExtension);
+                params.put("CompID",CompID);
+                params.put("UserName",UserName);
+                params.put("Document",Document);
+
+
 
 
 

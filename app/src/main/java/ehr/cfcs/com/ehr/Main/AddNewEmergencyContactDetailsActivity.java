@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -61,7 +62,9 @@ public class AddNewEmergencyContactDetailsActivity extends AppCompatActivity {
     public ArrayList<CountryModel> countryList = new ArrayList<>();
     public ArrayAdapter<String> titleAdapter;
     public ConnectionDetector conn;
+    public LinearLayout radioBtnLay;
     public Button addBtn;
+    public TextView emgTxt;
     public String authcode = "", userId = "", type = "0", titleStr = "", relationshipIdStr = "", countryIdStr = "",recordIdStr = ""
             , titlePassStr = "",namePassStr = "",relationshipPassNameStr = "",addressPassStr = "", cityPassStr = "",statePassStr =""
             , countryNamePassStr = "", postalCodePassStr = "",telPassStr = "",mobPassStr = "",emailPassStr = "", typePassStr = ""
@@ -146,6 +149,8 @@ public class AddNewEmergencyContactDetailsActivity extends AppCompatActivity {
         mobileNoTxt = (EditText) findViewById(R.id.emg_mobile_no);
         emailTxt = (EditText) findViewById(R.id.emg_email);
         addBtn = (Button) findViewById(R.id.newrequestbtn);
+        radioBtnLay = (LinearLayout) findViewById(R.id.radiobtnlay);
+        emgTxt = (TextView) findViewById(R.id.emgtxt);
 
 
         //check action mode
@@ -167,15 +172,24 @@ public class AddNewEmergencyContactDetailsActivity extends AppCompatActivity {
             {
                 primoryBtn.setChecked(true);
                 type = "0";
+                emgTxt.setText("Primary Contact");
             }else
             {
                 secondaryBtn.setChecked(true);
                 type = "1";
+
+                emgTxt.setText("Secondary Contact");
             }
+
+            radioBtnLay.setVisibility(View.GONE);
+            emgTxt.setVisibility(View.VISIBLE);
         }else
         {
             primoryBtn.setChecked(true);
             type = "0";
+
+            radioBtnLay.setVisibility(View.VISIBLE);
+            emgTxt.setVisibility(View.GONE);
         }
 
 
@@ -280,24 +294,29 @@ public class AddNewEmergencyContactDetailsActivity extends AppCompatActivity {
                 }else if (nameTxt.getText().toString().equalsIgnoreCase(""))
                 {
                     nameTxt.setError("Please enter name");
+                    nameTxt.requestFocus();
                 }else if (relationshipIdStr.equalsIgnoreCase(""))
                 {
                     Toast.makeText(AddNewEmergencyContactDetailsActivity.this, "Please select Relationship", Toast.LENGTH_SHORT).show();
                 }else if (addTxt.getText().toString().equalsIgnoreCase(""))
                 {
                     addTxt.setError("Please enter address");
+                    addTxt.requestFocus();
                 }else if (cityTxt.getText().toString().equalsIgnoreCase(""))
                 {
                     cityTxt.setError("Please enter city");
+                    cityTxt.requestFocus();
                 }else if (stateTxt.getText().toString().equalsIgnoreCase(""))
                 {
                     stateTxt.setError("Please enter state");
+                    stateTxt.requestFocus();
                 }else if (countryIdStr.equalsIgnoreCase(""))
                 {
                     Toast.makeText(AddNewEmergencyContactDetailsActivity.this, "Please select country", Toast.LENGTH_SHORT).show();
                 }else if (postalCodeTxt.getText().toString().equalsIgnoreCase(""))
                 {
                     postalCodeTxt.setError("Please enter postal code");
+                    postalCodeTxt.requestFocus();
                 }else {
                     if (conn.getConnectivityStatus() > 0) {
                         addEmergencyContactDetails(userId, recordIdStr, type, titleStr, authcode, nameTxt.getText().toString(), relationshipIdStr,

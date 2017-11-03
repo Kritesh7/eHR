@@ -9,11 +9,17 @@ public class WarningModel
     public String warningDate;
     public String warningDetails;
     public String warningTitle;
+    public String FileNameText;
 
-    public WarningModel(String warningDate, String warningDetails, String warningTitle) {
+    public WarningModel(String warningDate, String warningDetails, String warningTitle, String FileNameText) {
         this.warningDate = warningDate;
         this.warningDetails = warningDetails;
         this.warningTitle = warningTitle;
+        this.FileNameText = FileNameText;
+    }
+
+    public String getFileNameText() {
+        return FileNameText;
     }
 
     public String getWarningTitle() {

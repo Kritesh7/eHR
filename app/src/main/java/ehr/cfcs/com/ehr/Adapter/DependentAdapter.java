@@ -50,7 +50,7 @@ public class DependentAdapter extends RecyclerView.Adapter<DependentAdapter.View
     public ArrayList<DependentModel> list = new ArrayList<>();
     public Activity activity;
     public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeDependentDelete";
-    public String authCode = "";
+    public String authCode = "", userid = "";
 
     public DependentAdapter(Context context, ArrayList<DependentModel> list, Activity activity) {
         this.context = context;
@@ -71,6 +71,7 @@ public class DependentAdapter extends RecyclerView.Adapter<DependentAdapter.View
         DependentModel model = list.get(position);
 
         authCode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(context)));
+        userid = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(context)));
 
         holder.nameTxt.setText(model.getFirstName()+ " " + model.getLastName());
         holder.dobTxt.setText(model.getDob());
@@ -99,7 +100,7 @@ public class DependentAdapter extends RecyclerView.Adapter<DependentAdapter.View
             @Override
             public void onClick(View view) {
 
-                showSettingsAlert(position,authCode,model.getRecordId());
+                showSettingsAlert(position,authCode,model.getRecordId(),userid);
             }
         });
     }
@@ -135,7 +136,7 @@ public class DependentAdapter extends RecyclerView.Adapter<DependentAdapter.View
         notifyDataSetChanged();
     }
 
-    public void showSettingsAlert(final int postion, final String authcode, final String recordId) {
+    public void showSettingsAlert(final int postion, final String authcode, final String recordId, final String userid) {
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
@@ -149,7 +150,7 @@ public class DependentAdapter extends RecyclerView.Adapter<DependentAdapter.View
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
-                deleteMethod(authcode,recordId, postion);
+                deleteMethod(authcode,recordId, postion,userid);
             }
         });
 
@@ -164,7 +165,7 @@ public class DependentAdapter extends RecyclerView.Adapter<DependentAdapter.View
         alertDialog.show();
     }
     //delete the Details
-    public void deleteMethod(final String AuthCode ,final String RecordID, final int  postion) {
+    public void deleteMethod(final String AuthCode ,final String RecordID, final int  postion, final String AdminID) {
 
         final ProgressDialog pDialog = new ProgressDialog(context,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -216,6 +217,7 @@ public class DependentAdapter extends RecyclerView.Adapter<DependentAdapter.View
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
                 params.put("RecordID",RecordID);
+                params.put("AdminID",AdminID);
 
                 Log.e("Parms", params.toString());
                 return params;
