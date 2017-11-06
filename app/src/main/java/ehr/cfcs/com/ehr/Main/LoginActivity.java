@@ -162,12 +162,11 @@ public class LoginActivity extends AppCompatActivity {
                             String Type = jsonObject.getString("Type");
                             String MgrID = jsonObject.getString("MgrID");
                             String CompID = jsonObject.getString("CompID");
-                            /*String RoleName = jsonObject.getString("RoleName");
-                            String EmailID = jsonObject.getString("EmailID");
-                            String MobileNo = jsonObject.getString("MobileNo");
-                            String ZoneID = jsonObject.getString("ZoneID");
-                            String ZoneName = jsonObject.getString("ZoneName");
-                            String AuthCode = jsonObject.getString("AuthCode");*/
+                            String EmpID = jsonObject.getString("EmpID");
+                            String EmployeePhoto = jsonObject.getString("EmployeePhoto");
+                            String DesignationName = jsonObject.getString("DesignationName");
+                            String CompanyLogo = jsonObject.getString("CompanyLogo");
+
 
 
 
@@ -194,6 +193,15 @@ public class LoginActivity extends AppCompatActivity {
                                     MgrID)));
                             UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyId(LoginActivity.this,
                                     CompID)));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpId(LoginActivity.this,
+                                    EmpID)));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpPhoto(LoginActivity.this,
+                                    EmployeePhoto)));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setDesignation(LoginActivity.this,
+                                    DesignationName)));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(LoginActivity.this,
+                                    CompanyLogo)));
+
 
 
 

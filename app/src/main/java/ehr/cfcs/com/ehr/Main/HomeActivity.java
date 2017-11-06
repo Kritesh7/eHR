@@ -16,10 +16,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+
 import ehr.cfcs.com.ehr.Fragment.AssestDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.AttendaceListFragment;
 import ehr.cfcs.com.ehr.Fragment.AttendanceFragment;
+import ehr.cfcs.com.ehr.Fragment.ContactPhoneFragment;
 import ehr.cfcs.com.ehr.Fragment.ContactsDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.DashBoardFragment;
 import ehr.cfcs.com.ehr.Fragment.DependnetsFragment;
@@ -45,6 +54,7 @@ import ehr.cfcs.com.ehr.Fragment.TaxiListFragment;
 import ehr.cfcs.com.ehr.Fragment.TrainingFragment;
 import ehr.cfcs.com.ehr.Fragment.WeekOfListFragment;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
@@ -80,14 +90,16 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     private static final String TAG_Short_Leave_History = "Short Leave History";
     private static final String TAG_WeekOf = "Week Of";
     private static final String TAG_Holiday_List = "Holiday List";
-
-
-
+    private static final String TAG_Contact_Phone = "Contact Phone";
+    public String userNameStr = "", photoStr = "", empIdStr = "", designationStr = "",companLogoStr = "";
     public static int navigationItemIndex = 0;
     public Toolbar toolbar;
     public static String CURRENT_TAG = TAG_Dashboard;
     private boolean shouldLoadHomeFragOnBackPress = true;
     public TextView titleTxt;
+    public de.hdodenhof.circleimageview.CircleImageView proImg;
+    public TextView nameTxt, designationTxt, empIdTxt;
+    public ImageView backImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,8 +124,56 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         drawerLayout = (DrawerLayout) findViewById(R.id.home_drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.home_navigation);
 
+
+   //     headeLay = (RelativeLayout) navigationView.findViewById(R.id.view_container) ;
+
+
         navHeader = navigationView.getHeaderView(0);
         navigationView.setItemIconTintList(null);
+        proImg = (de.hdodenhof.circleimageview.CircleImageView) navHeader.findViewById(R.id.pro_image);
+        nameTxt = (TextView) navHeader.findViewById(R.id.name);
+        empIdTxt = (TextView) navHeader.findViewById(R.id.empid);
+        designationTxt = (TextView) navHeader.findViewById(R.id.designation);
+        backImg = (ImageView) navHeader.findViewById(R.id.backimage);
+
+        userNameStr = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getUserName(HomeActivity.this)));
+        photoStr = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getEmpPhoto(HomeActivity.this)));
+        empIdStr = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getEmpId(HomeActivity.this)));
+        designationStr = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getDesignation(HomeActivity.this)));
+        companLogoStr = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getCompanyLogo(HomeActivity.this)));
+
+        nameTxt.setText(userNameStr);
+        empIdTxt.setText(empIdStr);
+        designationTxt.setText(designationStr);
+
+        //set profile Image
+        Picasso pic = Picasso.with(HomeActivity.this);
+        pic.setIndicatorsEnabled(true);
+        pic.with(HomeActivity.this).cancelRequest(proImg);
+        pic.with(HomeActivity.this)
+                .load(SettingConstant.DownloadUrl + photoStr)
+                .placeholder(R.drawable.prf)
+                .error(R.drawable.prf)
+                .networkPolicy(NetworkPolicy.NO_CACHE)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .tag(HomeActivity.this)
+                .into(proImg);
+
+        //set Back Image
+        Picasso backImgLoad = Picasso.with(HomeActivity.this);
+        backImgLoad.setIndicatorsEnabled(true);
+        backImgLoad.with(HomeActivity.this).cancelRequest(backImg);
+        backImgLoad.with(HomeActivity.this)
+                .load(SettingConstant.DownloadUrl + companLogoStr)
+                .placeholder(R.drawable.logomain)
+                .error(R.drawable.logomain)
+                .networkPolicy(NetworkPolicy.NO_CACHE)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .tag(HomeActivity.this)
+                .into(backImg);
+
+
+
 
         setUpNavigationView();
         if (savedInstanceState == null) {
@@ -217,7 +277,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         navigationItemIndex = 9;
                         CURRENT_TAG = TAG_Employ_ContactsDetails;
-                        titleTxt.setText("Contact Details");
+                        titleTxt.setText("Contact Address");
 
                         break;
 
@@ -225,7 +285,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         navigationItemIndex = 10;
                         CURRENT_TAG = TAG_Employ_Emergency_CntactDetails;
-                        titleTxt.setText("Emergency Contact Details");
+                        titleTxt.setText("Emergency Contact Address");
 
                         break;
 
@@ -341,6 +401,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         break;
 
+                    case R.id.nav_contact_phone:
+
+                        navigationItemIndex = 26;
+                        CURRENT_TAG = TAG_Contact_Phone;
+                        titleTxt.setText("Contact Phone");
+                        break;
+
+
 
                     case R.id.nav_logout:
 
@@ -362,6 +430,18 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                                 "")));
                         UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(HomeActivity.this,
                                 "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpId(HomeActivity.this,
+                                "")));
+
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpPhoto(HomeActivity.this,
+                                "")));
+
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setDesignation(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(HomeActivity.this,
+                                "")));
+
+
 
 
                         CURRENT_TAG = TAG_Employ_Logout;
@@ -730,6 +810,16 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 transaction.commit();
                 return newFragment ;
 
+            case 26:
+
+                newFragment = new ContactPhoneFragment();
+                transaction.replace(R.id.home_navigation_framelayout, newFragment);
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                return newFragment ;
             default:
                 return new DashBoardFragment();
         }

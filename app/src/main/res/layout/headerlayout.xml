@@ -3,19 +3,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/view_container"
     android:layout_width="match_parent"
-    android:layout_height="220dp"
+    android:layout_height="250dp"
     android:gravity="bottom"
-    android:padding="10dp"
     android:orientation="vertical"
     android:background="#E0E0E0"
     android:elevation="15dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:orientation="vertical"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ImageView
             android:scaleType="fitXY"
             android:layout_gravity="center"
@@ -25,31 +29,62 @@
             android:src="@drawable/logomain"
             />
 
-        <!--<LinearLayout
+    </LinearLayout>
+
+        <View
             android:layout_width="match_parent"
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_height="match_parent"
+            android:background="#000000"
+            android:alpha=".7"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:background="@android:color/transparent"
+        android:id="@+id/pro_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/prf"/>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
             android:orientation="vertical"
-            android:padding="16dp">
-           &lt;!&ndash; <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/img_profile"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:paddingTop="16dp"
-                android:src="@drawable/image" />&ndash;&gt;
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/name"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:text="Himanshu Dubey"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+                android:text="Name"/>
+
             <TextView
-                android:text="School Name"
-                android:id="@+id/nav_user_id"
+                android:id="@+id/empid"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>-->
+                android:layout_height="wrap_content"
+                android:text="Name"/>
+
+            <TextView
+                android:id="@+id/designation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name"/>
+
+        </LinearLayout>
     </LinearLayout>
+
+
+
 </RelativeLayout>

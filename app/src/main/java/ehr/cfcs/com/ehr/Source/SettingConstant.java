@@ -31,6 +31,10 @@ public class SettingConstant {
     protected static final String Sourcelog = "Source_Lognitude";
     protected static final String MgrDir = "MgrDir";
     protected static final String CompanyId = "CompanyId";
+    protected static final String EmpId = "EmpId";
+    protected static final String EmpPhoto = "EmpPhoto";
+    protected static final String Designation = "Designation";
+    protected static final String CompanLogo = "CompanLogo";
 
 
 }

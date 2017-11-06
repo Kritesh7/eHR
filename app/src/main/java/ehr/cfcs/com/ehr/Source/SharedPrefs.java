@@ -177,4 +177,60 @@ public class SharedPrefs
         return editor.commit();
     }
 
+    //Emp Id
+    public static String getEmpId(Context context)
+    {
+        SharedPreferences sp = getSetting(context);
+        return  sp.getString(SettingConstant.EmpId, null);
+    }
+    public static boolean setEmpId(Context context, String authKey)
+    {
+        SharedPreferences sp = getSetting(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(SettingConstant.EmpId, authKey);
+        return editor.commit();
+    }
+
+    //Employe Photo
+    public static String getEmpPhoto(Context context)
+    {
+        SharedPreferences sp = getSetting(context);
+        return  sp.getString(SettingConstant.EmpPhoto, null);
+    }
+    public static boolean setEmpPhoto(Context context, String authKey)
+    {
+        SharedPreferences sp = getSetting(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(SettingConstant.EmpPhoto, authKey);
+        return editor.commit();
+    }
+
+    //designation
+    public static String getDesignation(Context context)
+    {
+        SharedPreferences sp = getSetting(context);
+        return  sp.getString(SettingConstant.Designation, null);
+    }
+    public static boolean setDesignation(Context context, String authKey)
+    {
+        SharedPreferences sp = getSetting(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(SettingConstant.Designation, authKey);
+        return editor.commit();
+    }
+
+    //Company Logo
+    public static String getCompanyLogo(Context context)
+    {
+        SharedPreferences sp = getSetting(context);
+        return  sp.getString(SettingConstant.CompanLogo, null);
+    }
+    public static boolean setCompanyLogo(Context context, String authKey)
+    {
+        SharedPreferences sp = getSetting(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(SettingConstant.CompanLogo, authKey);
+        return editor.commit();
+    }
+
 }

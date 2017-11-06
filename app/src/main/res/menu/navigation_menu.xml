@@ -116,13 +116,18 @@
 
                 <item
                     android:id="@+id/nav_contact_details"
-                    android:icon="@drawable/contact_details"
-                    android:title="Contacts Details" />
+                    android:icon="@drawable/addressbook"
+                    android:title="Contacts Address" />
 
                 <item
                     android:id="@+id/nav_emergency_contact_details"
                     android:icon="@drawable/emgcon"
-                    android:title="Emergency Contacts Details" />
+                    android:title="Emergency Contacts Address" />
+
+                <item
+                    android:id="@+id/nav_contact_phone"
+                    android:icon="@drawable/contact_details"
+                    android:title="Contacts Phone" />
 
                 <item
                     android:id="@+id/nav_dependents"
