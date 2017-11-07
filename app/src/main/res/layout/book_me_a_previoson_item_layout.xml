@@ -2,52 +2,39 @@
 <LinearLayout
     android:id="@+id/primory_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <CheckBox
+        android:layout_gravity="center"
         android:buttonTint="@color/status_color"
         android:id="@+id/itemcheckbox"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight=".5"
         android:layout_height="wrap_content"
         />
 
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <EditText
+        android:layout_gravity="center"
+        android:id="@+id/edit_quantity"
+        android:inputType="number"
+        android:textColor="@color/purple700"
+        android:layout_width="0dp"
+        android:layout_weight=".2"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:hint="Qty"/>
 
-    <LinearLayout
-        android:padding="5dp"
-        android:visibility="gone"
-        android:id="@+id/mainlay"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <EditText
-            android:id="@+id/edit_quantity"
-            android:inputType="number"
-            android:textColor="@color/purple700"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Quantity"/>
-
-        <EditText
-            android:id="@+id/remark"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/purple700"
-            android:inputType="textMultiLine"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Remark"/>
+    <EditText
+        android:id="@+id/remark"
+        android:textColor="@color/purple700"
+        android:inputType="textMultiLine"
+        android:layout_width="0dp"
+        android:layout_weight=".3"
+        android:layout_height="wrap_content"
+        android:hint="Remark"/>
 
 
 
-    </LinearLayout>
-
-    </LinearLayout>
 
 </LinearLayout>

@@ -12,16 +12,12 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import java.util.ArrayList;
-
 import ehr.cfcs.com.ehr.Interface.AddItemInterface;
 import ehr.cfcs.com.ehr.Model.BookMeaPrevisionModel;
 import ehr.cfcs.com.ehr.Model.SendListModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.EditTextWatcher;
 
 /**
  * Created by Admin on 21-09-2017.
@@ -40,6 +36,7 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
     public boolean flag = false;
     public int postion;
     public AddItemInterface ItemInterface;
+    String scoresToUpdate[];
 
 
     public BookMeaPrevisonAdapter(ArrayList<BookMeaPrevisionModel> list, Context context,AddItemInterface ItemInterface) {
@@ -66,54 +63,38 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
         return 0;
     }
 
+
+
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
         ViewHolder holder = null;
 
-        if (view == null) {
+       /* if (view == null) {*/
 
             holder = new ViewHolder();
+            holder.mWatcher = new EditTextWatcher();
             view = inflater.inflate(R.layout.book_me_a_previoson_item_layout, null);
             holder.tvName = (CheckBox) view.findViewById(R.id.itemcheckbox);
-            holder.mainLay = (LinearLayout)view.findViewById(R.id.mainlay);
             holder.quantityTxt = (EditText)view.findViewById(R.id.edit_quantity);
             holder.remarkTxt = (EditText)view.findViewById(R.id.remark);
-            holder.primory_layout = (LinearLayout)view.findViewById(R.id.primory_layout);
+          //  holder.quantityTxt.addTextChangedListener(holder.mWatcher);
 
 
-            view.setTag(holder);
-        }
-        else {
+
+
+            //view.setTag(holder);
+       // }
+       /* else {
             holder = (ViewHolder) view.getTag();
-        }
+        }*/
 
         holder.tvName.setText(list.get(i).getItemName());
         holder.remarkTxt.setText(list.get(i).getRemark());
-      //  holder.quantityTxt.setText(list.get(i).getMaxQuantity());
 
+        holder.quantityTxt.setText(list.get(i).getFillQuanty());
 
+        //Edit Text Listeners:-
 
-
-
-        //we need to update adapter once we finish with editing
-     /*   holder.quantityTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    final int id = v.getId();
-                    BookMeaPrevisionModel item = list.get(id);
-                    final EditText field = ((EditText) v);
-                    list.get(id).setMaxQuantity(field.getText().toString());
-                    secondQuant.add(field.getText().toString());
-
-                    //save in interface
-
-                }
-            }
-        });*/
-
-
-        holder.quantityTxt.setTag(i);
-        holder.quantityTxt.setText(list.get(i).getMaxQuantity());
         holder.quantityTxt.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -124,13 +105,15 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
             }
             @Override
             public void afterTextChanged(Editable s) {
-                list.get(i).setMaxQuantity(s.toString());
+                list.get(i).setFillQuanty(s.toString());
             }
         });
 
+
+
+
+
         final ViewHolder finalHolder = holder;
-
-
         holder.tvName.setTag(i);
         holder.tvName.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -142,21 +125,15 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
 
                     //testing mode
 
+                    selectedStrings.add(finalHolder.tvName.getText().toString());
+                    selectedId.add(list.get(i).getItemID());
 
-
-                        selectedStrings.add(finalHolder.tvName.getText().toString());
-                        selectedId.add(list.get(i).getItemID());
-
-
-                        sendList.add(new SendListModel(list.get(i).getItemID(), list.get(i).getItemName(), finalHolder.quantityTxt.getText().toString(),
+                    sendList.add(new SendListModel(list.get(i).getItemID(), list.get(i).getItemName(), finalHolder.quantityTxt.getText().toString(),
                                 finalHolder.remarkTxt.getText().toString()));
 
-                        Log.e("adapter list size", sendList.size() + "");
+                    Log.e("adapter list size", sendList.size() + "");
 
 
-                        //visibile View
-                        TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-                        finalHolder.mainLay.setVisibility(View.VISIBLE);
 
                         flag = true;
                         postion = i;
@@ -166,35 +143,18 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
 
                 }else
                     {
-                        //sendList.remove(i);
 
                         //visibile Gone Widget
-
                         selectedStrings.remove(finalHolder.tvName.getText().toString());
                         selectedId.remove(list.get(i).getItemID());
-                       // selectedqunty.remove(finalHolder.quantityTxt.getText().toString());
                         selectedremark.remove(finalHolder.remarkTxt.getText().toString());
+                        list.get(i).setToKill(false);
 
-
-                        TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-                        finalHolder.mainLay.setVisibility(View.GONE);
 
                         flag = false;
                     }
             }
         });
-
-        int quantity = Integer.parseInt(finalHolder.quantityTxt.getText().toString());
-        int givenQuant = Integer.parseInt(list.get(i).getMaxQuantity());
-
-        //check condtion is quantity is same as max quantiity
-        if (quantity<= givenQuant)
-        {
-            finalHolder.quantityTxt.setText(list.get(i).getMaxQuantity());
-           // Toast.makeText(context, "Please fill quantity under Maxquantity", Toast.LENGTH_SHORT).show();
-        }
-
-
 
         //set the quantity
         selectedremark.add(finalHolder.remarkTxt.getText().toString());
@@ -205,17 +165,15 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
         {
             holder.tvName.setChecked(true);
 
-            TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-            finalHolder.mainLay.setVisibility(View.VISIBLE);
-        }else
-            {
-                holder.tvName.setChecked(false);
+        }
+        else
+        {
+            holder.tvName.setChecked(false);
+        }
 
-                TransitionManager.beginDelayedTransition(finalHolder.primory_layout);
-                finalHolder.mainLay.setVisibility(View.GONE);
-            }
 
-            return view;
+
+        return view;
     }
 
 
@@ -223,7 +181,8 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
 
         CheckBox tvName;
         EditText quantityTxt, remarkTxt;
-        LinearLayout mainLay,primory_layout;
+        EditTextWatcher mWatcher;
+     //   LinearLayout mainLay,primory_layout;
     }
 
     //get the data

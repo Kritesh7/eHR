@@ -173,8 +173,6 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 .into(backImg);
 
 
-
-
         setUpNavigationView();
         if (savedInstanceState == null) {
             navigationItemIndex = 0;

@@ -123,8 +123,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             }
 
 
-            listView.setItemsCanFocus(true);
-            listView.setAdapter(adapter);
+
 
         if (conn.getConnectivityStatus()>0) {
 
@@ -231,7 +230,8 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
 
                     }
-
+                    listView.setItemsCanFocus(true);
+                    listView.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();
 

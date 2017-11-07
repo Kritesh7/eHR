@@ -13,16 +13,9 @@ public class BookMeaPrevisionModel implements Serializable {
     public String MaxQuantity;
     public String remark;
     public String checkValue;
-
+    public String fillQuanty;
     private boolean toKill;
-    ///getters/setters
-    public boolean isToKill() {
-        return toKill;
-    }
-    public void setToKill(boolean toKill) {
-        this.toKill = toKill;
-    }
-
+    public boolean setToFill;
 
     public BookMeaPrevisionModel(String itemName,String ItemID,String MaxQuantity,String remark,String checkValue) {
         this.itemName = itemName;
@@ -33,6 +26,38 @@ public class BookMeaPrevisionModel implements Serializable {
     }
 
 
+    ///getters/setters
+
+
+    public boolean isSetToFill() {
+        return setToFill;
+    }
+
+    public void setSetToFill(boolean setToFill) {
+        this.setToFill = setToFill;
+    }
+
+    public String getFillQuanty() {
+        return fillQuanty;
+    }
+
+    public void setFillQuanty(String fillQuanty) {
+        this.fillQuanty = fillQuanty;
+    }
+
+    public boolean isToKill() {
+        return toKill;
+    }
+    public void setToKill(boolean toKill) {
+        this.toKill = toKill;
+    }
+
+
+
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
     public String getRemark() {
         return remark;
