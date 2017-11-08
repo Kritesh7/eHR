@@ -366,6 +366,12 @@ public class AddNewEmergencyContactDetailsActivity extends AppCompatActivity {
                     {
                         String status = jsonObject.getString("status");
 
+                        if (jsonObject.has("MsgNotification")) {
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+
+                            Toast.makeText(AddNewEmergencyContactDetailsActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
+                        }
+
                         if (status.equalsIgnoreCase("success"))
                         {
                             onBackPressed();

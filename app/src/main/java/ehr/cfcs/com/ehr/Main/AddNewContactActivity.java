@@ -369,6 +369,11 @@ public class AddNewContactActivity extends AppCompatActivity {
                     if (jsonObject.has("status"))
                     {
                         String status = jsonObject.getString("status");
+                        if (jsonObject.has("MsgNotification")) {
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+
+                            Toast.makeText(AddNewContactActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
+                        }
 
                         if (status.equalsIgnoreCase("success"))
                         {

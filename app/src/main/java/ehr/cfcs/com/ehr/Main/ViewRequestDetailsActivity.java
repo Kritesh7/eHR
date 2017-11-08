@@ -51,9 +51,8 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
     public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
     public ConnectionDetector conn;
     public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDetail";
-    public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDelete";
-    public String authCode = "", rid="";
-    public Button updateDetails,deleteBtn;
+    public String authCode = "", rid="", userId = "";
+    public Button updateDetails;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +94,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
         }
         conn = new ConnectionDetector(ViewRequestDetailsActivity.this);
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewRequestDetailsActivity.this)));
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewRequestDetailsActivity.this)));
 
         requestItemList = (ehr.cfcs.com.ehr.Source.MyListLayout) findViewById(R.id.request_item_list);
         requestByTxt = (TextView) findViewById(R.id.staionory_request);
@@ -105,7 +105,6 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
         closerDateTxt = (TextView)findViewById(R.id.staionory_closer_date);
         hrTxt = (TextView)findViewById(R.id.hrcommenttxt);
         updateDetails = (Button)findViewById(R.id.editstaionry);
-        deleteBtn = (Button) findViewById(R.id.deleteBtn);
 
         adapter = new RequestedItemAdapter(list,ViewRequestDetailsActivity.this);
 
@@ -114,7 +113,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
 
         if (conn.getConnectivityStatus()>0)
         {
-            viewStationryDetails(authCode,rid,"1");
+            viewStationryDetails(authCode,rid,"1", userId);
         }else
             {
                 conn.showNoInternetAlret();
@@ -133,25 +132,25 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
          }
      });
 
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
+       /* deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if (conn.getConnectivityStatus()>0) {
-                    deleteMethod(authCode, rid);
+                    deleteMethod(authCode, rid, userId);
                 }else
                     {
                         conn.showNoInternetAlret();
                     }
             }
         });
-
+*/
 
 
     }
 
     //View Stationry Details
-    public void viewStationryDetails(final String AuthCode ,final String RID, final String ItemCatID) {
+    public void viewStationryDetails(final String AuthCode ,final String RID, final String ItemCatID, final String userId) {
 
         final ProgressDialog pDialog = new ProgressDialog(ViewRequestDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -264,6 +263,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
                 params.put("AuthCode",AuthCode);
                 params.put("RID",RID);
                 params.put("ItemCatID",ItemCatID);
+                params.put("AdminID",userId);
 
                 Log.e("Parms", params.toString());
                 return params;
@@ -277,69 +277,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
 
     }
 
-    //delete the Details
-    public void deleteMethod(final String AuthCode ,final String RID) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ViewRequestDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
-        pDialog.setMessage("Loading...");
-        pDialog.show();
-
-        StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, deleteUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                try {
-                    Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
-
-                    if (jsonObject.has("status"))
-                    {
-                        String status = jsonObject.getString("status");
-
-                        if (status.equalsIgnoreCase("success"))
-                        {
-                            onBackPressed();
-                        }
-                    }
-
-
-                    pDialog.dismiss();
-
-                } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("Login", "Error: " + error.getMessage());
-                // Log.e("checking now ",error.getMessage());
-
-                Toast.makeText(ViewRequestDetailsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                pDialog.dismiss();
-
-
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("RID",RID);
-
-                Log.e("Parms", params.toString());
-                return params;
-            }
-
-        };
-        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
-
-    }
 
 
 

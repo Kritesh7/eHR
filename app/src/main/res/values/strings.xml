@@ -37,5 +37,7 @@
     <string name="title_activity_add_new_emergency_contact_details">
         AddNewEmergencyContactDetailsActivity
     </string>
+    <string name="phone_txt">Please enter valid phone number</string>
+    <string name="email_txt">Please enter valid email</string>
     <string name="title_activity_add_new_contact">AddNewContactActivity</string>
 </resources>

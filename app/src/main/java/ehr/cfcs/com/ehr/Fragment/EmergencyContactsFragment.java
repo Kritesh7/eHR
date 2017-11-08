@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -77,6 +78,7 @@ public class EmergencyContactsFragment extends Fragment {
     public EmergencyContactAdapter adapter;
     public String userId = "", authCode = "";
     public String emergencyContactUrl = SettingConstant.BaseUrl + "AppEmployeeEmergencyContactList";
+    public TextView noCust;
 
 
 
@@ -122,6 +124,7 @@ public class EmergencyContactsFragment extends Fragment {
 
         emergencyContactRecyler = (RecyclerView) rootView.findViewById(R.id.emergency_contact_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
 
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
@@ -191,30 +194,31 @@ public class EmergencyContactsFragment extends Fragment {
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
 
                     if (list.size()>0)
                     {
                         list.clear();
                     }
-                    for (int i=0 ; i<jsonArray.length();i++)
+                    JSONArray emergencyContactArray = jsonObject.getJSONArray("EmergencyContactList");
+                    for (int i=0 ; i<emergencyContactArray.length();i++)
                     {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        JSONObject object = emergencyContactArray.getJSONObject(i);
 
-                        String Title = jsonObject.getString("Title");
-                        String Name = jsonObject.getString("Name");
-                        String Address = jsonObject.getString("Address");
-                        String City = jsonObject.getString("City");
-                        String State = jsonObject.getString("State");
-                        String CountryName = jsonObject.getString("CountryName");
-                        String PostCode = jsonObject.getString("PostCode");
-                        String PhoneNo = jsonObject.getString("PhoneNo");
-                        String MobileNo = jsonObject.getString("MobileNo");
-                        String Email = jsonObject.getString("Email");
-                        String RelationshipName = jsonObject.getString("RelationshipName");
-                        String Type = jsonObject.getString("Type");
-                        String LastUpdate = jsonObject.getString("LastUpdate");
-                        String RecordID = jsonObject.getString("RecordID");
+                        String Title = object.getString("Title");
+                        String Name = object.getString("Name");
+                        String Address = object.getString("Address");
+                        String City = object.getString("City");
+                        String State = object.getString("State");
+                        String CountryName = object.getString("CountryName");
+                        String PostCode = object.getString("PostCode");
+                        String PhoneNo = object.getString("PhoneNo");
+                        String MobileNo = object.getString("MobileNo");
+                        String Email = object.getString("Email");
+                        String RelationshipName = object.getString("RelationshipName");
+                        String Type = object.getString("Type");
+                        String LastUpdate = object.getString("LastUpdate");
+                        String RecordID = object.getString("RecordID");
 
 
 
@@ -224,6 +228,32 @@ public class EmergencyContactsFragment extends Fragment {
 
 
                     }
+
+                    JSONArray statusArray = jsonObject.getJSONArray("Status");
+                    for (int k =0; k<statusArray.length(); k++)
+                    {
+                        JSONObject obj = statusArray.getJSONObject(k);
+
+                        String IsVisibilityAdd = obj.getString("IsVisibilityAdd");
+                        if (IsVisibilityAdd.equalsIgnoreCase("2"))
+                        {
+                            fab.setVisibility(View.GONE);
+                        }else
+                            {
+                                fab.setVisibility(View.VISIBLE);
+                            }
+                    }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        emergencyContactRecyler.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        emergencyContactRecyler.setVisibility(View.VISIBLE);
+                    }
+
 
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();

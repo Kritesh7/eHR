@@ -139,7 +139,7 @@ public class AddMedicalandAnssuranceActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Add New Medical&Assurance");
+        titleTxt.setText("Add New Medical&Insurance");
 
         Intent intent = getIntent();
         if (intent != null)
@@ -185,8 +185,8 @@ public class AddMedicalandAnssuranceActivity extends AppCompatActivity {
         //change button name
         if (actionMode.equalsIgnoreCase("EditMode"))
         {
-            addBtn.setText("Update Medical AND Assurance");
-            titleTxt.setText("Update Medical&Assurance");
+            addBtn.setText("Update Medical AND Insurance");
+            titleTxt.setText("Update Medical&Insurance");
 
             policyNameTxt.setText(policyNameStr);
             policyNumberTxt.setText(policyNumberStr);
@@ -357,10 +357,17 @@ public class AddMedicalandAnssuranceActivity extends AppCompatActivity {
                 }else {
 
                     if (conn.getConnectivityStatus()>0) {
-                        addMedicalAnssuranceData(userId, recordidStr, policyTypeIdStr, policyNameTxt.getText().toString(), authcode,
-                                policyNumberTxt.getText().toString(), startDateTxt.getText().toString(), endDateTxt.getText().toString(),
-                                policyDurationTxt.getText().toString(), policyByTxt.getText().toString(), insuranceCompTxt.getText().toString(),
-                                amountInsuredTxt.getText().toString(),imageBase64, imageExtenstion);
+
+                        if (!imageBase64.equalsIgnoreCase("")) {
+
+                            addMedicalAnssuranceData(userId, recordidStr, policyTypeIdStr, policyNameTxt.getText().toString(), authcode,
+                                    policyNumberTxt.getText().toString(), startDateTxt.getText().toString(), endDateTxt.getText().toString(),
+                                    policyDurationTxt.getText().toString(), policyByTxt.getText().toString(), insuranceCompTxt.getText().toString(),
+                                    amountInsuredTxt.getText().toString(), imageBase64, imageExtenstion);
+                        }else
+                            {
+                                Toast.makeText(AddMedicalandAnssuranceActivity.this, "This file is not supported", Toast.LENGTH_SHORT).show();
+                            }
                     }else
                         {
                             conn.showNoInternetAlret();
@@ -713,6 +720,12 @@ public class AddMedicalandAnssuranceActivity extends AppCompatActivity {
                         {
                             onBackPressed();
                         }
+                    }
+
+                    if (jsonObject.has("MsgNotification"))
+                    {
+                        String MsgNotification = jsonObject.getString("MsgNotification");
+                        Toast.makeText(AddMedicalandAnssuranceActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
                     }
 
 

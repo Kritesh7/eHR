@@ -1,6 +1,8 @@
 package ehr.cfcs.com.ehr.Main;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,9 +13,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +35,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.BookMeaPrevisonAdapter;
@@ -62,6 +72,10 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
     public ArrayList<SendListModel> emptyList = new ArrayList<>();
     public AddItemInterface itemInterface;
     ArrayList<String> secondQuant = new ArrayList<String>();
+    public ImageView closerDateBtn;
+    public EditText closerDateTxt;
+    private int yy, mm, dd;
+    private int mYear, mMonth, mDay, mHour, mMinute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +125,52 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
         listView = (ListView)findViewById(R.id.listview);
         addBtn = (Button)findViewById(R.id.newrequestbtn);
+        closerDateBtn = (ImageView) findViewById(R.id.closerdatebtn);
+        closerDateTxt = (EditText) findViewById(R.id.closerdatetxt);
+
+        //closer Date Picker
+        closerDateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddNewStationaryRequestActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                yy = year;
+                                mm = monthOfYear;
+                                dd = dayOfMonth;
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(Calendar.MONTH, monthOfYear);
+                                String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(calendar.getTime());
+                                sdf = new DateFormatSymbols().getShortMonths()[monthOfYear];
+
+                                Log.e("checking,............", sdf + " null");
+                                closerDateTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+            }
+        });
 
         //listView.setItemsCanFocus(true);
 
@@ -122,12 +182,13 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                 adapter = new BookMeaPrevisonAdapter(list,AddNewStationaryRequestActivity.this,this);
             }
 
-
+        listView.setItemsCanFocus(true);
+        listView.setAdapter(adapter);
 
 
         if (conn.getConnectivityStatus()>0) {
 
-            stationryData(authCode,"1");
+            stationryData(authCode,"1", userId);
 
         }else
             {
@@ -140,11 +201,10 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             public void onClick(View view) {
 
 
+                //Making json format
                 String splitString  = String.valueOf(adapter.getSelectedString());
                 String id = String.valueOf(adapter.getSelectedId());
-
-
-                String quanty = String.valueOf(secondQuant);
+                String quanty = String.valueOf(adapter.getSelectedQuan());
                 String remark = String.valueOf(adapter.getSelectedRemark());
 
                 //remove first and last character
@@ -161,23 +221,25 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
 
                 JSONArray mainArray = new JSONArray();
-                //JSONObject object = new JSONObject();
+                JSONObject object = new JSONObject();
                 try {
 
                     Log.e("Split  of string",quanty);
-                    Log.e("lenth of string",adapter.getSelectedQuan().size() + "");
+                    Log.e("selected quantity",adapter.getSelectedQuan().size() + "");
                     Log.e("checking first",separated[0]);
 
-                    for (int i =0; i<separated.length; i++) {
+                    for (int i =0; i<adapter.getSelectedString().size(); i++) {
 
                         JSONObject filterJson = new JSONObject();
                         filterJson.put("ItemID", separatedId[i]);
                         filterJson.put("ItemName", separated[i]);
-                        filterJson.put("Qty", "testing");
+                        filterJson.put("Qty", separatedquant[i]);
                         filterJson.put("Remark", separatedRemark[i]);
 
                         mainArray.put(filterJson);
                     }
+
+                    object.put("members",mainArray);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -186,10 +248,24 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
                 Log.e("checking the json is",mainArray.toString());
 
+                //Validation condtion and add data
+                if (closerDateTxt.getText().toString().equalsIgnoreCase(""))
+                {
+                    closerDateTxt.setError("Please select closer date");
+                }else if (adapter.getSelectedString().size() == 0)
+                {
+                    Toast.makeText(AddNewStationaryRequestActivity.this, "please select more than one item", Toast.LENGTH_SHORT).show();
+                }else {
 
+                    if (conn.getConnectivityStatus()>0) {
 
+                        addStaionoryItem(userId, "", "1", closerDateTxt.getText().toString(), authCode, object);
 
-                //addStaionoryItem(userId,"","1","14-10-2017",authCode,splitString,separated);
+                    }else
+                        {
+                            conn.showNoInternetAlret();
+                        }
+                }
 
 
             }
@@ -199,7 +275,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
 
     //Stationary Item Data
-    public void stationryData(final String AuthCode , final String ItemCatID) {
+    public void stationryData(final String AuthCode , final String ItemCatID, final String userId) {
 
         final ProgressDialog pDialog = new ProgressDialog(AddNewStationaryRequestActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -230,8 +306,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
 
                     }
-                    listView.setItemsCanFocus(true);
-                    listView.setAdapter(adapter);
+
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();
 
@@ -257,6 +332,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
                 params.put("ItemCatID",ItemCatID);
+                params.put("AdminID",userId);
 
 
                 Log.e("Parms", params.toString());
@@ -282,7 +358,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
     //add new staionry Data
     public void addStaionoryItem(final String AdminID  ,final String RID, final String ItemCatID, final String IdealCosureDate,
-                                 final String AuthCode, final String splitString, final String[] separated)  {
+                                 final String AuthCode, final JSONObject mainArray)  {
 
         final ProgressDialog pDialog = new ProgressDialog(AddNewStationaryRequestActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -334,7 +410,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                 params.put("RID",RID);
                 params.put("ItemCatID",ItemCatID);
                 params.put("IdealCosureDate",IdealCosureDate);
-              //  params.put("ItemDetailJson",mainArray.toString());
+                params.put("ItemDetailJson",mainArray.toString());
                 params.put("AuthCode",AuthCode);
 
                 Log.e("Parms", params.toString());

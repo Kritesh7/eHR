@@ -66,7 +66,7 @@ public class ContactsDetailsFragment extends Fragment {
     public ContactAdapter adapter;
     public ArrayList<ContactModel> list = new ArrayList<>();
     public ConnectionDetector conn;
-    public String userId = "",authCode = "", IsAddAddressDetail = "";
+    public String userId = "",authCode = "", IsAddAddressDetail = "", IsVisibilityAdd = "";
     public TextView noCust ;
     public String contactUrl = SettingConstant.BaseUrl + "AppEmployeeAddressList";
     public FloatingActionButton fab;
@@ -126,25 +126,29 @@ public class ContactsDetailsFragment extends Fragment {
 
         contactRecyler.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
+
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (IsAddAddressDetail.equalsIgnoreCase("0")) {
-                    Intent i = new Intent(getActivity(), AddNewContactActivity.class);
-                    i.putExtra("RecordId","");
-                    i.putExtra("Mode","AddMode");
-                    i.putExtra("AddressType","");
-                    i.putExtra("Address","");
-                    i.putExtra("City","");
-                    i.putExtra("State", "");
-                    i.putExtra("PostalCode", "");
-                    i.putExtra("CountryName","");
-                    startActivity(i);
-                    getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-                }else 
+                if (!IsAddAddressDetail.equalsIgnoreCase("0")) {
+
+                    Toast.makeText(getActivity(), "Your Previous request waiting for Hr approval.", Toast.LENGTH_SHORT).show();
+
+                }else
                     {
-                        Toast.makeText(getActivity(), "Your Previous request waiting for Hr approval.", Toast.LENGTH_SHORT).show();
+                        Intent i = new Intent(getActivity(), AddNewContactActivity.class);
+                        i.putExtra("RecordId","");
+                        i.putExtra("Mode","AddMode");
+                        i.putExtra("AddressType","");
+                        i.putExtra("Address","");
+                        i.putExtra("City","");
+                        i.putExtra("State", "");
+                        i.putExtra("PostalCode", "");
+                        i.putExtra("CountryName","");
+                        startActivity(i);
+                        getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
                     }
             }
         });
@@ -209,6 +213,15 @@ public class ContactsDetailsFragment extends Fragment {
                         JSONObject obj = statusArray.getJSONObject(k);
                         
                         IsAddAddressDetail = obj.getString("IsAddAddressDetail");
+                        IsVisibilityAdd = obj.getString("IsVisibilityAdd");
+
+                        if (IsVisibilityAdd.equalsIgnoreCase("3"))
+                        {
+                            fab.setVisibility(View.GONE);
+                        }else
+                            {
+                                fab.setVisibility(View.VISIBLE);
+                            }
                     }
 
                     if (list.size() == 0)

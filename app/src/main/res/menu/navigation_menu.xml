@@ -137,7 +137,7 @@
                 <item
                     android:id="@+id/nav_medical_and_anssurence"
                     android:icon="@drawable/medical_assurance"
-                    android:title="Medical and Assurance" />
+                    android:title="Medical and Insurance" />
 
 
             </menu>

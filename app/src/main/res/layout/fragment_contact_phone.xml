@@ -32,6 +32,7 @@
                     app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
                     <EditText
+                        android:maxLength="10"
                         android:id="@+id/phoneno"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -58,6 +59,7 @@
                     app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
 
                     <EditText
+                        android:maxLength="10"
                         android:id="@+id/altphoneno"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

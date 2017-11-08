@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -73,6 +74,7 @@ public class StationaryRequestFragment extends Fragment {
     public ConnectionDetector conn;
     public String userId = "",authCode = "";
     public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
+    public TextView noCust;
 
     private OnFragmentInteractionListener mListener;
 
@@ -115,6 +117,7 @@ public class StationaryRequestFragment extends Fragment {
 
         stainoryRecy = (RecyclerView)rootView.findViewById(R.id.stationary_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
 
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
@@ -213,12 +216,23 @@ public class StationaryRequestFragment extends Fragment {
                         String AppStatusText = jsonObject.getString("AppStatusText");
                         String RID = jsonObject.getString("RID");
                         String ItemCatID = jsonObject.getString("ItemCatID");
+                        String AppStatus = jsonObject.getString("AppStatus");
 
                         list.add(new StationaryRequestModel(EmployeeName,ZoneName,Quantity,requestDate,IdealClosureDateText
-                                ,followDate,AppStatusText,RID,ItemCatID));
+                                ,followDate,AppStatusText,RID,ItemCatID,AppStatus));
 
 
 
+                    }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        stainoryRecy.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        stainoryRecy.setVisibility(View.VISIBLE);
                     }
 
                     adapter.notifyDataSetChanged();

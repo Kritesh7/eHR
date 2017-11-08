@@ -342,6 +342,6 @@
         android:textColor="@color/white"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Add New Medical and Assurance"/>
+        android:text="Add New Medical and Insurance"/>
 
 </android.support.constraint.ConstraintLayout>

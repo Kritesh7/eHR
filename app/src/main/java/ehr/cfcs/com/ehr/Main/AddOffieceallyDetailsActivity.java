@@ -312,9 +312,14 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                 }else {
                     if (conn.getConnectivityStatus() > 0) {
 
-                        addOfficealyDocs(userId, "0", documentId, noTxt.getText().toString(), authcode, issuesOfPlaceTxt.getText().toString(),
-                                expiryDateTxt.getText().toString(), issueDateTxt.getText().toString(), imageBase64, imageExtenstion,
-                                compId,userNameStr,documentTxt);
+                        if (!imageBase64.equalsIgnoreCase("")) {
+                            addOfficealyDocs(userId, "0", documentId, noTxt.getText().toString(), authcode, issuesOfPlaceTxt.getText().toString(),
+                                    expiryDateTxt.getText().toString(), issueDateTxt.getText().toString(), imageBase64, imageExtenstion,
+                                    compId, userNameStr, documentTxt);
+                        }else
+                            {
+                                Toast.makeText(AddOffieceallyDetailsActivity.this, "This file is not supported", Toast.LENGTH_SHORT).show();
+                            }
 
                     } else {
                         conn.showNoInternetAlret();
@@ -681,7 +686,15 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                         if (status.equalsIgnoreCase("success"))
                         {
                             onBackPressed();
-                        }
+
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+                            Toast.makeText(AddOffieceallyDetailsActivity.this,MsgNotification , Toast.LENGTH_SHORT).show();
+
+                        }else
+                            {
+                                String MsgNotification = jsonObject.getString("MsgNotification");
+                                Toast.makeText(AddOffieceallyDetailsActivity.this,MsgNotification , Toast.LENGTH_SHORT).show();
+                            }
                     }
 
 

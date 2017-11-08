@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.StringRequest;
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationStyle;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,6 +58,7 @@ public class ContactPhoneFragment extends Fragment {
     public String addUrl = SettingConstant.BaseUrl + "AppEmployeeTelephoneInsUpdt";
     public ConnectionDetector conn;
     public String  authcode = "", userid = "", RecordID = "";
+    private AwesomeValidation awesomeValidation;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -102,6 +106,8 @@ public class ContactPhoneFragment extends Fragment {
         conn = new ConnectionDetector(getActivity());
         userid =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
+        awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
+
 
 
         phoneNoTxt = (EditText) rootView.findViewById(R.id.phoneno);
@@ -109,6 +115,10 @@ public class ContactPhoneFragment extends Fragment {
         emailTxt = (EditText) rootView.findViewById(R.id.email);
         altEmailTxt = (EditText) rootView.findViewById(R.id.altemail);
         editBtn = (Button) rootView.findViewById(R.id.editphonebtn);
+
+        awesomeValidation.addValidation(getActivity(), R.id.phoneno, Patterns.PHONE, R.string.phone_txt);
+        awesomeValidation.addValidation(getActivity(), R.id.email, Patterns.EMAIL_ADDRESS, R.string.email_txt);
+
 
         if (conn.getConnectivityStatus()>0)
         {
@@ -127,29 +137,27 @@ public class ContactPhoneFragment extends Fragment {
                {
                    editBtn.setText("Update Contact");
                }
-
-               if (phoneNoTxt.getText().toString().equalsIgnoreCase(""))
-               {
-                   phoneNoTxt.setError("Please enter mobile number");
-               }else if (emailTxt.getText().toString().equalsIgnoreCase(""))
-               {
-                   emailTxt.setError("Please enter email id");
-               }else {
-                   if (conn.getConnectivityStatus() > 0) {
-
-                       if (editBtn.getText().toString().equalsIgnoreCase("Update Contact")) {
-
-                           addContact(userid, RecordID,phoneNoTxt.getText().toString(),altPhoneTxt.getText().toString(),
-                                   authcode,emailTxt.getText().toString(),altEmailTxt.getText().toString());
-                       }else
-                           {
-                               addContact(userid, "",phoneNoTxt.getText().toString(),altPhoneTxt.getText().toString(),
-                                       authcode,emailTxt.getText().toString(),altEmailTxt.getText().toString());
-                           }
+              // if (awesomeValidation.validate()) {
+                   if (phoneNoTxt.getText().toString().equalsIgnoreCase("")) {
+                       phoneNoTxt.setError("Please enter mobile number");
+                   } else if (emailTxt.getText().toString().equalsIgnoreCase("")) {
+                       emailTxt.setError("Please enter email id");
                    } else {
-                       conn.showNoInternetAlret();
-                   }
-               }
+                       if (conn.getConnectivityStatus() > 0) {
+
+                           if (editBtn.getText().toString().equalsIgnoreCase("Update Contact")) {
+
+                               addContact(userid, RecordID, phoneNoTxt.getText().toString(), altPhoneTxt.getText().toString(),
+                                       authcode, emailTxt.getText().toString(), altEmailTxt.getText().toString());
+                           } else {
+                               addContact(userid, "", phoneNoTxt.getText().toString(), altPhoneTxt.getText().toString(),
+                                       authcode, emailTxt.getText().toString(), altEmailTxt.getText().toString());
+                           }
+                       } else {
+                           conn.showNoInternetAlret();
+                       }
+                  }
+              // }
 
            }
        });
@@ -216,6 +224,7 @@ public class ContactPhoneFragment extends Fragment {
                         {
                             editBtn.setBackgroundColor(getActivity().getResources().getColor(R.color.disbale_color));
                             editBtn.setEnabled(false);
+                            Toast.makeText(getActivity(), "Your Previous request waiting for Hr approval.", Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -278,6 +287,13 @@ public class ContactPhoneFragment extends Fragment {
                     if (jsonObject.has("status"))
                     {
                         String status = jsonObject.getString("status");
+
+                        if (jsonObject.has("MsgNotification")) {
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+
+                            Toast.makeText(getActivity(), MsgNotification, Toast.LENGTH_SHORT).show();
+
+                        }
 
                         if (status.equalsIgnoreCase("success"))
                         {

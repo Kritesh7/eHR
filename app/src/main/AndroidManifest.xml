@@ -74,7 +74,7 @@
             android:name=".Main.AddNewStationaryRequestActivity"
             android:label="@string/title_activity_add_new_stationary_request"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Main.AddDocumentActivity"
             android:label="@string/title_activity_add_document"

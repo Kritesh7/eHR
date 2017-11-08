@@ -299,7 +299,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         navigationItemIndex = 12;
                         CURRENT_TAG = TAG_Employ_MedicalAndAnsurense;
-                        titleTxt.setText("Medical and Assurance");
+                        titleTxt.setText("Medical and Insurance");
 
                         break;
 

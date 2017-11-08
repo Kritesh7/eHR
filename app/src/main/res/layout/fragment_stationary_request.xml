@@ -21,11 +21,13 @@
         android:orientation="vertical">
 
     <TextView
+        android:layout_gravity="center"
+        android:id="@+id/no_record_txt"
         android:visibility="gone"
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Stationary Request List"
+        android:layout_height="match_parent"
+        android:text="Record not found!"
         android:gravity="center"
         android:textColor="@color/status_color"
         android:textStyle="bold"

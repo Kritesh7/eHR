@@ -314,6 +314,12 @@ public class AddDependentActivity extends AppCompatActivity {
                         }
                     }
 
+                    if (jsonObject.has("MsgNotification"))
+                    {
+                        String MsgNotification = jsonObject.getString("MsgNotification");
+                        Toast.makeText(AddDependentActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
+                    }
+
 
                     pDialog.dismiss();
 
