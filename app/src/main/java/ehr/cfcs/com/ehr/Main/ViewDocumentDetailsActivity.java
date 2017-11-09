@@ -48,7 +48,7 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
     public TextView titleTxt,requestByTxt, requestDateTxt,empNameTxt,statusTxt,hrCommentTxt ,closerDateTxt, hrTxt;
     public ehr.cfcs.com.ehr.Source.MyListLayout requestItemList;
     public RequestedItemAdapter adapter;
-    public ArrayList<RequestItemModel> list = new ArrayList<>();
+    public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
     public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
     public ConnectionDetector conn;
     public String authCode = "", rid="";
@@ -215,9 +215,10 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                         String NoOfItem = object.getString("NoOfItem");
                         String Remark = object.getString("Remark");
                         String ItemID = object.getString("ItemID");
+                        String chkValue = object.getString("chkValue");
 
 
-                        list.add(new RequestItemModel(ItemName,NoOfItem,Remark,ItemID));
+                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,NoOfItem,Remark,chkValue,""));
 
 
 
@@ -239,7 +240,7 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                         String chkValue = object.getString("chkValue");
 
 
-                        itemBindList.add(new BookMeaPrevisionModel(ItemName,ItemID,Quantity,Remark,chkValue));
+                        itemBindList.add(new BookMeaPrevisionModel(ItemName,ItemID,Quantity,Remark,chkValue,""));
 
 
 

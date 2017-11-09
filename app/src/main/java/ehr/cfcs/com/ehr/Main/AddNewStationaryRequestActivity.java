@@ -76,6 +76,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
     public EditText closerDateTxt;
     private int yy, mm, dd;
     private int mYear, mMonth, mDay, mHour, mMinute;
+    public String rIdStr = "", IdealClosureDateText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +116,8 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
         if (intent != null)
         {
             modeString = intent.getStringExtra("Mode");
+            rIdStr = intent.getStringExtra("Rid");
+            IdealClosureDateText = intent.getStringExtra("IdealClosureDateText");
             myList = (ArrayList<BookMeaPrevisionModel>)getIntent().getSerializableExtra("mylist");
 
         }
@@ -173,15 +176,15 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
         });
 
         //listView.setItemsCanFocus(true);
-
         if (modeString.equalsIgnoreCase("Edit"))
         {
-            adapter = new BookMeaPrevisonAdapter(myList,AddNewStationaryRequestActivity.this,this);
-        }else
-            {
-                adapter = new BookMeaPrevisonAdapter(list,AddNewStationaryRequestActivity.this,this);
-            }
-
+            closerDateTxt.setText(IdealClosureDateText);
+            titleTxt.setText("Update Stationary Request");
+            addBtn.setText("Update Stationary Request");
+            adapter = new BookMeaPrevisonAdapter(myList, AddNewStationaryRequestActivity.this, this, modeString);
+        }else {
+            adapter = new BookMeaPrevisonAdapter(list, AddNewStationaryRequestActivity.this, this, modeString);
+        }
         listView.setItemsCanFocus(true);
         listView.setAdapter(adapter);
 
@@ -259,8 +262,14 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
                     if (conn.getConnectivityStatus()>0) {
 
-                        addStaionoryItem(userId, "", "1", closerDateTxt.getText().toString(), authCode, object);
+                        if (modeString.equalsIgnoreCase("Edit")) {
+                            addStaionoryItem(userId, rIdStr, "1", closerDateTxt.getText().toString(), authCode, object);
 
+                        }else
+                            {
+                                addStaionoryItem(userId, "", "1", closerDateTxt.getText().toString(), authCode, object);
+
+                            }
                     }else
                         {
                             conn.showNoInternetAlret();
@@ -301,7 +310,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                         String ItemName = jsonObject.getString("ItemName");
                         String MaxQuantity = jsonObject.getString("MaxQuantity");
 
-                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,MaxQuantity,"","false"));
+                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,MaxQuantity,"","false","0"));
 
 
 

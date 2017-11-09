@@ -24,11 +24,11 @@ import ehr.cfcs.com.ehr.R;
 public class RequestedItemAdapter extends BaseAdapter
 {
 
-    public ArrayList<RequestItemModel> list = new ArrayList<>();
+    public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
     public Context context;
     LayoutInflater inflater;
 
-    public RequestedItemAdapter(ArrayList<RequestItemModel> list, Context context) {
+    public RequestedItemAdapter(ArrayList<BookMeaPrevisionModel> list, Context context) {
         this.list = list;
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -74,10 +74,10 @@ public class RequestedItemAdapter extends BaseAdapter
         int pos = i+1;
         holder.sNoTxt.setText("("+pos + ")");
         holder.itemNameTxt.setText(list.get(i).getItemName());
-        holder.remarkTxt.setText(list.get(i).getItemRemark());
-        holder.quantityTxt.setText(list.get(i).getItemQuantity());
+        holder.remarkTxt.setText(list.get(i).getRemark());
+        holder.quantityTxt.setText(list.get(i).getMaxQuantity());
 
-        if (list.get(i).getItemRemark().equalsIgnoreCase(""))
+        if (list.get(i).getRemark().equalsIgnoreCase(""))
         {
             holder.remarkTxt.setVisibility(View.GONE);
         }

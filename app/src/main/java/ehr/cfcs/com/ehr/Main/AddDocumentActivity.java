@@ -101,13 +101,9 @@ public class AddDocumentActivity extends AppCompatActivity implements AddItemInt
         listView = (ListView)findViewById(R.id.listview);
 
         //listView.setItemsCanFocus(true);
-        if (modeString.equalsIgnoreCase("Edit"))
-        {
-            adapter = new BookMeaPrevisonAdapter(myList,AddDocumentActivity.this,this);
-        }else
-        {
-            adapter = new BookMeaPrevisonAdapter(list,AddDocumentActivity.this,this);
-        }
+        //{
+            adapter = new BookMeaPrevisonAdapter(list,AddDocumentActivity.this,this,"");
+       // }
 
 
         listView.setAdapter(adapter);
@@ -154,7 +150,7 @@ public class AddDocumentActivity extends AppCompatActivity implements AddItemInt
                         String ItemName = jsonObject.getString("ItemName");
                         String MaxQuantity = jsonObject.getString("MaxQuantity");
 
-                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,MaxQuantity,"","false"));
+                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,MaxQuantity,"","false",""));
 
 
 

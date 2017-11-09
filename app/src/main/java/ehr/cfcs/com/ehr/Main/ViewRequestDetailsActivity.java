@@ -47,11 +47,11 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
     public TextView titleTxt,requestByTxt, requestDateTxt,empNameTxt,statusTxt,hrCommentTxt ,closerDateTxt, hrTxt;
     public ehr.cfcs.com.ehr.Source.MyListLayout requestItemList;
     public RequestedItemAdapter adapter;
-    public ArrayList<RequestItemModel> list = new ArrayList<>();
+    public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
     public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
     public ConnectionDetector conn;
     public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDetail";
-    public String authCode = "", rid="", userId = "";
+    public String authCode = "", rid="", userId = "", ridStr = "",IdealClosureDateText = "";
     public Button updateDetails;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,13 +111,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
         requestItemList.setAdapter(adapter);
        // MyListLayout.setListViewHeightBasedOnChildren(requestItemList);
 
-        if (conn.getConnectivityStatus()>0)
-        {
-            viewStationryDetails(authCode,rid,"1", userId);
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
+
 
 
      updateDetails.setOnClickListener(new View.OnClickListener() {
@@ -127,26 +121,28 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
              Intent i = new Intent(ViewRequestDetailsActivity.this, AddNewStationaryRequestActivity.class);
              i.putExtra("Mode", "Edit");
              i.putExtra("mylist", itemBindList);
+             i.putExtra("Rid",ridStr);
+             i.putExtra("IdealClosureDateText",IdealClosureDateText);
              startActivity(i);
              overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
          }
      });
 
-       /* deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (conn.getConnectivityStatus()>0) {
-                    deleteMethod(authCode, rid, userId);
-                }else
-                    {
-                        conn.showNoInternetAlret();
-                    }
-            }
-        });
-*/
 
 
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0)
+        {
+            viewStationryDetails(authCode,rid,"1", userId);
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
     }
 
     //View Stationry Details
@@ -175,8 +171,9 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
                         String AppBy = object.getString("ApprovedBy");
                         String HrComment = object.getString("HrComment");
                         String AppStatusText = object.getString("AppStatusText");
-                        String IdealClosureDateText = object.getString("IdealClosureDateText");
+                        IdealClosureDateText = object.getString("IdealClosureDateText");
                         String Visibility = object.getString("Visibility");
+                        ridStr = object.getString("RID");
 
                         closerDateTxt.setText(IdealClosureDateText);
                         empNameTxt.setText(EmpName);
@@ -206,11 +203,13 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
 
                         String ItemName = object.getString("ItemName");
                         String NoOfItem = object.getString("NoOfItem");
+                        //String Quantity = object.getString("Quantity");
                         String Remark = object.getString("Remark");
                         String ItemID = object.getString("ItemID");
+                        String chkValue = object.getString("chkValue");
 
 
-                        list.add(new RequestItemModel(ItemName,NoOfItem,Remark,ItemID));
+                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,NoOfItem,Remark,chkValue,"0"));
 
 
 
@@ -227,16 +226,15 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
                         JSONObject object = itemsBindDataArray.getJSONObject(k);
                         String ItemID = object.getString("ItemID");
                         String ItemName = object.getString("ItemName");
-                        String Quantity = object.getString("Quantity");
+                        String Quantity = object.getString("NoOfItem");
+                        String maxQuantity = object.getString("Quantity");
                         String Remark = object.getString("Remark");
                         String chkValue = object.getString("chkValue");
 
-
-                        itemBindList.add(new BookMeaPrevisionModel(ItemName,ItemID,Quantity,Remark,chkValue));
-
-
-
+                        itemBindList.add(new BookMeaPrevisionModel(ItemName,ItemID,Quantity,Remark,chkValue,maxQuantity));
                     }
+
+                    Log.e("Inner List size in edit", itemBindList.size() + "");
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();
 
