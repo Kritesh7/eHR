@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -69,7 +70,9 @@ public class AddCabActivity extends AppCompatActivity {
     public String addUrl = SettingConstant.BaseUrl + "AppEmployeeTaxiBookingRequestInsUpdt";
     public ArrayAdapter<CabCityModel> cityAdapter;
     public ConnectionDetector conn;
-    public String authCode = "", userId = "", cityId = "", cityName = "";
+    public String authCode = "", userId = "", cityId = "", cityName = "", actionMode = "", bookingDateStr = ""
+            ,cityOfNameStr = "", bookingTimeStr = "", sourceAddressStr = "", destinationAddressStr = "", bookingRemarkStr = ""
+            ,BidStr = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +110,19 @@ public class AddCabActivity extends AppCompatActivity {
 
         titleTxt.setText("Add New Cab Details");
 
+        Intent intent = getIntent();
+        if (intent != null)
+        {
+            actionMode = intent.getStringExtra("Mode");
+            bookingDateStr = intent.getStringExtra("Booking Date");
+            bookingTimeStr = intent.getStringExtra("Booking Time");
+            sourceAddressStr = intent.getStringExtra("Source Address");
+            destinationAddressStr = intent.getStringExtra("Destination Address");
+            bookingRemarkStr = intent.getStringExtra("Booking Remark");
+            cityOfNameStr = intent.getStringExtra("Booking City");
+            BidStr = intent.getStringExtra("BID");
+        }
+
         cityOfBookingSpinner = (Spinner)findViewById(R.id.cityofbokkinglist);
         addBtn = (Button) findViewById(R.id.newrequestbtn);
         dateBtn = (ImageView) findViewById(R.id.cab_date);
@@ -121,9 +137,23 @@ public class AddCabActivity extends AppCompatActivity {
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddCabActivity.this)));
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddCabActivity.this)));
 
+        //Edit case
+        if (actionMode.equalsIgnoreCase("Edit"))
+        {
+            titleTxt.setText("Update Cab Details");
+            addBtn.setText("Update Cab Details");
+            dateTxt.setText(bookingDateStr);
+            timeTxt.setText(bookingTimeStr);
+            sourceAddTxt.setText(sourceAddressStr);
+            destinationDDtXT.setText(destinationAddressStr);
+            bookingRemarkTxt.setText(bookingRemarkStr);
+        }else
+            {
+                //set current date
+                dateTxt.setText(getCurrentTime());
 
-        //set current date
-        dateTxt.setText(getCurrentTime());
+            }
+
 
         // Date Picker Work
         dateBtn.setOnClickListener(new View.OnClickListener() {
@@ -278,8 +308,15 @@ public class AddCabActivity extends AppCompatActivity {
 
                    if (conn.getConnectivityStatus() > 0) {
 
-                       addCabRequest(userId, "", cityId, cityName, dateTxt.getText().toString(), bookingRemarkTxt.getText().toString(),
-                               authCode, object);
+                       if (actionMode.equalsIgnoreCase("Edit")) {
+
+                           addCabRequest(userId, BidStr, cityId, cityName, dateTxt.getText().toString(), bookingRemarkTxt.getText().toString(),
+                                   authCode, object);
+                       }else
+                           {
+                               addCabRequest(userId, "", cityId, cityName, dateTxt.getText().toString(), bookingRemarkTxt.getText().toString(),
+                                       authCode, object);
+                           }
 
                    } else {
                        conn.showNoInternetAlret();
@@ -352,6 +389,17 @@ public class AddCabActivity extends AppCompatActivity {
 
                     }
 
+                    //Edit case
+                    for (int k =0; k<listOfBooking.size(); k++)
+                    {
+                        if (actionMode.equalsIgnoreCase("Edit"))
+                        {
+                            if (listOfBooking.get(k).getCityName().equalsIgnoreCase(cityOfNameStr))
+                            {
+                                cityOfBookingSpinner.setSelection(k);
+                            }
+                        }
+                    }
                     cityAdapter.notifyDataSetChanged();
                     pDialog.dismiss();
 

@@ -48,6 +48,7 @@ public class LeaveSummarryAdapter extends RecyclerView.Adapter<LeaveSummarryAdap
         holder.carryoverTxt.setText(model.getCarryOver());
         holder.approvedTxt.setText(model.getApproved());
         holder.balanceTxt.setText(model.getBalance());
+        holder.avlBalnce.setText(model.getLeaveAvail());
     }
 
     @Override
@@ -56,7 +57,7 @@ public class LeaveSummarryAdapter extends RecyclerView.Adapter<LeaveSummarryAdap
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView leaveTypeTxt,leaveyearTxt,entitlementTxt,carryoverTxt, approvedTxt,balanceTxt;
+        public TextView leaveTypeTxt,leaveyearTxt,entitlementTxt,carryoverTxt, approvedTxt,balanceTxt, avlBalnce;
 
         public CardView mainLay;
 
@@ -68,6 +69,7 @@ public class LeaveSummarryAdapter extends RecyclerView.Adapter<LeaveSummarryAdap
             entitlementTxt = (TextView)itemView.findViewById(R.id.entitlement);
             carryoverTxt = (TextView)itemView.findViewById(R.id.carryover);
             approvedTxt = (TextView)itemView.findViewById(R.id.summrry_approved);
+            avlBalnce = (TextView) itemView.findViewById(R.id.avl_balance);
 
             balanceTxt = (TextView)itemView.findViewById(R.id.balance);
 

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -72,6 +73,7 @@ public class DocumentListFragment extends Fragment {
     public FloatingActionButton fab;
     private OnFragmentInteractionListener mListener;
     public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
+    public TextView noCust ;
 
 
     public DocumentListFragment() {
@@ -113,6 +115,7 @@ public class DocumentListFragment extends Fragment {
 
         documentRecycler = (RecyclerView)rootView.findViewById(R.id.document_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
 
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
@@ -216,6 +219,16 @@ public class DocumentListFragment extends Fragment {
 
 
 
+                    }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        documentRecycler.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        documentRecycler.setVisibility(View.VISIBLE);
                     }
 
                     adapter.notifyDataSetChanged();

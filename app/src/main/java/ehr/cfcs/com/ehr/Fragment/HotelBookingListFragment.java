@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -71,6 +72,7 @@ public class HotelBookingListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     public ConnectionDetector conn;
     public String userId = "",authCode = "";
+    public TextView noCust;
 
     public HotelBookingListFragment() {
         // Required empty public constructor
@@ -111,6 +113,7 @@ public class HotelBookingListFragment extends Fragment {
 
         hotelRecycler = (RecyclerView)rootView.findViewById(R.id.hotel_booking_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
 
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
@@ -131,6 +134,15 @@ public class HotelBookingListFragment extends Fragment {
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), AddHotelActivity.class);
+                i.putExtra("Mode", "Add");
+                i.putExtra("Hotel type","");
+                i.putExtra("Booking City","");
+                i.putExtra("Guest House","");
+                i.putExtra("Check In Date","");
+                i.putExtra("Check In Time","");
+                i.putExtra("Check Out Time","");
+                i.putExtra("Remark","");
+                i.putExtra("BID","");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -139,28 +151,6 @@ public class HotelBookingListFragment extends Fragment {
         return rootView;
     }
 
-   /* private void prepareInsDetails() {
-
-        HotelBookingListModel model = new HotelBookingListModel("Raman Kumar","Delhi","03-09-2017","02-01-2017","10:05 AM","10-01-2017",
-                "Approved","20-12-2017");
-        list.add(model);
-        model = new HotelBookingListModel("Raman Kumar","Delhi","03-09-2017","02-01-2017","10:05 AM","10-01-2017",
-                "Approved","20-12-2017");
-        list.add(model);
-        model = new HotelBookingListModel("Raman Kumar","Delhi","03-09-2017","02-01-2017","10:05 AM","10-01-2017",
-                "Approved","20-12-2017");
-        list.add(model);
-        model = new HotelBookingListModel("Raman Kumar","Delhi","03-09-2017","02-01-2017","10:05 AM","10-01-2017",
-                "Approved","20-12-2017");
-        list.add(model);
-        model = new HotelBookingListModel("Raman Kumar","Delhi","03-09-2017","02-01-2017","10:05 AM","10-01-2017",
-                "Approved","20-12-2017");
-        list.add(model);
-
-
-        adapter.notifyDataSetChanged();
-
-    }*/
     @Override
     public void onResume() {
         super.onResume();
@@ -196,23 +186,62 @@ public class HotelBookingListFragment extends Fragment {
                     for (int i=0 ; i<jsonArray.length();i++)
                     {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String EmployeeName = jsonObject.getString("EmpName");
-                        String CityName = jsonObject.getString("CityName");
-                        String requestDate = jsonObject.getString("AddDateText");
-                        String CheckInDateText = jsonObject.getString("CheckInDateText");
-                        String CheckInTime = jsonObject.getString("CheckInTime");
-                        String CheckOutDateText = jsonObject.getString("CheckOutDateText");
-                        String AppStatusText = jsonObject.getString("AppStatusText");
-                        String followUpDate = jsonObject.getString("AppDateText");
-                        String BID = jsonObject.getString("BID");
 
 
-                        list.add(new HotelBookingListModel(EmployeeName,CityName,requestDate,CheckInDateText
-                                ,CheckInTime,CheckOutDateText,AppStatusText,followUpDate,BID));
+                        if (jsonObject.has("status"))
+                        {
+                            String status = jsonObject.getString("status");
+
+                            if (status.equalsIgnoreCase("failed"))
+                            {
+                                String MsgNotification = jsonObject.getString("MsgNotification");
+
+                                Toast.makeText(getActivity(), MsgNotification, Toast.LENGTH_SHORT).show();
+                                pDialog.dismiss();
+
+                            }else
+                                {
+                                    String MsgNotification = jsonObject.getString("MsgNotification");
+
+                                    Toast.makeText(getActivity(), MsgNotification, Toast.LENGTH_SHORT).show();
+                                    pDialog.dismiss();
+                                }
+                        }else
+                        {
+                            String EmployeeName = jsonObject.getString("HotelName");
+                            String CityName = jsonObject.getString("CityName");
+                            String requestDate = jsonObject.getString("AddDateText");
+                            String CheckInDateText = jsonObject.getString("CheckInDateText");
+                            String CheckInTime = jsonObject.getString("CheckInTime");
+                            String CheckOutDateText = jsonObject.getString("CheckOutDateText");
+                            String AppStatusText = jsonObject.getString("AppStatusText");
+                            String followUpDate = jsonObject.getString("AppDateText");
+                            String BID = jsonObject.getString("BID");
+                            String Visibility = jsonObject.getString("Visibility");
+                            String EmpRemark = jsonObject.getString("EmpRemark");
+                            String HotelType = jsonObject.getString("HotelType");
+
+                            list.add(new HotelBookingListModel(EmployeeName,CityName,requestDate,CheckInDateText
+                                    ,CheckInTime,CheckOutDateText,AppStatusText,followUpDate,BID,Visibility,EmpRemark,HotelType));
+
+                        }
+
+
 
 
 
                     }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        hotelRecycler.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        hotelRecycler.setVisibility(View.VISIBLE);
+                    }
+
 
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();

@@ -67,12 +67,9 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
             }
         });
 
-      /*  if (position % 2 == 1) {
-            holder.mainLay.setCardBackgroundColor(context.getResources().getColor(R.color.col1));
-        }
-        else{
-            holder.mainLay.setCardBackgroundColor(context.getResources().getColor(R.color.col2));
-        }*/
+        holder.noOfDaysTxt.setText(model.getNoofdays());
+
+
     }
 
     @Override
@@ -81,7 +78,7 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView leaveTypeTxt,startDateTxt,endDateTxt,appliedOnTxt, statusTxt;
+        public TextView leaveTypeTxt,startDateTxt,endDateTxt,appliedOnTxt, statusTxt,noOfDaysTxt;
 
         public LinearLayout mainLay;
 
@@ -93,6 +90,7 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
             endDateTxt = (TextView)itemView.findViewById(R.id.end_date);
             appliedOnTxt = (TextView)itemView.findViewById(R.id.appliedon);
             statusTxt = (TextView)itemView.findViewById(R.id.status);
+            noOfDaysTxt = (TextView)itemView.findViewById(R.id.noofdaystxt);
 
             mainLay = (LinearLayout)itemView.findViewById(R.id.leave_management_main_lay);
 

@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.media.Image;
 import android.os.Bundle;
@@ -77,6 +78,8 @@ public class AddHotelActivity extends AppCompatActivity {
     private int yy, mm, dd;
     private int mYear, mMonth, mDay, mHour, mMinute;
     public Button addBtn;
+    public String hotelTypeStr = "", cityOfNameStr = "", hotelNameStr = "", checkInDateStr = "", checkInTimeStr = ""
+            ,checkOutDateStr = "",reamrkStr ="", actionMode = "",bidStr = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +115,22 @@ public class AddHotelActivity extends AppCompatActivity {
 
         titleTxt.setText("Add New Hotel Booking");
 
+        Intent intent = getIntent();
+        if (intent != null)
+        {
+            actionMode = intent.getStringExtra("Mode");
+            hotelTypeStr = intent.getStringExtra("Hotel type");
+            cityOfNameStr = intent.getStringExtra("Booking City");
+            hotelNameStr = intent.getStringExtra("Guest House");
+            checkInDateStr = intent.getStringExtra("Check In Date");
+            checkInTimeStr = intent.getStringExtra("Check In Time");
+            checkOutDateStr = intent.getStringExtra("Check Out Time");
+            reamrkStr = intent.getStringExtra("Remark");
+            bidStr = intent.getStringExtra("BID");
+
+
+        }
+
         conn = new ConnectionDetector(AddHotelActivity.this);
         authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddHotelActivity.this)));
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddHotelActivity.this)));
@@ -128,6 +147,22 @@ public class AddHotelActivity extends AppCompatActivity {
         checkOutDateTxt = (EditText) findViewById(R.id.hotel_checkoutdatetxt);
         remarkTxt = (EditText) findViewById(R.id.hotel_emp_remark);
         addBtn = (Button) findViewById(R.id.newrequestbtn);
+
+        //edit mode
+        if (actionMode.equalsIgnoreCase("Edit"))
+        {
+            titleTxt.setText("Update Hotel Booking");
+            addBtn.setText("Update Hotel Booking");
+            checkInDateTxt.setText(checkInDateStr);
+            checkOutDateTxt.setText(checkOutDateStr);
+            checkinTimeTxt.setText(checkInTimeStr);
+            remarkTxt.setText(reamrkStr);
+        }else
+            {
+                //select current date
+                checkOutDateTxt.setText(getCurrentTime());
+
+            }
 
         //City List Spinner
         //change spinner arrow color
@@ -200,8 +235,6 @@ public class AddHotelActivity extends AppCompatActivity {
             }
         });
 
-        //select current date
-        checkOutDateTxt.setText(getCurrentTime());
 
         //checkInDate DatePicker
         checkInDateBtn.setOnClickListener(new View.OnClickListener() {
@@ -243,7 +276,7 @@ public class AddHotelActivity extends AppCompatActivity {
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
 
-                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
             }
         });
 
@@ -360,7 +393,7 @@ public class AddHotelActivity extends AppCompatActivity {
 
                     if (conn.getConnectivityStatus() > 0) {
 
-                        addHotelRequest(userId, "", hotelId, hotelCityId, checkInDateTxt.getText().toString(), checkinTimeTxt.getText().toString(),
+                        addHotelRequest(userId, bidStr, hotelId, hotelCityId, checkInDateTxt.getText().toString(), checkinTimeTxt.getText().toString(),
                                 checkOutDateTxt.getText().toString(), authcode, remarkTxt.getText().toString());
                     } else {
                         conn.showNoInternetAlret();
@@ -427,7 +460,11 @@ public class AddHotelActivity extends AppCompatActivity {
                         if (status.equalsIgnoreCase("success"))
                         {
                             onBackPressed();
-                        }
+                        }else
+                            {
+                                String MsgNotification = jsonObject.getString("MsgNotification");
+                                Toast.makeText(AddHotelActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
+                            }
                     }
 
 
@@ -492,26 +529,6 @@ public class AddHotelActivity extends AppCompatActivity {
                     Log.e("Login", response);
                     JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
 
-                  /*  //bind material List
-                    if (cityList.size()>0)
-                    {
-                        cityList.clear();
-                    }
-                    cityList.add(new CabCityModel("Please Select City",""));
-                    JSONArray cityObj = jsonObject.getJSONArray("TaxiCityName");
-                    for (int i =0; i<cityObj.length(); i++)
-                    {
-                        JSONObject object = cityObj.getJSONObject(i);
-
-                        String CityName = object.getString("CityName");
-                        String CityID = object.getString("CityID");
-
-                        cityList.add(new CabCityModel(CityName,CityID));
-
-
-                    }*/
-
-
                     if (hotelTypeList.size()>0)
                     {
                         hotelTypeList.clear();
@@ -526,6 +543,20 @@ public class AddHotelActivity extends AppCompatActivity {
                         String HotelTypeID = object.getString("HotelTypeID");
 
                         hotelTypeList.add(new HotelTypeModel(HotelType,HotelTypeID));
+                    }
+
+                    //Edit case
+                    for (int k =0; k<hotelTypeList.size(); k++)
+                    {
+                        if (actionMode.equalsIgnoreCase("Edit"))
+                        {
+                            if (hotelTypeList.get(k).getHotelTypeId().equalsIgnoreCase(hotelTypeStr))
+                            {
+                                hotelTypeSpinner.setSelection(k);
+                                hotelTypeID = hotelTypeList.get(k).getHotelTypeId();
+                                //hotelNameANDCity(hotelTypeID,"");
+                            }
+                        }
                     }
 
                     hotelTypeAdapter.notifyDataSetChanged();
@@ -607,6 +638,35 @@ public class AddHotelActivity extends AppCompatActivity {
                         String HotelTypeID = object.getString("HotelID");
 
                         hotelList.add(new HotelNameModel(HotelType,HotelTypeID));
+                    }
+
+                    //Edit case
+                    for (int k =0; k<hotelList.size(); k++)
+                    {
+                        if (actionMode.equalsIgnoreCase("Edit"))
+                        {
+                            if (hotelList.get(k).getHotelName().equalsIgnoreCase(hotelNameStr))
+                            {
+                                hotelSpinner.setSelection(k);
+                                hotelId = hotelList.get(k).getHotelId();
+                                actionMode = "add";
+                            }
+                        }
+                    }
+
+                    //Hotel Name
+
+                    for (int k =0; k<cityList.size(); k++)
+                    {
+                        if (actionMode.equalsIgnoreCase("Edit"))
+                        {
+                            if (cityList.get(k).getCityName().equalsIgnoreCase(cityOfNameStr))
+                            {
+                                cityofBookingSpinner.setSelection(k);
+                                hotelCityId = cityList.get(k).getCityId();
+                               // hotelNameANDCity(hotelCityId,"");
+                            }
+                        }
                     }
 
                     hotelAdapter.notifyDataSetChanged();

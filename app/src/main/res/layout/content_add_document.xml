@@ -18,7 +18,52 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/newrequestbtn">
 
+
+        <LinearLayout
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:background="@null"
+                android:textStyle="bold"
+                android:id="@+id/closerdatetxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_weight=".8"
+                android:backgroundTint="@color/purple700"
+                android:hint="Closer Date"
+                android:inputType="textPersonName"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:textColor="@color/purple500"
+                android:textColorHint="@color/purple700"
+                android:textSize="16dp"
+                android:theme="@style/MyEditText" />
+
+            <ImageView
+                android:id="@+id/closerdatebtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:src="@drawable/cal" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/status_color"
+            />
+
+
         <ListView
+            android:layout_marginTop="10dp"
             android:descendantFocusability="afterDescendants"
             android:focusable="false"
             android:divider="@null"
@@ -45,6 +90,6 @@
         android:textColor="@color/white"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Add New Document"/>
+        android:text="Add New Document Request"/>
 
 </android.support.constraint.ConstraintLayout>

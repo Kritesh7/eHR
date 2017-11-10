@@ -219,23 +219,15 @@
         >
 
         <Button
-            android:id="@+id/editstaionry"
+            android:id="@+id/editcab"
             android:background="@color/purple700"
             android:textColor="@color/white"
-            android:layout_width="0dp"
-            android:layout_weight=".5"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Edit"
-            android:layout_marginRight="10dp"/>
+          />
 
-        <Button
-            android:id="@+id/deleteBtn"
-            android:background="@color/purple700"
-            android:textColor="@color/white"
-            android:layout_width="0dp"
-            android:layout_weight=".5"
-            android:layout_height="wrap_content"
-            android:text="Delete"/>
+
 
 
 

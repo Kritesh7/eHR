@@ -47,13 +47,14 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
     public TextView titleTxt,empNameTxt,requestDateTxt,approvedByTxt,bookDateTxt,cityNameTxt,statusTxt,empcommTxt,hrcommTxt,
                      followDateTxt,hrcommentFontTxt;
     public String cabDetailsUrl = SettingConstant.BaseUrl + "AppEmployeeTaxiBookingRequestDetail";
-    public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeTaxiRequestDelete";
     public ConnectionDetector conn;
-    public String bidString = "",authCode = "";
+    public String bidString = "",authCode = "", userId = "";
     public ehr.cfcs.com.ehr.Source.MyListLayout cabItemList;
     public CabItemsAdapter adapter;
     public ArrayList<CabItemModel> list = new ArrayList<>();
-    public Button deleteBtn;
+    public Button editBtn;
+    public String BookDateText = "", CityName = "", BookTime = "", SourceAdd = "", DestinationAdd = "",EmpComment = ""
+            ,BIDStr = "";
 
 
     @Override
@@ -98,6 +99,7 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
 
         conn = new ConnectionDetector(ViewCabDetailsActivity.this);
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewCabDetailsActivity.this)));
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewCabDetailsActivity.this)));
 
         empNameTxt = (TextView)findViewById(R.id.cab_empname);
         requestDateTxt = (TextView)findViewById(R.id.cab_request_date);
@@ -110,42 +112,49 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
         followDateTxt = (TextView)findViewById(R.id.followdatetxt);
         hrcommentFontTxt = (TextView)findViewById(R.id.hrcommenttxt);
         cabItemList = (ehr.cfcs.com.ehr.Source.MyListLayout ) findViewById(R.id.cab_item_list);
-        deleteBtn = (Button) findViewById(R.id.deleteBtn);
+        editBtn = (Button) findViewById(R.id.editcab);
 
         adapter = new CabItemsAdapter(ViewCabDetailsActivity.this,list);
 
         cabItemList.setAdapter(adapter);
 
-        //show details of cab
-        if (conn.getConnectivityStatus()>0) {
 
-            viewCabDetails(authCode,bidString);
+        editBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        }else
-            {
-                conn.showNoInternetAlret();
+                Intent i = new Intent(ViewCabDetailsActivity.this, AddCabActivity.class);
+                i.putExtra("Mode", "Edit");
+                i.putExtra("Booking Date",BookDateText);
+                i.putExtra("Booking City",CityName);
+                i.putExtra("Booking Time",BookTime);
+                i.putExtra("Source Address",SourceAdd);
+                i.putExtra("Destination Address",DestinationAdd);
+                i.putExtra("Booking Remark",EmpComment);
+                i.putExtra("BID",BIDStr);
+
+                startActivity(i);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
-
-            deleteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    if (conn.getConnectivityStatus()>0) {
-
-                        deleteMethod(authCode,bidString);
-
-                    }else
-                    {
-                        conn.showNoInternetAlret();
-                    }
-
-                }
-            });
+        });
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0)
+        {
+            viewCabDetails(authCode,bidString, userId);
+
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
+    }
+
     //view cab details
-    public void viewCabDetails(final String AuthCode ,final String BID) {
+    public void viewCabDetails(final String AuthCode ,final String BID, final String userId) {
 
         final ProgressDialog pDialog = new ProgressDialog(ViewCabDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -170,9 +179,10 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
                         String approvedBy = object.getString("AppDateText");
                         String HrComment = object.getString("HrComment");
                         String AppStatusText = object.getString("AppStatusText");
-                        String CityName = object.getString("CityName");
-                        String BookDateText = object.getString("BookDateText");
-                        String EmpComment = object.getString("EmpComment");
+                        BIDStr = object.getString("BID");
+                        CityName = object.getString("CityName");
+                        BookDateText = object.getString("BookDateText");
+                        EmpComment = object.getString("EmpComment");
                         //String BookDateText = object.getString("BookDateText");
 
                         empNameTxt.setText(EmpName);
@@ -208,9 +218,9 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
                     {
                         JSONObject object = itemdetaislArray.getJSONObject(j);
 
-                        String BookTime = object.getString("BookTime");
-                        String SourceAdd = object.getString("SourceAdd");
-                        String DestinationAdd = object.getString("DestinationAdd");
+                        BookTime = object.getString("BookTime");
+                        SourceAdd = object.getString("SourceAdd");
+                        DestinationAdd = object.getString("DestinationAdd");
 
 
                         list.add(new CabItemModel(BookTime,SourceAdd,DestinationAdd));
@@ -245,6 +255,7 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
                 params.put("BID",BID);
+                params.put("AdminID",userId);
 
 
                 Log.e("Parms", params.toString());
@@ -258,71 +269,6 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
-
-    //delete the Details
-    public void deleteMethod(final String AuthCode ,final String BID) {
-
-        final ProgressDialog pDialog = new ProgressDialog(ViewCabDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
-        pDialog.setMessage("Loading...");
-        pDialog.show();
-
-        StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, deleteUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                try {
-                    Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
-
-                    if (jsonObject.has("status"))
-                    {
-                        String status = jsonObject.getString("status");
-
-                        if (status.equalsIgnoreCase("success"))
-                        {
-                            onBackPressed();
-                        }
-                    }
-
-
-                    pDialog.dismiss();
-
-                } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("Login", "Error: " + error.getMessage());
-                // Log.e("checking now ",error.getMessage());
-
-                Toast.makeText(ViewCabDetailsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                pDialog.dismiss();
-
-
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("BID",BID);
-
-                Log.e("Parms", params.toString());
-                return params;
-            }
-
-        };
-        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
-
-    }
-
 
     @Override
     public void onBackPressed() {

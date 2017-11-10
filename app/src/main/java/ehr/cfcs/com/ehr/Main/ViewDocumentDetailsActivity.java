@@ -51,10 +51,9 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
     public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
     public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
     public ConnectionDetector conn;
-    public String authCode = "", rid="";
-    public Button updateDetails,deleteBtn;
+    public String authCode = "", rid="",ridStr = "",IdealClosureDateText = "",userId = "";
+    public Button updateDetails;
     public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDetail";
-    public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDelete";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +96,7 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
 
         conn = new ConnectionDetector(ViewDocumentDetailsActivity.this);
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewDocumentDetailsActivity.this)));
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewDocumentDetailsActivity.this)));
 
         requestItemList = (ehr.cfcs.com.ehr.Source.MyListLayout) findViewById(R.id.request_item_list);
         requestByTxt = (TextView) findViewById(R.id.staionory_request);
@@ -107,14 +107,14 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
         closerDateTxt = (TextView)findViewById(R.id.staionory_closer_date);
         hrTxt = (TextView)findViewById(R.id.hrcommenttxt);
         updateDetails = (Button)findViewById(R.id.editstaionry);
-        deleteBtn = (Button) findViewById(R.id.deleteBtn);
+        //deleteBtn = (Button) findViewById(R.id.deleteBtn);
         adapter = new RequestedItemAdapter(list,ViewDocumentDetailsActivity.this);
 
         requestItemList.setAdapter(adapter);
 
         if (conn.getConnectivityStatus()>0)
         {
-            viewStationryDetails(authCode,rid,"2");
+            viewStationryDetails(authCode,rid,"2",userId);
         }else
         {
             conn.showNoInternetAlret();
@@ -127,12 +127,14 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                 Intent i = new Intent(ViewDocumentDetailsActivity.this, AddDocumentActivity.class);
                 i.putExtra("Mode", "Edit");
                 i.putExtra("mylist", itemBindList);
+                i.putExtra("Rid",ridStr);
+                i.putExtra("IdealClosureDateText",IdealClosureDateText);
                 startActivity(i);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
         });
 
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
+      /*  deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -143,21 +145,24 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                     conn.showNoInternetAlret();
                 }
             }
-        });
-
-
-       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
         });*/
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0)
+        {
+            viewStationryDetails(authCode,rid,"2", userId);
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
     }
 
     //View Stationry Details
-    public void viewStationryDetails(final String AuthCode ,final String RID, final String ItemCatID) {
+    public void viewStationryDetails(final String AuthCode ,final String RID, final String ItemCatID, final String userId) {
 
         final ProgressDialog pDialog = new ProgressDialog(ViewDocumentDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -182,8 +187,9 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                         String AppBy = object.getString("ApprovedBy");
                         String HrComment = object.getString("HrComment");
                         String AppStatusText = object.getString("AppStatusText");
-                        String IdealClosureDateText = object.getString("IdealClosureDateText");
+                        IdealClosureDateText = object.getString("IdealClosureDateText");
                         String Visibility = object.getString("Visibility");
+                        ridStr = object.getString("RID");
 
                         closerDateTxt.setText(IdealClosureDateText);
                         empNameTxt.setText(EmpName);
@@ -213,12 +219,13 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
 
                         String ItemName = object.getString("ItemName");
                         String NoOfItem = object.getString("NoOfItem");
+                        //String Quantity = object.getString("Quantity");
                         String Remark = object.getString("Remark");
                         String ItemID = object.getString("ItemID");
                         String chkValue = object.getString("chkValue");
 
 
-                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,NoOfItem,Remark,chkValue,""));
+                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,NoOfItem,Remark,chkValue,"0"));
 
 
 
@@ -235,16 +242,15 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                         JSONObject object = itemsBindDataArray.getJSONObject(k);
                         String ItemID = object.getString("ItemID");
                         String ItemName = object.getString("ItemName");
-                        String Quantity = object.getString("Quantity");
+                        String Quantity = object.getString("NoOfItem");
+                        String maxQuantity = object.getString("Quantity");
                         String Remark = object.getString("Remark");
                         String chkValue = object.getString("chkValue");
 
-
-                        itemBindList.add(new BookMeaPrevisionModel(ItemName,ItemID,Quantity,Remark,chkValue,""));
-
-
-
+                        itemBindList.add(new BookMeaPrevisionModel(ItemName,ItemID,Quantity,Remark,chkValue,maxQuantity));
                     }
+
+                    Log.e("Inner List size in edit", itemBindList.size() + "");
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();
 
@@ -271,6 +277,7 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                 params.put("AuthCode",AuthCode);
                 params.put("RID",RID);
                 params.put("ItemCatID",ItemCatID);
+                params.put("AdminID",userId);
 
                 Log.e("Parms", params.toString());
                 return params;
@@ -283,71 +290,6 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
-
-    //delete the Details
-    public void deleteMethod(final String AuthCode ,final String RID) {
-
-        final ProgressDialog pDialog = new ProgressDialog(ViewDocumentDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
-        pDialog.setMessage("Loading...");
-        pDialog.show();
-
-        StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, deleteUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                try {
-                    Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
-
-                    if (jsonObject.has("status"))
-                    {
-                        String status = jsonObject.getString("status");
-
-                        if (status.equalsIgnoreCase("success"))
-                        {
-                            onBackPressed();
-                        }
-                    }
-
-
-                    pDialog.dismiss();
-
-                } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("Login", "Error: " + error.getMessage());
-                // Log.e("checking now ",error.getMessage());
-
-                Toast.makeText(ViewDocumentDetailsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                pDialog.dismiss();
-
-
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("RID",RID);
-
-                Log.e("Parms", params.toString());
-                return params;
-            }
-
-        };
-        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
-
-    }
-
 
 
     @Override

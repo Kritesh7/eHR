@@ -43,6 +43,7 @@ public class ViewLeavemangementActivity extends AppCompatActivity {
                     commentByHrTxt, hrCommentedOnTxt;
     public String viewDetailsUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveDetail";
     public ConnectionDetector conn;
+    public String userId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +87,7 @@ public class ViewLeavemangementActivity extends AppCompatActivity {
 
         conn = new ConnectionDetector(ViewLeavemangementActivity.this);
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewLeavemangementActivity.this)));
-
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewLeavemangementActivity.this)));
         //find id
         leaveTypeTxt = (TextView)findViewById(R.id.leavetype);
         startDateTxt = (TextView)findViewById(R.id.startdate);
@@ -101,7 +102,7 @@ public class ViewLeavemangementActivity extends AppCompatActivity {
 
         if (conn.getConnectivityStatus()>0)
         {
-            viewDetails(authCode,LeaveApplication_Id);
+            viewDetails(authCode,LeaveApplication_Id, userId);
         }else
             {
                 conn.showNoInternetAlret();
@@ -112,7 +113,7 @@ public class ViewLeavemangementActivity extends AppCompatActivity {
     }
 
     //view Details Api
-    public void viewDetails(final String AuthCode , final String LeaveApplicationID ) {
+    public void viewDetails(final String AuthCode , final String LeaveApplicationID, final String userId ) {
 
 
         final ProgressDialog pDialog = new ProgressDialog(ViewLeavemangementActivity.this,R.style.AppCompatAlertDialogStyle);
@@ -190,6 +191,7 @@ public class ViewLeavemangementActivity extends AppCompatActivity {
 
                 params.put("AuthCode",AuthCode);
                 params.put("LeaveApplicationID",LeaveApplicationID);
+                params.put("AdminID",userId);
 
 
                 Log.e("Parms", params.toString());

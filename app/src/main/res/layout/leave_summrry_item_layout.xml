@@ -94,6 +94,43 @@
             android:layout_height="1dp"
             android:background="#e0e0e0"
             android:elevation=".5dp"/>
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:text="CarryOver"/>
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text=":"/>
+
+            <TextView
+                android:id="@+id/carryover"
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:text="Leave Type"/>
+        </LinearLayout>
+
+
+        <View
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
 
         <LinearLayout
             android:layout_marginTop="10dp"
@@ -131,6 +168,7 @@
             android:layout_height="1dp"
             android:background="#e0e0e0"
             android:elevation=".5dp"/>
+
         <LinearLayout
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
@@ -142,7 +180,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="CarryOver"/>
+                android:text="Total Balance"/>
 
             <TextView
                 android:textColor="@color/status_color"
@@ -153,13 +191,16 @@
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/carryover"
+                android:id="@+id/balance"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
                 android:text="Leave Type"/>
         </LinearLayout>
+
+
+
 
         <View
             android:layout_marginTop="5dp"
@@ -217,7 +258,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Balance"/>
+                android:text="Available Balance"/>
 
             <TextView
                 android:textColor="@color/status_color"
@@ -228,13 +269,14 @@
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/balance"
+                android:id="@+id/avl_balance"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
                 android:text="Leave Type"/>
         </LinearLayout>
+
 
 
     </LinearLayout>

@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -70,6 +71,7 @@ public class TaxiListFragment extends Fragment {
     public String cabListUrl = SettingConstant.BaseUrl + "AppEmployeeTaxiBookingRequestList";
     public ConnectionDetector conn;
     public String userId = "",authCode = "";
+    public TextView noCust;
 
 
     private OnFragmentInteractionListener mListener;
@@ -113,6 +115,7 @@ public class TaxiListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_taxi_list, container, false);
         cabrecycler = (RecyclerView)rootView.findViewById(R.id.cab_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
 
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
@@ -136,6 +139,14 @@ public class TaxiListFragment extends Fragment {
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), AddCabActivity.class);
+                i.putExtra("Mode", "");
+                i.putExtra("Booking Date","");
+                i.putExtra("Booking City","");
+                i.putExtra("Booking Time","");
+                i.putExtra("Source Address","");
+                i.putExtra("Destination Address","");
+                i.putExtra("Booking Remark","");
+                i.putExtra("BID","");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -144,29 +155,7 @@ public class TaxiListFragment extends Fragment {
         return rootView;
     }
 
-   /* private void prepareInsDetails() {
 
-        CabListModel model = new CabListModel("Raman Kumar","East","Delhi","03-09-2017","02-01-2017","10-01-2017",
-                "Approved");
-        list.add(model);
-        model = new CabListModel("Raman Kumar","East","Delhi","03-09-2017","02-01-2017","10-01-2017",
-                "Approved");
-        list.add(model);
-        model = new CabListModel("Raman Kumar","East","Delhi","03-09-2017","02-01-2017","10-01-2017",
-                "Approved");
-        list.add(model);
-        model = new CabListModel("Raman Kumar","East","Delhi","03-09-2017","02-01-2017","10-01-2017",
-                "Approved");
-        list.add(model);
-        model = new CabListModel("Raman Kumar","East","Delhi","03-09-2017","02-01-2017","10-01-2017",
-                "Approved");
-        list.add(model);
-
-
-        adapter.notifyDataSetChanged();
-
-    }
-*/
     @Override
     public void onResume() {
         super.onResume();
@@ -211,13 +200,24 @@ public class TaxiListFragment extends Fragment {
                         String followDate = jsonObject.getString("AppDateText");
                         String AppStatusText = jsonObject.getString("AppStatusText");
                         String BID = jsonObject.getString("BID");
+                        String Visibility = jsonObject.getString("Visibility");
 
 
                         list.add(new CabListModel(EmployeeName,ZoneName,CityName,requestDate,BookDateText
-                                ,AppStatusText,followDate,BID));
+                                ,AppStatusText,followDate,BID,Visibility));
 
 
 
+                    }
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        cabrecycler.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        cabrecycler.setVisibility(View.VISIBLE);
                     }
 
                     adapter.notifyDataSetChanged();

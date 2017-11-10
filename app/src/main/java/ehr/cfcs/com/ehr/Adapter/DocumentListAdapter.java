@@ -1,23 +1,45 @@
 package ehr.cfcs.com.ehr.Adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import ehr.cfcs.com.ehr.Main.ViewDocumentDetailsActivity;
 import ehr.cfcs.com.ehr.Main.ViewRequestDetailsActivity;
 import ehr.cfcs.com.ehr.Model.DocumentListModel;
 import ehr.cfcs.com.ehr.Model.StationaryRequestModel;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 /**
  * Created by Admin on 18-09-2017.
@@ -29,6 +51,8 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
     public Context context;
     public ArrayList<DocumentListModel> list = new ArrayList<>();
     public Activity activity;
+    public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDelete";
+    public String authCode = "", userId = "";
 
     public DocumentListAdapter(Context context, ArrayList<DocumentListModel> list, Activity activity) {
         this.context = context;
@@ -47,6 +71,10 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         final DocumentListModel model = list.get(position);
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(context)));
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(context)));
+
+
 
         holder.empNameTxt.setText(model.getEmployName());
         holder.zoneNameTxt.setText(model.getZoneName());
@@ -67,12 +95,14 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
             }
         });
 
-        /*if (position % 2 == 1) {
-            holder.mainLay.setCardBackgroundColor(context.getResources().getColor(R.color.col1));
-        }
-        else{
-            holder.mainLay.setCardBackgroundColor(context.getResources().getColor(R.color.col2));
-        }*/
+      //Delet record
+        holder.delBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                showSettingsAlert(position,authCode,model.getRID(),userId);
+            }
+        });
     }
 
     @Override
@@ -83,7 +113,7 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView empNameTxt,zoneNameTxt,qunatityTxt,requestDateTxt, idleclouserDateTxt,followupDateTxt,statusTxt;
 
-        public LinearLayout mainLay;
+        public ImageView mainLay, delBtn;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -95,8 +125,114 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
             idleclouserDateTxt = (TextView)itemView.findViewById(R.id.document_idleclouserdate);
             followupDateTxt = (TextView)itemView.findViewById(R.id.document_followupdate);
             statusTxt = (TextView)itemView.findViewById(R.id.document_statinarystatus);
-
-            mainLay = (LinearLayout)itemView.findViewById(R.id.document_main_lay);
+            delBtn = (ImageView)itemView.findViewById(R.id.delbtn);
+            mainLay = (ImageView)itemView.findViewById(R.id.document_main_lay);
         }
+    }
+
+    public void remove(int position) {
+        if (position < 0 || position >= list.size()) {
+            return;
+        }
+        list.remove(position);
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
+    }
+
+    public void showSettingsAlert(final int postion, final String authcode, final String recordId, final String userid) {
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+
+        // Setting Dialog Title
+        //  alertDialog.setTitle("Alert");
+
+        // Setting Dialog Message
+        alertDialog.setMessage("Are You Sure You Want to Delete?");
+
+        // On pressing the Settings button.
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+                deleteMethod(authcode,recordId,userid,postion);
+            }
+        });
+
+        // On pressing the cancel button
+        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
+    }
+
+
+
+    //delete the Details
+    public void deleteMethod(final String AuthCode ,final String RID, final String userId, final int postion) {
+
+        final ProgressDialog pDialog = new ProgressDialog(context,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, deleteUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    if (jsonObject.has("status"))
+                    {
+                        String status = jsonObject.getString("status");
+
+                        if (status.equalsIgnoreCase("success"))
+                        {
+                            remove(postion);
+                            Toast.makeText(context, "Delete successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("RID",RID);
+                params.put("AdminID",userId);
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
     }
 }

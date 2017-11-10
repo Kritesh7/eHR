@@ -12,15 +12,21 @@ public class LeaveSummarryModel
     public String carryOver;
     public String approved;
     public String balance;
+    public String LeaveAvail;
 
     public LeaveSummarryModel(String leaveType, String leaveYear, String entitilement,
-                              String carryOver, String approved, String balance) {
+                              String carryOver, String approved, String balance, String LeaveAvail) {
         this.leaveType = leaveType;
         this.leaveYear = leaveYear;
         this.entitilement = entitilement;
         this.carryOver = carryOver;
         this.approved = approved;
         this.balance = balance;
+        this.LeaveAvail = LeaveAvail;
+    }
+
+    public String getLeaveAvail() {
+        return LeaveAvail;
     }
 
     public String getLeaveType() {

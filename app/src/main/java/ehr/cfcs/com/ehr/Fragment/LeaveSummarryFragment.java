@@ -150,23 +150,7 @@ public class LeaveSummarryFragment extends Fragment {
         return rootView;
     }
 
-    private void prepareInsDetails() {
 
-        LeaveSummarryModel model = new LeaveSummarryModel("Full Time","2016","20","6","5","6");
-        list.add(model);
-        model = new LeaveSummarryModel("Full Time","2016","20","6","5","6");
-        list.add(model);
-        model = new LeaveSummarryModel("Full Time","2016","20","6","5","6");
-        list.add(model);
-        model = new LeaveSummarryModel("Full Time","2016","20","6","5","6");
-        list.add(model);
-        model = new LeaveSummarryModel("Full Time","2016","20","6","5","6");
-        list.add(model);
-
-
-        adapter.notifyDataSetChanged();
-
-    }
 
     //Leave Summery List
     public void leaveSummeryData(final String AuthCode , final String AdminID) {
@@ -193,12 +177,14 @@ public class LeaveSummarryFragment extends Fragment {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String LeaveTypeName = jsonObject.getString("LeaveTypeName");
                         String LeaveYear = jsonObject.getString("LeaveYear");
-                        String EntitledFor = jsonObject.getString("EntitledFor");
+                        String EntitledFor = jsonObject.getString("LeaveAvailable");
                         String LeaveCarryOver = jsonObject.getString("LeaveCarryOver");
                         String LeaveTaken = jsonObject.getString("LeaveTaken");
                         String LeaveBalance = jsonObject.getString("LeaveBalance");
+                        String LeaveAvail = jsonObject.getString("LeaveAvail");
 
-                        list.add(new LeaveSummarryModel(LeaveTypeName,LeaveYear,EntitledFor,LeaveCarryOver,LeaveTaken,LeaveBalance));
+                        list.add(new LeaveSummarryModel(LeaveTypeName,LeaveYear,EntitledFor,LeaveCarryOver,LeaveTaken,
+                                LeaveBalance,LeaveAvail));
 
 
 

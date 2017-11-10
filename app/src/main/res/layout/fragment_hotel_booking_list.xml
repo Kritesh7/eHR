@@ -22,14 +22,13 @@
 
         <TextView
             android:visibility="gone"
-            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hotel Booking List"
-            android:gravity="center"
-            android:textColor="@color/status_color"
+            android:layout_height="match_parent"
+            android:text="Record Not Found!"
             android:textStyle="bold"
-            android:textSize="18dp"/>
+            android:id="@+id/no_record_txt"
+            android:textSize="18sp"
+            android:gravity="center"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/hotel_booking_recycler"

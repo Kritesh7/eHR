@@ -61,7 +61,8 @@
         <activity
             android:name=".Main.NewAddLeaveMangementActivity"
             android:label="@string/title_activity_new_add_leave_mangement"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".Main.ViewLeavemangementActivity"
             android:label="@string/title_activity_view_leavemangement"

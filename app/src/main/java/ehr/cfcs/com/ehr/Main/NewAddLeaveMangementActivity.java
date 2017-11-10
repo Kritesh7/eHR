@@ -70,7 +70,8 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
     public String leaveTypeUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveTypeList";
     public ArrayAdapter<LeaveYearTypeModel>  leaveYearAdapter;
     public ArrayAdapter<LeaveTypeModel> leaveTypeAdapter;
-    public String userId = "", authcode = "",mgrId = "",leaveId = "",firstHalfString = "false",secondHalfString = "false",yearString = "";
+    public String userId = "", authcode = "",mgrId = "",leaveId = "",firstHalfString = "false",secondHalfString = "false",
+            yearString = "", userName = "", compId = "", leaveTypeStr = "";
     public ConnectionDetector conn;
     public String applyUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveApply";
     public Button applyBtn;
@@ -125,6 +126,8 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(NewAddLeaveMangementActivity.this)));
         authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(NewAddLeaveMangementActivity.this)));
         mgrId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getMgrDir(NewAddLeaveMangementActivity.this)));
+        userName = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getUserName(NewAddLeaveMangementActivity.this)));
+        compId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getCompanyId(NewAddLeaveMangementActivity.this)));
         conn = new ConnectionDetector(NewAddLeaveMangementActivity.this);
 
 
@@ -265,6 +268,7 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                leaveId =  leaveTypeList.get(i).getLeaveID();
+               leaveTypeStr = leaveTypeList.get(i).getLeaveTypeName();
             }
 
             @Override
@@ -323,7 +327,8 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                     if (conn.getConnectivityStatus()>0) {
 
                         applyLeave(userId, mgrId, leaveId, startTxt.getText().toString(), firstHalfString, endTxt.getText().toString(),
-                                secondHalfString, commentTxt.getText().toString(), yearString, authcode);
+                                secondHalfString, commentTxt.getText().toString(), yearString, authcode, compId,userName,
+                                leaveTypeStr);
                     }else
                         {
                             conn.showNoInternetAlret();
@@ -501,7 +506,8 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
     //Apply  Leave
     public void applyLeave(final String AdminID , final String MgrID , final String LeaveID, final String FromDate,
                                 final String FirstHalf, final String ToDate, final String SecondHalf,
-                                final String Comments,final String Year , final String AuthCode ) {
+                                final String Comments,final String Year , final String AuthCode, final String compaId,
+                                final String username, final String leavetype ) {
 
         final ProgressDialog pDialog = new ProgressDialog(NewAddLeaveMangementActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -573,6 +579,9 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                 params.put("Comments",Comments);
                 params.put("Year",Year);
                 params.put("AuthCode",AuthCode);
+                params.put("UserName",username);
+                params.put("CompID",compaId);
+                params.put("LeaveType",leavetype);
 
                 Log.e("Parms", params.toString());
                 return params;

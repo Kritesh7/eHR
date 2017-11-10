@@ -31,7 +31,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Employ Name"
+                    android:text="Request By"
                     android:textColor="@color/status_color"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
@@ -45,20 +45,17 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"/>
 
-
-
-
                 <TextView
                     android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Request Date"
+                    android:text="Hotel Type"
                     android:textColor="@color/status_color"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
                 <TextView
-                    android:id="@+id/hotel_request_date"
+                    android:id="@+id/hotel_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
@@ -67,20 +64,37 @@
                     android:layout_marginTop="5dp"/>
 
                 <TextView
-                    android:id="@+id/followdatetxt"
                     android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FollowUp date"
+                    android:text="Hotel Name"
                     android:textColor="@color/status_color"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
                 <TextView
-                    android:id="@+id/hotel_approvaldate"
+                    android:id="@+id/hotel_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Full Time"
+                    android:text=""
+                    android:textColor="@color/purple700"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"/>
+
+                <TextView
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City Name"
+                    android:textColor="@color/status_color"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/hotel_cityname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
                     android:textColor="@color/purple700"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"/>
@@ -142,41 +156,20 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"/>
 
-
-
-
                 <TextView
                     android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="City Name"
+                    android:text="Employee Remark"
                     android:textColor="@color/status_color"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
                 <TextView
-                    android:id="@+id/hotel_cityname"
+                    android:id="@+id/hotel_employcomment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textColor="@color/purple700"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"/>
-
-                <TextView
-                    android:layout_marginTop="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hotel Name"
-                    android:textColor="@color/status_color"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:id="@+id/hotel_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
+                    android:text="Good Commnucation skill"
                     android:textColor="@color/purple700"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"/>
@@ -199,28 +192,73 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"/>
 
-
                 <TextView
                     android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Employ Comment"
+                    android:text="Request Date"
                     android:textColor="@color/status_color"
                     android:textStyle="bold"
                     android:textSize="16sp"/>
 
                 <TextView
-                    android:id="@+id/hotel_employcomment"
+                    android:id="@+id/hotel_request_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Good Commnucation skill"
+                    android:text=""
                     android:textColor="@color/purple700"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="5dp"/>
 
+
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/followudateLay"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/followdatetxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FollowUp date"
+                    android:textColor="@color/status_color"
+                    android:textStyle="bold"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/hotel_approvaldate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Full Time"
+                    android:textColor="@color/purple700"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"/>
+
+                </LinearLayout>
+
+
+
+
+
+
+
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/hrcommentLay"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
                 <TextView
                     android:id="@+id/hrcommenttxt"
-                    android:layout_marginTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Hr Comment"
@@ -239,6 +277,14 @@
 
             </LinearLayout>
 
+
+
+
+
+
+
+            </LinearLayout>
+
         </ScrollView>
 
     </LinearLayout>
@@ -254,23 +300,16 @@
         >
 
         <Button
+            android:visibility="gone"
             android:id="@+id/edithotel"
             android:background="@color/purple700"
             android:textColor="@color/white"
-            android:layout_width="0dp"
-            android:layout_weight=".5"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Edit"
-            android:layout_marginRight="10dp"/>
+           />
 
-        <Button
-            android:id="@+id/deleteBtn"
-            android:background="@color/purple700"
-            android:textColor="@color/white"
-            android:layout_width="0dp"
-            android:layout_weight=".5"
-            android:layout_height="wrap_content"
-            android:text="Delete"/>
+
 
 
 

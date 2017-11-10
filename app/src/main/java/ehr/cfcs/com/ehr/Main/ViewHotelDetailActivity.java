@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,12 +41,13 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 public class ViewHotelDetailActivity extends AppCompatActivity {
 
     public TextView titleTxt,employeNameTxt,hotelNameTxt,cityNameTxt,statusTxt,requestDateTxt,approvalDateTxt,hrCommTxt,empCommTxt,
-                    checkInDateTxt,checkInTimeTxt, checkOutDateTxt;
+                    checkInDateTxt,checkInTimeTxt, checkOutDateTxt, hotelTypeTxt;
     public String hotelDetailsUrl = SettingConstant.BaseUrl + "AppEmployeeHotelBookingDetail";
-    public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeHotelBookingDelete";
-    public String bidString = "",authcode = "";
+    public String bidString = "",authcode = "", userId = "",HotelType = "",CityName = "",HotelName = "",CheckInDateText = ""
+            ,CheckInTime = "",CheckOutDateText = "",EmpComment = "",BIDStr = "";
     public ConnectionDetector conn;
-    public Button delBtn;
+    public Button editBtn;
+    public LinearLayout followLay, hrCommentLay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +86,12 @@ public class ViewHotelDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null)
         {
-            bidString = intent.getStringExtra("Bid");
+            bidString = intent.getStringExtra("BID");
         }
 
         conn = new ConnectionDetector(ViewHotelDetailActivity.this);
         authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewHotelDetailActivity.this)));
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewHotelDetailActivity.this)));
 
         employeNameTxt = (TextView) findViewById(R.id.hotel_empname);
         hotelNameTxt = (TextView) findViewById(R.id.hotel_name);
@@ -101,45 +104,49 @@ public class ViewHotelDetailActivity extends AppCompatActivity {
         checkOutDateTxt = (TextView) findViewById(R.id.hotel_checkoutdate);
         empCommTxt = (TextView) findViewById(R.id.hotel_employcomment);
         hrCommTxt = (TextView) findViewById(R.id.hotel_hr_comment);
-        delBtn = (Button) findViewById(R.id.deleteBtn);
+        editBtn = (Button) findViewById(R.id.edithotel);
+        hotelTypeTxt = (TextView) findViewById(R.id.hotel_type);
+        followLay = (LinearLayout) findViewById(R.id.followudateLay);
+        hrCommentLay = (LinearLayout) findViewById(R.id.hrcommentLay);
 
 
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+       editBtn.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
 
-        delBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+               Intent i = new Intent(ViewHotelDetailActivity.this, AddHotelActivity.class);
+               i.putExtra("Mode", "Edit");
+               i.putExtra("Hotel type",HotelType);
+               i.putExtra("Booking City",CityName);
+               i.putExtra("Guest House",HotelName);
+               i.putExtra("Check In Date",CheckInDateText);
+               i.putExtra("Check In Time",CheckInTime);
+               i.putExtra("Check Out Time",CheckOutDateText);
+               i.putExtra("Remark",EmpComment);
+               i.putExtra("BID",BIDStr);
 
-                if (conn.getConnectivityStatus()>0)
-                {
-                    deleteMethod(authcode,bidString);
-                }else
-                {
-                    conn.showNoInternetAlret();
-                }
-            }
-        });
+               startActivity(i);
+               overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+           }
+       });
 
-
-        if (conn.getConnectivityStatus()>0)
-        {
-            viewHotelDetails(authcode,bidString);
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (conn.getConnectivityStatus()>0)
+        {
+            viewHotelDetails(authcode,bidString, userId);
+
+        }else
+        {
+            conn.showNoInternetAlret();
+        }
+    }
 
     //View Hotel Details
-    public void viewHotelDetails(final String AuthCode ,final String BID) {
+    public void viewHotelDetails(final String AuthCode ,final String BID, final String userId) {
 
         final ProgressDialog pDialog = new ProgressDialog(ViewHotelDetailActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -163,12 +170,14 @@ public class ViewHotelDetailActivity extends AppCompatActivity {
                         String approvedBy = object.getString("AppDateText");
                         String HrComment = object.getString("HrComment");
                         String AppStatusText = object.getString("AppStatusText");
-                        String CityName = object.getString("CityName");
-                        String CheckInDateText = object.getString("CheckInDateText");
-                        String EmpComment = object.getString("EmpRemark");
-                        String CheckOutDateText = object.getString("CheckOutDateText");
-                        String CheckInTime = object.getString("CheckInTime");
-                        String HotelName = object.getString("HotelName");
+                        CityName = object.getString("CityName");
+                        CheckInDateText = object.getString("CheckInDateText");
+                        EmpComment = object.getString("EmpRemark");
+                        CheckOutDateText = object.getString("CheckOutDateText");
+                        CheckInTime = object.getString("CheckInTime");
+                        HotelName = object.getString("HotelName");
+                        HotelType = object.getString("HotelTypeText");
+                        BIDStr = object.getString("BID");
 
                         employeNameTxt.setText(EmpName);
                         empCommTxt.setText(EmpComment);
@@ -181,7 +190,23 @@ public class ViewHotelDetailActivity extends AppCompatActivity {
                         checkInDateTxt.setText(CheckInDateText);
                         checkOutDateTxt.setText(CheckOutDateText);
                         hotelNameTxt.setText(HotelName);
+                        hotelTypeTxt.setText(HotelType);
 
+                        if (approvedBy.equalsIgnoreCase("") || approvedBy.equalsIgnoreCase("null"))
+                        {
+                            followLay.setVisibility(View.GONE);
+                        }else
+                            {
+                                followLay.setVisibility(View.VISIBLE);
+                            }
+
+                        if (HrComment.equalsIgnoreCase("") || HrComment.equalsIgnoreCase("null"))
+                        {
+                            hrCommentLay.setVisibility(View.GONE);
+                        }else
+                            {
+                                hrCommentLay.setVisibility(View.VISIBLE);
+                            }
 
                         /*if (HrComment.equalsIgnoreCase("") ||  HrComment.equalsIgnoreCase("null") )
                         {
@@ -222,6 +247,7 @@ public class ViewHotelDetailActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
                 params.put("BID",BID);
+                params.put("AdminID",userId);
 
 
                 Log.e("Parms", params.toString());
@@ -236,69 +262,7 @@ public class ViewHotelDetailActivity extends AppCompatActivity {
 
     }
 
-    //delete the Details
-    public void deleteMethod(final String AuthCode ,final String BID) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ViewHotelDetailActivity.this,R.style.AppCompatAlertDialogStyle);
-        pDialog.setMessage("Loading...");
-        pDialog.show();
-
-        StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, deleteUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-
-                try {
-                    Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
-
-                    if (jsonObject.has("status"))
-                    {
-                        String status = jsonObject.getString("status");
-
-                        if (status.equalsIgnoreCase("success"))
-                        {
-                            onBackPressed();
-                        }
-                    }
-
-
-                    pDialog.dismiss();
-
-                } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("Login", "Error: " + error.getMessage());
-                // Log.e("checking now ",error.getMessage());
-
-                Toast.makeText(ViewHotelDetailActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                pDialog.dismiss();
-
-
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("BID",BID);
-
-                Log.e("Parms", params.toString());
-                return params;
-            }
-
-        };
-        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
-
-    }
 
 
     @Override

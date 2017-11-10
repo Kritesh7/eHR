@@ -129,16 +129,22 @@ public class LeaveManagementFragment extends Fragment {
             }
         });
 
+
+
+        return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         if (conn.getConnectivityStatus()>0) {
 
             leaveManagementData(authCode, userId, "", "", "-1");
 
         }else
-            {
-                conn.showNoInternetAlret();
-            }
-
-        return rootView;
+        {
+            conn.showNoInternetAlret();
+        }
     }
 
     /* private void prepareInsDetails() {
@@ -188,8 +194,10 @@ public class LeaveManagementFragment extends Fragment {
                         String AppliedDate = jsonObject.getString("AppliedDate");
                         String StatusText = jsonObject.getString("StatusText");
                         String LeaveApplication_Id = jsonObject.getString("LeaveApplication_Id");
+                        String Noofdays = jsonObject.getString("Noofdays");
 
-                        list.add(new LeaveManagementModel(LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,LeaveApplication_Id));
+                        list.add(new LeaveManagementModel(LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,
+                                LeaveApplication_Id,Noofdays));
 
 
 
