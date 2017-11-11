@@ -139,13 +139,7 @@ public class TaxiListFragment extends Fragment {
             public void onClick(View view) {
 
                 Intent i = new Intent(getActivity(), AddCabActivity.class);
-                i.putExtra("Mode", "");
-                i.putExtra("Booking Date","");
-                i.putExtra("Booking City","");
-                i.putExtra("Booking Time","");
-                i.putExtra("Source Address","");
-                i.putExtra("Destination Address","");
-                i.putExtra("Booking Remark","");
+                i.putExtra("Mode", "Add");
                 i.putExtra("BID","");
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);

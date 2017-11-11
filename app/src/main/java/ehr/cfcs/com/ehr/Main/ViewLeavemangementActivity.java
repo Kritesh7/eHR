@@ -40,7 +40,7 @@ public class ViewLeavemangementActivity extends AppCompatActivity {
     public TextView titleTxt;
     public String LeaveApplication_Id = "",authCode = "";
     public TextView leaveTypeTxt, startDateTxt,endDateTxt,numberofDaysTxt, appliedOnTxt, statusTxt,commentByMangerTxt, managerCommentedOn,
-                    commentByHrTxt, hrCommentedOnTxt;
+                    commentByHrTxt, hrCommentedOnTxt, empRemarkTxt, cancelationRemarkByEmp, cancelationRemarkByMng, cancelationRemarkByHr, text1, text2, text3;
     public String viewDetailsUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveDetail";
     public ConnectionDetector conn;
     public String userId = "";
@@ -99,17 +99,22 @@ public class ViewLeavemangementActivity extends AppCompatActivity {
         managerCommentedOn = (TextView)findViewById(R.id.managercommentedon);
         commentByHrTxt = (TextView)findViewById(R.id.commentedbyhr);
         hrCommentedOnTxt = (TextView)findViewById(R.id.hrcommentedon);
+        empRemarkTxt = (TextView) findViewById(R.id.empremark);
+        cancelationRemarkByEmp = (TextView) findViewById(R.id.short_cancelationremarkbyname);
+        cancelationRemarkByMng = (TextView) findViewById(R.id.short_cancelationremarkbymanager);
+        cancelationRemarkByHr = (TextView) findViewById(R.id.short_cancelationremarkbyhr);
+        text1 = (TextView) findViewById(R.id.text1);
+        text2 = (TextView) findViewById(R.id.text2);
+        text3 = (TextView) findViewById(R.id.text3);
 
         if (conn.getConnectivityStatus()>0)
         {
             viewDetails(authCode,LeaveApplication_Id, userId);
-        }else
+        }
+        else
             {
                 conn.showNoInternetAlret();
             }
-
-
-
     }
 
     //view Details Api
@@ -150,6 +155,47 @@ public class ViewLeavemangementActivity extends AppCompatActivity {
                         String ManagerDateText = jsonObject.getString("ManagerDateText");
                         String HRComment = jsonObject.getString("HRComment");
                         String HRDateText = jsonObject.getString("HRDateText");
+                        String Remark = jsonObject.getString("Comments");
+                        String EmpRemark = jsonObject.getString("Remark");
+                        String ManagerRemark = jsonObject.getString("ManagerRemark");
+                        String HRRemark = jsonObject.getString("HRRemark");
+
+
+                        if (EmpRemark.equalsIgnoreCase("null") || EmpRemark.equalsIgnoreCase(""))
+                        {
+                            cancelationRemarkByEmp.setVisibility(View.GONE);
+                            text1.setVisibility(View.GONE);
+                        }else
+                        {
+                            cancelationRemarkByEmp.setVisibility(View.VISIBLE);
+                            text1.setVisibility(View.VISIBLE);
+                            cancelationRemarkByEmp.setText(EmpRemark);
+                        }
+
+
+                        if (ManagerRemark.equalsIgnoreCase("null") || ManagerRemark.equalsIgnoreCase(""))
+                        {
+                            cancelationRemarkByMng.setVisibility(View.GONE);
+                            text2.setVisibility(View.GONE);
+                        }else
+                        {
+                            cancelationRemarkByMng.setVisibility(View.VISIBLE);
+                            text2.setVisibility(View.VISIBLE);
+                            cancelationRemarkByMng.setText(ManagerRemark);
+
+                        }
+                        if (HRRemark.equalsIgnoreCase("null") || HRRemark.equalsIgnoreCase(""))
+                        {
+                            cancelationRemarkByHr.setVisibility(View.GONE);
+                            text3.setVisibility(View.GONE);
+                        }else
+                        {
+                            cancelationRemarkByHr.setVisibility(View.VISIBLE);
+                            text3.setVisibility(View.VISIBLE);
+                            cancelationRemarkByHr.setText(HRRemark);
+                        }
+
+
 
 
                         leaveTypeTxt.setText(LeaveTypeName);
@@ -162,6 +208,7 @@ public class ViewLeavemangementActivity extends AppCompatActivity {
                         managerCommentedOn.setText(ManagerDateText);
                         commentByHrTxt.setText(HRComment);
                         hrCommentedOnTxt.setText(HRDateText);
+                        empRemarkTxt.setText(Remark);
 
 
                     }

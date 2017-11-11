@@ -209,6 +209,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:orientation="horizontal"
         android:id="@+id/btnLay"
         android:layout_width="0dp"

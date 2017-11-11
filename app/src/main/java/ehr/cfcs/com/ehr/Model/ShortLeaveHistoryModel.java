@@ -14,9 +14,10 @@ public class ShortLeaveHistoryModel
     public String AppliedDate;
     public String StatusText;
     public String CommentText;
+    public String IsDeleteable;
 
     public ShortLeaveHistoryModel(String leaveApplication_Id, String leaveTypeName, String startDate, String timeFrom,
-                                  String timeTo, String appliedDate, String statusText, String commentText) {
+                                  String timeTo, String appliedDate, String statusText, String commentText, String IsDeleteable) {
         LeaveApplication_Id = leaveApplication_Id;
         LeaveTypeName = leaveTypeName;
         StartDate = startDate;
@@ -25,6 +26,11 @@ public class ShortLeaveHistoryModel
         AppliedDate = appliedDate;
         StatusText = statusText;
         CommentText = commentText;
+        this.IsDeleteable = IsDeleteable;
+    }
+
+    public String getIsDeleteable() {
+        return IsDeleteable;
     }
 
     public String getLeaveApplication_Id() {

@@ -48,7 +48,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import ehr.cfcs.com.ehr.Model.CabCityModel;
+import ehr.cfcs.com.ehr.Model.CabItemModel;
 import ehr.cfcs.com.ehr.Model.NationnalityModel;
+import ehr.cfcs.com.ehr.Model.StaticModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
@@ -61,13 +63,16 @@ public class AddCabActivity extends AppCompatActivity {
     public TextView titleTxt;
     public Spinner cityOfBookingSpinner;
     public ArrayList<CabCityModel> listOfBooking = new ArrayList<>();
+    public ArrayList<StaticModel> staticList = new ArrayList<>();
     public Button addBtn;
-    public ImageView dateBtn, timeBtn;
-    public EditText dateTxt, timeTxt, sourceAddTxt, destinationDDtXT, bookingRemarkTxt;
+    public ImageView dateBtn, timeBtn,dateBtn1, timeBtn1,dateBtn2, timeBtn2;
+    public EditText dateTxt, timeTxt, dateTxt1, timeTxt1,dateTxt2, timeTxt2,sourceAddTxt, destinationDDtXT, bookingRemarkTxt,
+            sourceAddTxt1, destinationDDtXT1,sourceAddTxt2, destinationDDtXT2;
     private int yy, mm, dd;
     private int mYear, mMonth, mDay, mHour, mMinute;
     public String ddlBindTxt = SettingConstant.BaseUrl + "AppddlBookMeAProvision";
     public String addUrl = SettingConstant.BaseUrl + "AppEmployeeTaxiBookingRequestInsUpdt";
+    public String cabDetailsUrl = SettingConstant.BaseUrl + "AppEmployeeTaxiBookingRequestDetail";
     public ArrayAdapter<CabCityModel> cityAdapter;
     public ConnectionDetector conn;
     public String authCode = "", userId = "", cityId = "", cityName = "", actionMode = "", bookingDateStr = ""
@@ -114,12 +119,12 @@ public class AddCabActivity extends AppCompatActivity {
         if (intent != null)
         {
             actionMode = intent.getStringExtra("Mode");
-            bookingDateStr = intent.getStringExtra("Booking Date");
+          /*  bookingDateStr = intent.getStringExtra("Booking Date");
             bookingTimeStr = intent.getStringExtra("Booking Time");
             sourceAddressStr = intent.getStringExtra("Source Address");
             destinationAddressStr = intent.getStringExtra("Destination Address");
             bookingRemarkStr = intent.getStringExtra("Booking Remark");
-            cityOfNameStr = intent.getStringExtra("Booking City");
+            cityOfNameStr = intent.getStringExtra("Booking City");*/
             BidStr = intent.getStringExtra("BID");
         }
 
@@ -127,11 +132,20 @@ public class AddCabActivity extends AppCompatActivity {
         addBtn = (Button) findViewById(R.id.newrequestbtn);
         dateBtn = (ImageView) findViewById(R.id.cab_date);
         timeBtn = (ImageView) findViewById(R.id.cab_time);
+        timeBtn1 = (ImageView) findViewById(R.id.cab_time1);
+        timeBtn2 = (ImageView) findViewById(R.id.cab_time2);
         dateTxt = (EditText) findViewById(R.id.cab_booking_date);
         timeTxt = (EditText) findViewById(R.id.cab_bokkint_time);
+        timeTxt1 = (EditText) findViewById(R.id.cab_bokkint_time1);
+        timeTxt2 = (EditText) findViewById(R.id.cab_bokkint_time2);
         sourceAddTxt = (EditText) findViewById(R.id.cab_source_add);
         destinationDDtXT = (EditText) findViewById(R.id.cab_destination_add);
         bookingRemarkTxt = (EditText) findViewById(R.id.cab_booking_remark);
+        sourceAddTxt1 = (EditText) findViewById(R.id.cab_source_add1);
+        destinationDDtXT1= (EditText) findViewById(R.id.cab_destination_add1);
+        sourceAddTxt2 = (EditText) findViewById(R.id.cab_source_add2);
+        destinationDDtXT2 = (EditText) findViewById(R.id.cab_destination_add2);
+
 
         conn = new ConnectionDetector(AddCabActivity.this);
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddCabActivity.this)));
@@ -142,15 +156,19 @@ public class AddCabActivity extends AppCompatActivity {
         {
             titleTxt.setText("Update Cab Details");
             addBtn.setText("Update Cab Details");
-            dateTxt.setText(bookingDateStr);
-            timeTxt.setText(bookingTimeStr);
-            sourceAddTxt.setText(sourceAddressStr);
-            destinationDDtXT.setText(destinationAddressStr);
-            bookingRemarkTxt.setText(bookingRemarkStr);
+            viewCabDetails(authCode,BidStr,userId);
+
         }else
             {
                 //set current date
                 dateTxt.setText(getCurrentTime());
+
+                if (conn.getConnectivityStatus() > 0) {
+                    personalDdlDetails();
+
+                } else {
+                    conn.showNoInternetAlret();
+                }
 
             }
 
@@ -231,6 +249,70 @@ public class AddCabActivity extends AppCompatActivity {
             }
         });
 
+        //time1 picker
+        timeBtn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AddCabActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+
+                              /*  hh = hourOfDay;
+                                m = minute;*/
+                                // ro = checking + hourOfDay  + minute;
+
+                                updateTime1(hourOfDay,minute);
+
+                                //timeTxt.setText(String.format("%02d:%02d", hourOfDay, minute));
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
+
+        //time2 piccker
+        timeBtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(AddCabActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+
+                              /*  hh = hourOfDay;
+                                m = minute;*/
+                                // ro = checking + hourOfDay  + minute;
+
+                                updateTime2(hourOfDay,minute);
+
+                                //timeTxt.setText(String.format("%02d:%02d", hourOfDay, minute));
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
+
 
 
 
@@ -265,6 +347,49 @@ public class AddCabActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                // clear list
+                if (staticList.size()>0)
+                {
+                    staticList.clear();
+                }
+
+                // add data static
+                // data bind first block
+                if (!timeTxt.getText().toString().equalsIgnoreCase("") &&
+                !sourceAddTxt.getText().toString().equalsIgnoreCase("") &&
+                        !destinationDDtXT.getText().toString().equalsIgnoreCase(""))
+                {
+                    staticList.add(new StaticModel(timeTxt.getText().toString(),
+                            sourceAddTxt.getText().toString(),destinationDDtXT.getText().toString()));
+                }else
+                    {
+                        Toast.makeText(AddCabActivity.this, "Please enter all feild", Toast.LENGTH_SHORT).show();
+                    }
+
+                //data bind second Block
+                if (!timeTxt1.getText().toString().equalsIgnoreCase("") &&
+                        !sourceAddTxt1.getText().toString().equalsIgnoreCase("") &&
+                        !destinationDDtXT1.getText().toString().equalsIgnoreCase(""))
+                {
+                    staticList.add(new StaticModel(timeTxt1.getText().toString(),
+                            sourceAddTxt1.getText().toString(),destinationDDtXT1.getText().toString()));
+                }else
+                {
+                    Toast.makeText(AddCabActivity.this, "Please enter all feild", Toast.LENGTH_SHORT).show();
+                }
+
+                // data bind Third block
+                if (!timeTxt2.getText().toString().equalsIgnoreCase("") &&
+                        !sourceAddTxt2.getText().toString().equalsIgnoreCase("") &&
+                        !destinationDDtXT2.getText().toString().equalsIgnoreCase(""))
+                {
+                    staticList.add(new StaticModel(timeTxt2.getText().toString(),
+                            sourceAddTxt2.getText().toString(),destinationDDtXT2.getText().toString()));
+                }else
+                {
+                    Toast.makeText(AddCabActivity.this, "Please enter all field", Toast.LENGTH_SHORT).show();
+                }
+
 
                 //Make json format
                 JSONArray mainArray = new JSONArray();
@@ -272,12 +397,12 @@ public class AddCabActivity extends AppCompatActivity {
                 try {
 
 
-                    for (int i =0; i<1; i++) {
+                    for (int i =0; i<staticList.size(); i++) {
 
                         JSONObject filterJson = new JSONObject();
-                        filterJson.put("Time", timeTxt.getText().toString());
-                        filterJson.put("Source", sourceAddTxt.getText().toString());
-                        filterJson.put("Destination", destinationDDtXT.getText().toString());
+                        filterJson.put("Time", staticList.get(i).getTime());
+                        filterJson.put("Source", staticList.get(i).getSource());
+                        filterJson.put("Destination", staticList.get(i).getDestination());
 
                         mainArray.put(filterJson);
                     }
@@ -297,12 +422,17 @@ public class AddCabActivity extends AppCompatActivity {
                }else if (timeTxt.getText().toString().equalsIgnoreCase(""))
                {
                    timeTxt.setError("Please enter valid time");
+                   Toast.makeText(AddCabActivity.this, "Please enter atelest one cab booking details", Toast.LENGTH_SHORT).show();
                }else  if (sourceAddTxt.getText().toString().equalsIgnoreCase(""))
                {
                    sourceAddTxt.setError("Please enter source address");
+                   Toast.makeText(AddCabActivity.this, "Please enter atelest one cab booking details", Toast.LENGTH_SHORT).show();
+
                }else if (destinationDDtXT.getText().toString().equalsIgnoreCase(""))
                {
                    destinationDDtXT.setError("Please enter destination address");
+                   Toast.makeText(AddCabActivity.this, "Please enter atelest one cab booking details", Toast.LENGTH_SHORT).show();
+
 
                }else {
 
@@ -327,17 +457,6 @@ public class AddCabActivity extends AppCompatActivity {
             }
         });
 
-
-
-        //bind the spinner
-        if (conn.getConnectivityStatus()>0)
-        {
-            personalDdlDetails();
-
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
 
 
     }
@@ -526,6 +645,181 @@ public class AddCabActivity extends AppCompatActivity {
                 .append(minutes).append(" ").append(timeSet).toString();
 
         timeTxt.setText(aTime);
+    }
+
+    private void updateTime1(int hours, int mins) {
+
+        String timeSet = "";
+        if (hours > 12) {
+            hours -= 12;
+            timeSet = "PM";
+        } else if (hours == 0) {
+            hours += 12;
+            timeSet = "AM";
+        } else if (hours == 12)
+            timeSet = "PM";
+        else
+            timeSet = "AM";
+
+
+        String minutes = "";
+        if (mins < 10)
+            minutes = "0" + mins;
+        else
+            minutes = String.valueOf(mins);
+
+        // Append in a StringBuilder
+        String aTime = new StringBuilder().append(hours).append(':')
+                .append(minutes).append(" ").append(timeSet).toString();
+
+        timeTxt1.setText(aTime);
+    }
+
+    private void updateTime2(int hours, int mins) {
+
+        String timeSet = "";
+        if (hours > 12) {
+            hours -= 12;
+            timeSet = "PM";
+        } else if (hours == 0) {
+            hours += 12;
+            timeSet = "AM";
+        } else if (hours == 12)
+            timeSet = "PM";
+        else
+            timeSet = "AM";
+
+
+        String minutes = "";
+        if (mins < 10)
+            minutes = "0" + mins;
+        else
+            minutes = String.valueOf(mins);
+
+        // Append in a StringBuilder
+        String aTime = new StringBuilder().append(hours).append(':')
+                .append(minutes).append(" ").append(timeSet).toString();
+
+        timeTxt2.setText(aTime);
+    }
+
+    //view cab details
+    public void viewCabDetails(final String AuthCode ,final String BID, final String userId) {
+
+        final ProgressDialog pDialog = new ProgressDialog(AddCabActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, cabDetailsUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    JSONArray requestDetailsArray = jsonObject.getJSONArray("TaxiBookingMaster");
+                    for (int i = 0; i<requestDetailsArray.length(); i++)
+                    {
+                        JSONObject object = requestDetailsArray.getJSONObject(i);
+
+                        String EmpName = object.getString("EmpName");
+                        String requestDate = object.getString("AddDateText");
+                        String approvedBy = object.getString("AppDateText");
+                        String HrComment = object.getString("HrComment");
+                        String AppStatusText = object.getString("AppStatusText");
+                        String BIDStr = object.getString("BID");
+                        String CityName = object.getString("CityName");
+                        String BookDateText = object.getString("BookDateText");
+                        String EmpComment = object.getString("EmpComment");
+
+                        dateTxt.setText(BookDateText);
+                        bookingRemarkTxt.setText(EmpComment);
+
+                        cityOfNameStr = CityName;
+
+
+                    }
+
+                    JSONArray itemdetaislArray = jsonObject.getJSONArray("TaxiBookingDetail");
+                    if (staticList.size()>0)
+                    {
+                        staticList.clear();
+                    }
+                    for (int j=0 ; j<itemdetaislArray.length();j++)
+                    {
+                        JSONObject object = itemdetaislArray.getJSONObject(j);
+
+                        String BookTime = object.getString("BookTime");
+                        String  SourceAdd = object.getString("SourceAdd");
+                        String DestinationAdd = object.getString("DestinationAdd");
+
+
+                        staticList.add(new StaticModel(BookTime,SourceAdd,DestinationAdd));
+
+
+
+                    }
+
+                    try {
+                        timeTxt.setText(staticList.get(0).getTime());
+                        sourceAddTxt.setText(staticList.get(0).getSource());
+                        destinationDDtXT.setText(staticList.get(0).getDestination());
+
+                        timeTxt1.setText(staticList.get(1).getTime());
+                        sourceAddTxt1.setText(staticList.get(1).getSource());
+                        destinationDDtXT1.setText(staticList.get(1).getDestination());
+
+                        timeTxt2.setText(staticList.get(2).getTime());
+                        sourceAddTxt2.setText(staticList.get(2).getSource());
+                        destinationDDtXT2.setText(staticList.get(2).getDestination());
+
+                    } catch (IndexOutOfBoundsException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    personalDdlDetails();
+
+
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(AddCabActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("BID",BID);
+                params.put("AdminID",userId);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
     }
 
     @Override

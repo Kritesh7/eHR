@@ -17,7 +17,82 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight=".8"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:elevation="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/white"
+                    android:layout_width="0dp"
+                    android:layout_weight=".5"
+                    android:layout_height="wrap_content">
+
+                    <Spinner
+                        android:id="@+id/monthspinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    </Spinner>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:elevation="10dp"
+                    android:background="@color/white"
+                    android:layout_width="0dp"
+                    android:layout_weight=".5"
+                    android:layout_height="wrap_content">
+
+                    <Spinner
+                        android:id="@+id/yearspinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+
+                    </Spinner>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/serchresult"
+                android:elevation="10dp"
+                android:src="@drawable/srchbtn"
+                android:layout_width="0dp"
+                android:layout_weight=".2"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/norecordfound"
+            android:visibility="gone"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Record Not Found!"
+            android:gravity="center"
+            android:textColor="@color/status_color"
+            android:textStyle="bold"
+            android:textSize="18dp"/>
+
+
         <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="10dp"
             android:id="@+id/short_leave_history_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

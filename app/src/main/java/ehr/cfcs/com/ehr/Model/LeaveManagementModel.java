@@ -13,10 +13,11 @@ public class LeaveManagementModel
     public String status;
     public String LeaveApplication_Id;
     public String Noofdays;
+    public String IsDeleteable;
 
 
     public LeaveManagementModel(String leaveType, String startDate, String endDate, String appliedOn, String status,
-                                String LeaveApplication_Id, String Noofdays) {
+                                String LeaveApplication_Id, String Noofdays, String IsDeleteable) {
         this.leaveType = leaveType;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -24,6 +25,11 @@ public class LeaveManagementModel
         this.status = status;
         this.Noofdays = Noofdays;
         this.LeaveApplication_Id = LeaveApplication_Id;
+        this.IsDeleteable = IsDeleteable;
+    }
+
+    public String getIsDeleteable() {
+        return IsDeleteable;
     }
 
     public String getNoofdays() {

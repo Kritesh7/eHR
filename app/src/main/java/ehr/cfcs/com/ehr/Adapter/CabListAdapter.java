@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ehr.cfcs.com.ehr.Main.AddCabActivity;
 import ehr.cfcs.com.ehr.Main.AddNewStationaryRequestActivity;
 import ehr.cfcs.com.ehr.Main.ViewCabDetailsActivity;
 import ehr.cfcs.com.ehr.Main.ViewRequestDetailsActivity;
@@ -88,8 +89,9 @@ public class CabListAdapter extends RecyclerView.Adapter<CabListAdapter.ViewHold
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(context, ViewCabDetailsActivity.class);
-                i.putExtra("Bid",model.getBID());
+                Intent i = new Intent(context, AddCabActivity.class);
+                i.putExtra("Mode", "Edit");
+                i.putExtra("BID",model.getBID());
                 activity.startActivity(i);
                 activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -117,10 +119,10 @@ public class CabListAdapter extends RecyclerView.Adapter<CabListAdapter.ViewHold
             @Override
             public void onClick(View view) {
 
-              /*  Intent i = new Intent(context, ViewCabDetailsActivity.class);
+                Intent i = new Intent(context, ViewCabDetailsActivity.class);
                 i.putExtra("Bid",model.getBID());
                 activity.startActivity(i);
-                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);*/
+                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
         });
     }

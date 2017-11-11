@@ -235,6 +235,31 @@
                 android:text="Leave Type"/>
         </LinearLayout>
 
+        <View
+            android:id="@+id/view2"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
+
+        <LinearLayout
+            android:id="@+id/btnLay"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/delbtn"
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/delbtn"
+                />
+
+        </LinearLayout>
+
+
 
     </LinearLayout>
 

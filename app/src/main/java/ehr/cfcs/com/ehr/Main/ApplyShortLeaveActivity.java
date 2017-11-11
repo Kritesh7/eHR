@@ -61,7 +61,7 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
     private int year, month, day, mHour, mMinute;
     public String applyUrl = SettingConstant.BaseUrl + "AppEmployeeShortLeaveApply";
     public ConnectionDetector conn;
-    public String userid = "", authCode = "", mgrId = "", type = "",MsgNotification = "";
+    public String userid = "", authCode = "", mgrId = "", type = "",MsgNotification = "", userName = "", compId = "";
     public Button subBtn ;
     public EditText commentTxt;
 
@@ -104,6 +104,8 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
         userid = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ApplyShortLeaveActivity.this)));
         mgrId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getMgrDir(ApplyShortLeaveActivity.this)));
         type = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getUserType(ApplyShortLeaveActivity.this)));
+        userName = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getUserName(ApplyShortLeaveActivity.this)));
+        compId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getCompanyId(ApplyShortLeaveActivity.this)));
 
         dateTxt = (EditText)findViewById(R.id.dateleavetxt);
         toTimeTxt = (EditText)findViewById(R.id.datetotxt);
@@ -118,7 +120,7 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(new View(ApplyShortLeaveActivity.this).getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
@@ -144,7 +146,7 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
                                 dateTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
 
                             }
-                        },year , month, day);
+                        }, year, month, day);
                 datePickerDialog.show();
             }
         });
@@ -234,7 +236,7 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
                         if (conn.getConnectivityStatus()>0)
                         {
                             applyShortLeave(userid,type,authCode,mgrId,dateTxt.getText().toString(),fromTimeTxt.getText().toString(),
-                                    toTimeTxt.getText().toString(),commentTxt.getText().toString(),"0");
+                                    toTimeTxt.getText().toString(),commentTxt.getText().toString(),"0", compId,userName);
 
                         }else
                         {
@@ -264,7 +266,7 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
     //Apply Short Leave
     public void applyShortLeave(final String AdminID  , final String Type, final String AuthCode ,
                           final String MgrID , final String StartDate, final String TimeFrom, final String TimeTo,
-                                final String Comment, final String PopUpCount) {
+                                final String Comment, final String PopUpCount, final String CompID, final String username) {
 
 
         final ProgressDialog pDialog = new ProgressDialog(ApplyShortLeaveActivity.this,R.style.AppCompatAlertDialogStyle);
@@ -327,7 +329,7 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
                                                 if (conn.getConnectivityStatus()>0)
                                                 {
                                                     applyShortLeave(userid,type,authCode,mgrId,dateTxt.getText().toString(),fromTimeTxt.getText().toString(),
-                                                            toTimeTxt.getText().toString(),commentTxt.getText().toString(),"1");
+                                                            toTimeTxt.getText().toString(),commentTxt.getText().toString(),"1",compId,userName);
 
                                                 }else
                                                 {
@@ -381,6 +383,8 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
                 params.put("Comment",Comment);
                 params.put("AuthCode",AuthCode);
                 params.put("PopUpCount",PopUpCount);
+                params.put("CompID",CompID);
+                params.put("UserName",username);
 
                 Log.e("Parms", params.toString());
                 return params;

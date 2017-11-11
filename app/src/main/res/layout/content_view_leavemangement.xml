@@ -117,6 +117,24 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"/>
 
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Employee Comment"
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/empremark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/purple700"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"/>
+
         <TextView
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
@@ -206,6 +224,65 @@
             android:textColor="@color/purple700"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancellation remark by employee"
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/short_cancelationremarkbyname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Test by me"
+                android:textColor="@color/purple700"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"/>
+
+
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancellation remark by manager"
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/short_cancelationremarkbymanager"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Test by me"
+                android:textColor="@color/purple700"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"/>
+
+            <TextView
+                android:id="@+id/text3"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancellation remark by Hr "
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/short_cancelationremarkbyhr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Test by me"
+                android:textColor="@color/purple700"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"/>
 
     </LinearLayout>
 
