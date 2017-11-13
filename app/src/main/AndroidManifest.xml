@@ -62,7 +62,7 @@
             android:name=".Main.NewAddLeaveMangementActivity"
             android:label="@string/title_activity_new_add_leave_mangement"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Main.ViewLeavemangementActivity"
             android:label="@string/title_activity_view_leavemangement"
@@ -156,10 +156,18 @@
             android:name=".Main.AddNewEmergencyContactDetailsActivity"
             android:label="@string/title_activity_add_new_emergency_contact_details"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Main.AddNewContactActivity"
             android:label="@string/title_activity_add_new_contact"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerDashboardActivity"
+            android:label="@string/title_activity_manager_dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerLeaveManagementActivity"
+            android:label="@string/title_activity_manager_leave_management"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

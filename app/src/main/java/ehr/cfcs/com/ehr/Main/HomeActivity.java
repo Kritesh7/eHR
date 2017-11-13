@@ -53,6 +53,7 @@ import ehr.cfcs.com.ehr.Fragment.StationaryRequestFragment;
 import ehr.cfcs.com.ehr.Fragment.TaxiListFragment;
 import ehr.cfcs.com.ehr.Fragment.TrainingFragment;
 import ehr.cfcs.com.ehr.Fragment.WeekOfListFragment;
+import ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerDashboardActivity;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
@@ -65,6 +66,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     public DrawerLayout drawerLayout;
     public View navHeader;
     private static final String TAG_Dashboard = "Dashboard";
+    private static final String TAG_Manager = "Manager";
     private static final String TAG_Attendnace = "Attendance";
     private static final String TAG_Leave_Management = "LeaveMangement";
     private static final String TAG_Traning = "Traning";
@@ -201,6 +203,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
 
                         break;
+
+                    case R.id.nav_mger:
+
+                        navigationItemIndex = 27;
+                        CURRENT_TAG = TAG_Manager;
+
+                        break;
+
 
                     case R.id.nav_attendance:
 
@@ -818,6 +828,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 transaction.addToBackStack(null);
                 transaction.commit();
                 return newFragment ;
+
+            case 27:
+
+                navigationItemIndex = 0;
+                Intent ik = new Intent(HomeActivity.this,ManagerDashboardActivity.class);
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
             default:
                 return new DashBoardFragment();
         }

@@ -8,6 +8,11 @@
             android:title="DashBoard" />
 
         <item
+            android:id="@+id/nav_mger"
+            android:icon="@drawable/mgric"
+            android:title="Manager" />
+
+        <item
             android:id="@+id/nav_attendance"
             android:title="Attendance"
             android:icon="@drawable/attendance_icon"
