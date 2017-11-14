@@ -42,4 +42,11 @@
     <string name="title_activity_add_new_contact">AddNewContactActivity</string>
     <string name="title_activity_manager_dashboard">ManagerDashboardActivity</string>
     <string name="title_activity_manager_leave_management">ManagerLeaveManagementActivity</string>
+    <string name="title_activity_manager_proceed_request">ManagerProceedRequestActivity</string>
+    <string name="title_activity_proceed_leave_request_list">ProceedLeaveRequestListActivity
+    </string>
+    <string name="title_activity_proceed_short_leave_list">ProceedShortLeaveList</string>
+    <string name="title_activity_reequest_to_approved_short_leave">
+        ReequestToApprovedShortLeaveActivity
+    </string>
 </resources>

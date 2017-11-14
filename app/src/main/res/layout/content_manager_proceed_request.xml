@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerRequestToApproveActivity"
-    tools:showIn="@layout/activity_manager_leave_management">
+    tools:context="ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerProceedRequestActivity"
+    tools:showIn="@layout/activity_manager_proceed_request">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -22,18 +22,16 @@
             android:layout_height="0dp"
             android:layout_weight="3.3">
 
-            <!-- app:cardBackgroundColor="#D1C4E9"
- -->
             <android.support.v7.widget.CardView
                 android:layout_gravity="center"
-                android:layout_width="0dp"
-                android:layout_weight=".5"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="5dp">
 
                 <LinearLayout
+                    android:id="@+id/firsttile"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:layout_gravity="center"
@@ -54,10 +52,10 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Leave"/>
+                        android:text="Proceed Leave Request"/>
 
                     <TextView
-                        android:id="@+id/leavecount"
+                        android:id="@+id/proceedleave"
                         android:textSize="15sp"
                         android:textColor="#4CAF50"
                         android:gravity="center"
@@ -70,49 +68,7 @@
 
             <!--app:cardBackgroundColor="#90CAF9"-->
 
-            <android.support.v7.widget.CardView
 
-                android:layout_width="0dp"
-                android:layout_weight=".5"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="5dp">
-
-                <LinearLayout
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:src="@drawable/mgrcleave"/>
-
-                    <TextView
-                        android:textSize="16sp"
-                        android:textColor="@color/dahboard_textcolor"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Leave Cancellation"/>
-
-                    <TextView
-                        android:id="@+id/leavecancelcount"
-                        android:textSize="15sp"
-                        android:textColor="#F44336"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="(0)"/>
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 
@@ -125,15 +81,14 @@
  -->
             <android.support.v7.widget.CardView
                 android:layout_gravity="center"
-                android:layout_width="0dp"
-                android:layout_weight=".5"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="5dp">
 
                 <LinearLayout
-                    android:id="@+id/thirdtiles"
+                    android:id="@+id/secondtile"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:layout_gravity="center"
@@ -154,10 +109,10 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Short Leave"/>
+                        android:text="Proceed Short Leave Request"/>
 
                     <TextView
-                        android:id="@+id/shortleavecount"
+                        android:id="@+id/proceedshortleave"
                         android:textSize="15sp"
                         android:textColor="#4CAF50"
                         android:gravity="center"
@@ -169,50 +124,6 @@
             </android.support.v7.widget.CardView>
 
             <!--app:cardBackgroundColor="#90CAF9"-->
-
-            <android.support.v7.widget.CardView
-
-                android:layout_width="0dp"
-                android:layout_weight=".5"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="5dp">
-
-                <LinearLayout
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:src="@drawable/mgrscan"/>
-
-                    <TextView
-                        android:textSize="16sp"
-                        android:textColor="@color/dahboard_textcolor"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Short Leave Cancellation"/>
-
-                    <TextView
-                        android:id="@+id/shortleavecancelcount"
-                        android:textSize="15sp"
-                        android:textColor="#F44336"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="(0)"/>
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 
@@ -233,7 +144,7 @@
                 app:cardElevation="5dp">
 
                 <LinearLayout
-                    android:id="@+id/leavereq"
+                    android:id="@+id/thirdtile"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:layout_gravity="center"
@@ -257,7 +168,7 @@
                         android:text="Traning Request"/>
 
                     <TextView
-                        android:id="@+id/traningcount"
+                        android:id="@+id/proceedtraning"
                         android:textSize="15sp"
                         android:textColor="#4CAF50"
                         android:gravity="center"

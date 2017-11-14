@@ -166,9 +166,28 @@
             android:label="@string/title_activity_manager_dashboard"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Manager.ManagerActivity.ManagerLeaveManagementActivity"
+            android:name=".Manager.ManagerActivity.ManagerRequestToApproveActivity"
             android:label="@string/title_activity_manager_leave_management"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerProceedRequestActivity"
+            android:label="@string/title_activity_manager_proceed_request"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ProceedLeaveRequestListActivity"
+            android:label="@string/title_activity_proceed_leave_request_list"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".Manager.ManagerActivity.ProceedShortLeaveList"
+            android:label="@string/title_activity_proceed_short_leave_list"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity
+            android:name=".Manager.ManagerActivity.RequestToApprovedShortLeaveActivity"
+            android:label="@string/title_activity_reequest_to_approved_short_leave"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
 </manifest>
