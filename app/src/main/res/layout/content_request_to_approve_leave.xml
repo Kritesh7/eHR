@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ehr.cfcs.com.ehr.Manager.ManagerActivity.ProceedShortLeaveListActivity"
-    tools:showIn="@layout/activity_proceed_short_leave_list">
+    tools:context="ehr.cfcs.com.ehr.Manager.ManagerActivity.RequestToApproveLeaveActivity"
+    tools:showIn="@layout/activity_request_to_approve_leave">
 
     <LinearLayout
         android:orientation="vertical"
@@ -32,7 +32,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="10dp"
-            android:id="@+id/proceed_short_leave_recycler"
+            android:id="@+id/request_leave_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
@@ -40,7 +40,6 @@
         </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
-
 
 
 </android.support.constraint.ConstraintLayout>

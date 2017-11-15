@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -49,6 +50,17 @@ public class LeaveSummarryAdapter extends RecyclerView.Adapter<LeaveSummarryAdap
         holder.approvedTxt.setText(model.getApproved());
         holder.balanceTxt.setText(model.getBalance());
         holder.avlBalnce.setText(model.getLeaveAvail());
+        holder.specialtxt.setText(model.getSPLeaveText());
+
+        if (model.getSPLeaveText().equalsIgnoreCase("") || model.getSPLeaveText().equalsIgnoreCase("null"))
+        {
+            holder.specialTxtLay.setVisibility(View.GONE);
+            holder.view.setVisibility(View.GONE);
+        }else
+            {
+                holder.specialTxtLay.setVisibility(View.VISIBLE);
+                holder.view.setVisibility(View.VISIBLE);
+            }
     }
 
     @Override
@@ -57,9 +69,10 @@ public class LeaveSummarryAdapter extends RecyclerView.Adapter<LeaveSummarryAdap
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView leaveTypeTxt,leaveyearTxt,entitlementTxt,carryoverTxt, approvedTxt,balanceTxt, avlBalnce;
-
+        public TextView leaveTypeTxt,leaveyearTxt,entitlementTxt,carryoverTxt, approvedTxt,balanceTxt, avlBalnce, specialtxt;
+        public View view;
         public CardView mainLay;
+        public LinearLayout specialTxtLay;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -70,7 +83,9 @@ public class LeaveSummarryAdapter extends RecyclerView.Adapter<LeaveSummarryAdap
             carryoverTxt = (TextView)itemView.findViewById(R.id.carryover);
             approvedTxt = (TextView)itemView.findViewById(R.id.summrry_approved);
             avlBalnce = (TextView) itemView.findViewById(R.id.avl_balance);
-
+            specialtxt = (TextView) itemView.findViewById(R.id.specialtxt);
+            specialTxtLay = (LinearLayout) itemView.findViewById(R.id.specialtxtlay);
+            view = (View) itemView.findViewById(R.id.lview);
             balanceTxt = (TextView)itemView.findViewById(R.id.balance);
 
 

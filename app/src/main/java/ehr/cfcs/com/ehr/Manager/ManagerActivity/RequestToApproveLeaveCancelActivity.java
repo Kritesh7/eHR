@@ -1,15 +1,18 @@
 package ehr.cfcs.com.ehr.Manager.ManagerActivity;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +27,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ehr.cfcs.com.ehr.Manager.ManagerAdapter.ManagerLeaveRequestApproveAndRejectAdapter;
+import ehr.cfcs.com.ehr.Manager.ManagerModel.ManagerLeaveRequestApproveAndRejectModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
@@ -34,18 +40,21 @@ import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
-public class ManagerProceedRequestActivity extends AppCompatActivity {
+public class RequestToApproveLeaveCancelActivity extends AppCompatActivity {
 
-    public TextView titleTxt, leavecountTxt, shortLeaveCountTxt, tranoingCountTxt;
-    public String countUrl = SettingConstant.BaseUrl + "AppManagerProceededRequestDashBoard";
+    public TextView titleTxt,noRecordFoundTxt;
+    public String leaveListUrl = SettingConstant.BaseUrl + "AppManagerToApproveCancelLeaveRequestDashBoardList";
+    public RecyclerView leaveRequestRecycler;
+    public ManagerLeaveRequestApproveAndRejectAdapter adapter;
+    public ArrayList<ManagerLeaveRequestApproveAndRejectModel> list = new ArrayList<>();
+    public String userId = "", authCode = "";
     public ConnectionDetector conn;
-    public String userId = "",authCode = "";
-    public LinearLayout firstTile, secondTile, thirdTile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager_proceed_request);
+        setContentView(R.layout.activity_request_to_approve_leave_cancel);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -73,64 +82,48 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Proceed Request");
-        conn = new ConnectionDetector(ManagerProceedRequestActivity.this);
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ManagerProceedRequestActivity.this)));
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ManagerProceedRequestActivity.this)));
+        titleTxt.setText("Leave Request");
+        leaveRequestRecycler = (RecyclerView) findViewById(R.id.request_leave_recycler);
+        noRecordFoundTxt = (TextView) findViewById(R.id.norecordfound);
 
+        conn = new ConnectionDetector(RequestToApproveLeaveCancelActivity.this);
 
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(RequestToApproveLeaveCancelActivity.this)));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(RequestToApproveLeaveCancelActivity.this)));
 
-        leavecountTxt = (TextView) findViewById(R.id.proceedleave);
-        shortLeaveCountTxt = (TextView) findViewById(R.id.proceedshortleave);
-        tranoingCountTxt = (TextView) findViewById(R.id.proceedtraning);
-        firstTile = (LinearLayout) findViewById(R.id.firsttile);
-        secondTile = (LinearLayout) findViewById(R.id.secondtile);
-        thirdTile = (LinearLayout) findViewById(R.id.thirdtile);
+        adapter = new ManagerLeaveRequestApproveAndRejectAdapter(RequestToApproveLeaveCancelActivity.this,list,
+                RequestToApproveLeaveCancelActivity.this,"Leave Cancel Request");
 
-        firstTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(RequestToApproveLeaveCancelActivity.this);
+        leaveRequestRecycler.setLayoutManager(mLayoutManager);
+        leaveRequestRecycler.setItemAnimator(new DefaultItemAnimator());
+        leaveRequestRecycler.setAdapter(adapter);
 
-                Intent ik = new Intent(ManagerProceedRequestActivity.this,ProceedLeaveRequestListActivity.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-        secondTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerProceedRequestActivity.this,ProceedShortLeaveListActivity.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
+        leaveRequestRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
     }
-
     @Override
     protected void onResume() {
         super.onResume();
-        //get count of dashboard
+
         if (conn.getConnectivityStatus()>0)
         {
-            getCount(authCode,userId);
+            requestToApproveLeave(authCode,userId);
         }else
         {
             conn.showNoInternetAlret();
         }
+
     }
 
-    //show dashbaord count api
-    public void getCount(final String AuthCode , final String AdminID) {
+    public void requestToApproveLeave(final String AuthCode , final String AdminID) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ManagerProceedRequestActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(RequestToApproveLeaveCancelActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
         StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, countUrl, new Response.Listener<String>() {
+                Request.Method.POST, leaveListUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -138,24 +131,39 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
                     Log.e("Login", response);
                     JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
 
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
                     for (int i=0 ; i<jsonArray.length();i++)
                     {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String LeaveTypeName = jsonObject.getString("LeaveTypeName");
+                        String StartDateText = jsonObject.getString("StartDateText");
+                        String EndDateText = jsonObject.getString("EndDateText");
+                        String AppliedDate = jsonObject.getString("AppliedDate");
+                        String StatusText = jsonObject.getString("StatusText");
+                        String LeaveApplication_Id = jsonObject.getString("LeaveApplication_Id");
+                        String Noofdays = jsonObject.getString("Noofdays");
+                        String UserName = jsonObject.getString("UserName");
 
-                        String LeaveCount = jsonObject.getString("LeaveCount");
-                        String ShortLeaveCount = jsonObject.getString("ShortLeaveCount");
-                        String TrainingCount = jsonObject.getString("TrainingCount");
-
-
-                        leavecountTxt.setText("("+LeaveCount+")");
-                        shortLeaveCountTxt.setText("("+ShortLeaveCount+")");
-                        tranoingCountTxt.setText("("+TrainingCount+")");
-
-
+                        list.add(new ManagerLeaveRequestApproveAndRejectModel(UserName,LeaveTypeName,StartDateText,EndDateText,
+                                AppliedDate,StatusText, LeaveApplication_Id,Noofdays));
 
 
                     }
 
+                    if (list.size() == 0)
+                    {
+                        noRecordFoundTxt.setVisibility(View.VISIBLE);
+                        leaveRequestRecycler.setVisibility(View.GONE);
+                    }else
+                    {
+                        noRecordFoundTxt.setVisibility(View.GONE);
+                        leaveRequestRecycler.setVisibility(View.VISIBLE);
+                    }
+
+                    adapter.notifyDataSetChanged();
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
@@ -169,7 +177,7 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
                 VolleyLog.d("Login", "Error: " + error.getMessage());
                 // Log.e("checking now ",error.getMessage());
 
-                Toast.makeText(ManagerProceedRequestActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(RequestToApproveLeaveCancelActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
 
 

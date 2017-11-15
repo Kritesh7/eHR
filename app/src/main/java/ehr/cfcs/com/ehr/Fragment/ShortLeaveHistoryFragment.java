@@ -314,8 +314,9 @@ public class ShortLeaveHistoryFragment extends Fragment {
                         String StatusText = jsonObject.getString("StatusText");
                         String CommentText = jsonObject.getString("CommentText");
                         String IsDeleteable = jsonObject.getString("IsDeleteable");
+                        String UserName = jsonObject.getString("UserNameWithComp");
 
-                        list.add(new ShortLeaveHistoryModel(LeaveApplication_Id,LeaveTypeName,StartDate,TimeFrom,TimeTo,AppliedDate,
+                        list.add(new ShortLeaveHistoryModel(UserName,LeaveApplication_Id,LeaveTypeName,StartDate,TimeFrom,TimeTo,AppliedDate,
                                 StatusText,CommentText,IsDeleteable));
 
 

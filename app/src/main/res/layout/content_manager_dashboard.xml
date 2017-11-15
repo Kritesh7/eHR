@@ -117,6 +117,7 @@
                 app:cardElevation="5dp">
 
                 <LinearLayout
+                    android:id="@+id/thirdTiles"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:layout_gravity="center"
@@ -237,7 +238,7 @@
                 app:cardElevation="5dp">
 
                 <LinearLayout
-                    android:id="@+id/attendance_lay"
+                    android:id="@+id/sixthtiles"
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:gravity="center"

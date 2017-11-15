@@ -2,6 +2,8 @@ package ehr.cfcs.com.ehr.Manager.ManagerActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -12,14 +14,14 @@ import android.widget.TextView;
 
 import ehr.cfcs.com.ehr.R;
 
-public class ManagerDashboardActivity extends AppCompatActivity {
+public class ManagerLeaveMangementActivity extends AppCompatActivity {
 
     public TextView titleTxt;
-    public LinearLayout requaestApprovedLay, proceedLay, sixthTilesLay, thirdTilesLay;
+    public LinearLayout firstTilesLay, secondTileLay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager_dashboard);
+        setContentView(R.layout.activity_manager_leave_mangement);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -48,51 +50,28 @@ public class ManagerDashboardActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Manager Dashboard");
+        titleTxt.setText("Leave Management Dashboard");
 
-        requaestApprovedLay = (LinearLayout) findViewById(R.id.requesttoapprovetxt);
-        proceedLay = (LinearLayout) findViewById(R.id.proceedlay);
-        sixthTilesLay = (LinearLayout) findViewById(R.id.sixthtiles);
-        thirdTilesLay = (LinearLayout) findViewById(R.id.thirdTiles);
+        firstTilesLay = (LinearLayout) findViewById(R.id.firstTiles);
+        secondTileLay = (LinearLayout) findViewById(R.id.secondTile);
 
-        requaestApprovedLay.setOnClickListener(new View.OnClickListener() {
+        firstTilesLay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent ik = new Intent(ManagerDashboardActivity.this,ManagerRequestToApproveActivity.class);
+                Intent ik = new Intent(ManagerLeaveMangementActivity.this,ManagerFilterActivity.class);
+                ik.putExtra("CheckingTheActivity","Leave Summery");
                 startActivity(ik);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
         });
 
-        proceedLay.setOnClickListener(new View.OnClickListener() {
+        secondTileLay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent ik = new Intent(ManagerDashboardActivity.this,ManagerProceedRequestActivity.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-
-            }
-        });
-
-        sixthTilesLay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerDashboardActivity.this,ManagerFilterActivity.class);
-                ik.putExtra("CheckingTheActivity","Asset Details");
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-        thirdTilesLay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-
-                Intent ik = new Intent(ManagerDashboardActivity.this,ManagerLeaveMangementActivity.class);
+                Intent ik = new Intent(ManagerLeaveMangementActivity.this,ManagerFilterActivity.class);
+                ik.putExtra("CheckingTheActivity","Weak Off");
                 startActivity(ik);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }

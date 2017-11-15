@@ -6,6 +6,7 @@ package ehr.cfcs.com.ehr.Manager.ManagerModel;
 
 public class ManagerRequestToApprovedShortLeaveModel
 {
+    public String UserName;
     public String LeaveApplication_Id;
     public String LeaveTypeName;
     public String StartDate;
@@ -16,8 +17,9 @@ public class ManagerRequestToApprovedShortLeaveModel
     public String CommentText;
 
 
-    public ManagerRequestToApprovedShortLeaveModel(String leaveApplication_Id, String leaveTypeName, String startDate, String timeFrom,
+    public ManagerRequestToApprovedShortLeaveModel(String UserName , String leaveApplication_Id, String leaveTypeName, String startDate, String timeFrom,
                                   String timeTo, String appliedDate, String statusText, String commentText) {
+        this.UserName = UserName;
         LeaveApplication_Id = leaveApplication_Id;
         LeaveTypeName = leaveTypeName;
         StartDate = startDate;
@@ -29,6 +31,9 @@ public class ManagerRequestToApprovedShortLeaveModel
 
     }
 
+    public String getUserName() {
+        return UserName;
+    }
 
     public String getLeaveApplication_Id() {
         return LeaveApplication_Id;

@@ -41,7 +41,7 @@ public class ManagerRequestToApproveActivity extends AppCompatActivity {
     public TextView leaveCountTxt, leaveCancelCpuntTxt, shortLeaveCountTxt, shortLeaveCancelCountTxt,traningCountTxt;
     public ConnectionDetector conn;
     public String userId = "",authCode = "";
-    public LinearLayout thirdTilesLay;
+    public LinearLayout thirdTilesLay, fourthTileLay, firstTileLat, secondTileLay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +87,9 @@ public class ManagerRequestToApproveActivity extends AppCompatActivity {
         shortLeaveCancelCountTxt = (TextView) findViewById(R.id.shortleavecancelcount);
         traningCountTxt = (TextView) findViewById(R.id.traningcount);
         thirdTilesLay = (LinearLayout) findViewById(R.id.thirdtiles);
+        fourthTileLay = (LinearLayout) findViewById(R.id.fourthtile);
+        firstTileLat = (LinearLayout) findViewById(R.id.firsttile);
+        secondTileLay = (LinearLayout) findViewById(R.id.cancel_request);
 
 
         thirdTilesLay.setOnClickListener(new View.OnClickListener() {
@@ -99,28 +102,48 @@ public class ManagerRequestToApproveActivity extends AppCompatActivity {
             }
         });
 
+        fourthTileLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                Intent ik = new Intent(ManagerRequestToApproveActivity.this,RequestToApproveShortLeaveCancelationActivity.class);
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+
+        firstTileLat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ik = new Intent(ManagerRequestToApproveActivity.this,RequestToApproveLeaveActivity.class);
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+
+        secondTileLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ik = new Intent(ManagerRequestToApproveActivity.this,RequestToApproveLeaveCancelActivity.class);
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         //get count of dashboard
         if (conn.getConnectivityStatus()>0)
         {
             getCount(authCode,userId);
         }else
-            {
-                conn.showNoInternetAlret();
-            }
-
-
-
-
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+        {
+            conn.showNoInternetAlret();
+        }
     }
 
     //show dashbaord count api

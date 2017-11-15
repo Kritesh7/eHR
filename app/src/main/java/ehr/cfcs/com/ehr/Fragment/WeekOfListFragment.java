@@ -173,7 +173,8 @@ public class WeekOfListFragment extends Fragment {
                 Map<String, String> params = new HashMap<String, String>();
 
                 params.put("AuthCode",AuthCode);
-                params.put("Admin",Admin);
+                params.put("LoginAdminID",Admin);
+                params.put("EmployeeID",Admin);
 
 
                 Log.e("Parms", params.toString());

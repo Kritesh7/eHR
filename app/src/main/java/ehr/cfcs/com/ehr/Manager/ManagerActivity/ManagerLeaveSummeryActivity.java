@@ -3,13 +3,17 @@ package ehr.cfcs.com.ehr.Manager.ManagerActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +28,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ehr.cfcs.com.ehr.Adapter.LeaveSummarryAdapter;
+import ehr.cfcs.com.ehr.Model.LeaveSummarryModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
@@ -34,18 +41,22 @@ import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
-public class ManagerProceedRequestActivity extends AppCompatActivity {
+public class ManagerLeaveSummeryActivity extends AppCompatActivity {
 
-    public TextView titleTxt, leavecountTxt, shortLeaveCountTxt, tranoingCountTxt;
-    public String countUrl = SettingConstant.BaseUrl + "AppManagerProceededRequestDashBoard";
+    public TextView titleTxt,noCust;
+    public String empId = "";
+
+    public LeaveSummarryAdapter adapter;
+    public ArrayList<LeaveSummarryModel> list = new ArrayList<>();
+    public RecyclerView leaveSummrryRecy;
+    public String leaveSummeryUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveSummaryList";
+
+    public String userId = "", authCode = "";
     public ConnectionDetector conn;
-    public String userId = "",authCode = "";
-    public LinearLayout firstTile, secondTile, thirdTile;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager_proceed_request);
+        setContentView(R.layout.activity_manager_leave_summery);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -56,6 +67,8 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.mgrtoolbar);
         setSupportActionBar(toolbar);
+
+
         titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -73,64 +86,59 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Proceed Request");
-        conn = new ConnectionDetector(ManagerProceedRequestActivity.this);
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ManagerProceedRequestActivity.this)));
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ManagerProceedRequestActivity.this)));
-
-
-
-        leavecountTxt = (TextView) findViewById(R.id.proceedleave);
-        shortLeaveCountTxt = (TextView) findViewById(R.id.proceedshortleave);
-        tranoingCountTxt = (TextView) findViewById(R.id.proceedtraning);
-        firstTile = (LinearLayout) findViewById(R.id.firsttile);
-        secondTile = (LinearLayout) findViewById(R.id.secondtile);
-        thirdTile = (LinearLayout) findViewById(R.id.thirdtile);
-
-        firstTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerProceedRequestActivity.this,ProceedLeaveRequestListActivity.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-        secondTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerProceedRequestActivity.this,ProceedShortLeaveListActivity.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //get count of dashboard
-        if (conn.getConnectivityStatus()>0)
+        Intent intent = getIntent();
+        if (intent != null)
         {
-            getCount(authCode,userId);
+            empId = intent.getStringExtra("empId");
+        }
+
+        titleTxt.setText("Leave Summery");
+
+        conn = new ConnectionDetector(ManagerLeaveSummeryActivity.this);
+
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ManagerLeaveSummeryActivity.this)));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ManagerLeaveSummeryActivity.this)));
+
+        leaveSummrryRecy =(RecyclerView)findViewById(R.id.leave_summerry_recycler);
+        noCust = (TextView) findViewById(R.id.no_record_txt);
+
+        adapter = new LeaveSummarryAdapter(ManagerLeaveSummeryActivity.this,list);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ManagerLeaveSummeryActivity.this);
+        leaveSummrryRecy.setLayoutManager(mLayoutManager);
+        leaveSummrryRecy.setItemAnimator(new DefaultItemAnimator());
+        leaveSummrryRecy.setAdapter(adapter);
+
+        leaveSummrryRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
+
+
+        //set data
+        if (conn.getConnectivityStatus()>0) {
+
+            leaveSummeryData(authCode, userId, empId);
+
         }else
         {
             conn.showNoInternetAlret();
         }
+
     }
 
-    //show dashbaord count api
-    public void getCount(final String AuthCode , final String AdminID) {
+  /*  @Override
+    protected void onResume() {
+        super.onResume();
 
-        final ProgressDialog pDialog = new ProgressDialog(ManagerProceedRequestActivity.this,R.style.AppCompatAlertDialogStyle);
+
+    }*/
+
+    //Leave Summery List
+    public void leaveSummeryData(final String AuthCode , final String AdminID, final String EmployeeID) {
+
+        final ProgressDialog pDialog = new ProgressDialog(ManagerLeaveSummeryActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
         StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, countUrl, new Response.Listener<String>() {
+                Request.Method.POST, leaveSummeryUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -138,24 +146,42 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
                     Log.e("Login", response);
                     JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
 
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
                     for (int i=0 ; i<jsonArray.length();i++)
                     {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String LeaveTypeName = jsonObject.getString("LeaveTypeName");
+                        String LeaveYear = jsonObject.getString("LeaveYear");
+                        String EntitledFor = jsonObject.getString("LeaveAvailable");
+                        String LeaveCarryOver = jsonObject.getString("LeaveCarryOver");
+                        String LeaveTaken = jsonObject.getString("LeaveTaken");
+                        String LeaveBalance = jsonObject.getString("LeaveBalance");
+                        String LeaveAvail = jsonObject.getString("LeaveAvail");
+                        String SPLeaveText = jsonObject.getString("SPLeaveText");
 
-                        String LeaveCount = jsonObject.getString("LeaveCount");
-                        String ShortLeaveCount = jsonObject.getString("ShortLeaveCount");
-                        String TrainingCount = jsonObject.getString("TrainingCount");
-
-
-                        leavecountTxt.setText("("+LeaveCount+")");
-                        shortLeaveCountTxt.setText("("+ShortLeaveCount+")");
-                        tranoingCountTxt.setText("("+TrainingCount+")");
-
+                        list.add(new LeaveSummarryModel(LeaveTypeName,LeaveYear,EntitledFor,LeaveCarryOver,LeaveTaken,
+                                LeaveBalance,LeaveAvail,SPLeaveText));
 
 
 
                     }
 
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        leaveSummrryRecy.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        leaveSummrryRecy.setVisibility(View.VISIBLE);
+                    }
+
+
+                    adapter.notifyDataSetChanged();
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
@@ -169,7 +195,7 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
                 VolleyLog.d("Login", "Error: " + error.getMessage());
                 // Log.e("checking now ",error.getMessage());
 
-                Toast.makeText(ManagerProceedRequestActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManagerLeaveSummeryActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
 
 
@@ -179,7 +205,8 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("LoginAdminID",AdminID);
+                params.put("EmployeeID",EmployeeID);
 
 
                 Log.e("Parms", params.toString());
@@ -203,5 +230,6 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
                 R.anim.push_right_out);
 
     }
+
 
 }

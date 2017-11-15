@@ -6,6 +6,7 @@ package ehr.cfcs.com.ehr.Model;
 
 public class ShortLeaveHistoryModel
 {
+    public String UserName;
     public String LeaveApplication_Id;
     public String LeaveTypeName;
     public String StartDate;
@@ -16,8 +17,9 @@ public class ShortLeaveHistoryModel
     public String CommentText;
     public String IsDeleteable;
 
-    public ShortLeaveHistoryModel(String leaveApplication_Id, String leaveTypeName, String startDate, String timeFrom,
+    public ShortLeaveHistoryModel(String UserName, String leaveApplication_Id, String leaveTypeName, String startDate, String timeFrom,
                                   String timeTo, String appliedDate, String statusText, String commentText, String IsDeleteable) {
+        this.UserName = UserName;
         LeaveApplication_Id = leaveApplication_Id;
         LeaveTypeName = leaveTypeName;
         StartDate = startDate;
@@ -27,6 +29,10 @@ public class ShortLeaveHistoryModel
         StatusText = statusText;
         CommentText = commentText;
         this.IsDeleteable = IsDeleteable;
+    }
+
+    public String getUserName() {
+        return UserName;
     }
 
     public String getIsDeleteable() {

@@ -2,8 +2,6 @@ package ehr.cfcs.com.ehr.Manager.ManagerActivity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,15 +24,12 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.ShortLeaveHistoryAdapter;
-import ehr.cfcs.com.ehr.Manager.ManagerAdapter.ManagerRequestToApprovedShortLeaveAdapter;
-import ehr.cfcs.com.ehr.Manager.ManagerModel.ManagerRequestToApprovedShortLeaveModel;
 import ehr.cfcs.com.ehr.Model.ShortLeaveHistoryModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
@@ -43,21 +38,20 @@ import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
-public class RequestToApprovedShortLeaveActivity extends AppCompatActivity {
+public class ProceedShortLeaveListActivity extends AppCompatActivity {
 
     public TextView titleTxt,noRecordFoundTxt;
-    public RecyclerView requestRecycler;
-    public ManagerRequestToApprovedShortLeaveAdapter adapter;
-    public ArrayList<ManagerRequestToApprovedShortLeaveModel> list = new ArrayList<>();
+    public RecyclerView proceedShortRecycler;
+    public ShortLeaveHistoryAdapter adapter;
+    public ArrayList<ShortLeaveHistoryModel> list = new ArrayList<>();
     public String userId = "", authCode = "";
     public ConnectionDetector conn;
-    public String shortLeaveUrl = SettingConstant.BaseUrl + "AppManagerToApproveShortLeaveRequestDashBoardList";
-
+    public String shortLeaveUrl = SettingConstant.BaseUrl + "AppManagerProceededShortLeaveRequestDashBoardList";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reequest_to_approved_short_leave);
+        setContentView(R.layout.activity_proceed_short_leave_list);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -65,6 +59,7 @@ public class RequestToApprovedShortLeaveActivity extends AppCompatActivity {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(this.getResources().getColor(R.color.status_color));
         }
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.mgrtoolbar);
         setSupportActionBar(toolbar);
@@ -86,48 +81,40 @@ public class RequestToApprovedShortLeaveActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Short Leave For Approval");
+        titleTxt.setText("Proceeded Short Leave Request");
 
-        requestRecycler = (RecyclerView) findViewById(R.id.request_short_leave_recycler);
+        proceedShortRecycler = (RecyclerView) findViewById(R.id.proceed_short_leave_recycler);
         noRecordFoundTxt = (TextView) findViewById(R.id.norecordfound);
 
-        conn = new ConnectionDetector(RequestToApprovedShortLeaveActivity.this);
+        conn = new ConnectionDetector(ProceedShortLeaveListActivity.this);
 
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(RequestToApprovedShortLeaveActivity.this)));
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(RequestToApprovedShortLeaveActivity.this)));
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ProceedShortLeaveListActivity.this)));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ProceedShortLeaveListActivity.this)));
 
-        adapter = new ManagerRequestToApprovedShortLeaveAdapter(RequestToApprovedShortLeaveActivity.this,list,
-                RequestToApprovedShortLeaveActivity.this,"Short Leave Request");
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(RequestToApprovedShortLeaveActivity.this);
-        requestRecycler.setLayoutManager(mLayoutManager);
-        requestRecycler.setItemAnimator(new DefaultItemAnimator());
-        requestRecycler.setAdapter(adapter);
+        adapter = new ShortLeaveHistoryAdapter(ProceedShortLeaveListActivity.this,list,ProceedShortLeaveListActivity.this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ProceedShortLeaveListActivity.this);
+        proceedShortRecycler.setLayoutManager(mLayoutManager);
+        proceedShortRecycler.setItemAnimator(new DefaultItemAnimator());
+        proceedShortRecycler.setAdapter(adapter);
 
-        requestRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
+        proceedShortRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-
-
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
 
         if (conn.getConnectivityStatus()>0)
         {
             shortLeaveHistoryList(authCode,userId);
         }else
-        {
-            conn.showNoInternetAlret();
-        }
+            {
+                conn.showNoInternetAlret();
+            }
+
 
     }
 
     //Short Leave History List
     public void shortLeaveHistoryList(final String AuthCode , final String AdminID) {
 
-        final ProgressDialog pDialog = new ProgressDialog(RequestToApprovedShortLeaveActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(ProceedShortLeaveListActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -159,8 +146,8 @@ public class RequestToApprovedShortLeaveActivity extends AppCompatActivity {
                         String UserName = jsonObject.getString("UserName");
 
 
-                        list.add(new ManagerRequestToApprovedShortLeaveModel(UserName,LeaveApplication_Id,LeaveTypeName,StartDate,TimeFrom,TimeTo,AppliedDate,
-                                StatusText,CommentText));
+                        list.add(new ShortLeaveHistoryModel(UserName,LeaveApplication_Id,LeaveTypeName,StartDate,TimeFrom,TimeTo,AppliedDate,
+                                StatusText,CommentText,"0"));
 
 
 
@@ -169,11 +156,11 @@ public class RequestToApprovedShortLeaveActivity extends AppCompatActivity {
                     if (list.size() == 0)
                     {
                         noRecordFoundTxt.setVisibility(View.VISIBLE);
-                        requestRecycler.setVisibility(View.GONE);
+                        proceedShortRecycler.setVisibility(View.GONE);
                     }else
                     {
                         noRecordFoundTxt.setVisibility(View.GONE);
-                        requestRecycler.setVisibility(View.VISIBLE);
+                        proceedShortRecycler.setVisibility(View.VISIBLE);
                     }
 
                     adapter.notifyDataSetChanged();
@@ -186,7 +173,7 @@ public class RequestToApprovedShortLeaveActivity extends AppCompatActivity {
 
                 }catch (StringIndexOutOfBoundsException ex)
                 {
-                    Toast.makeText(RequestToApprovedShortLeaveActivity.this,"Error in request processing", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProceedShortLeaveListActivity.this,"Error in request processing", Toast.LENGTH_SHORT).show();
                     pDialog.dismiss();
                     //  Log.e("checking exception", ex.getMessage());
                 }
@@ -197,7 +184,7 @@ public class RequestToApprovedShortLeaveActivity extends AppCompatActivity {
                 VolleyLog.d("Login", "Error: " + error.getMessage());
                 // Log.e("checking now ",error.getMessage());
 
-                Toast.makeText(RequestToApprovedShortLeaveActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProceedShortLeaveListActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
 
 
@@ -221,7 +208,6 @@ public class RequestToApprovedShortLeaveActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
-
 
     @Override
     public void onBackPressed() {

@@ -1,13 +1,11 @@
 package ehr.cfcs.com.ehr.Manager.ManagerActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -27,12 +25,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import ehr.cfcs.com.ehr.Adapter.ShortLeaveHistoryAdapter;
-import ehr.cfcs.com.ehr.Model.ShortLeaveHistoryModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
@@ -40,20 +35,18 @@ import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
-public class ProceedShortLeaveList extends AppCompatActivity {
+public class ManagerWeakOffActivity extends AppCompatActivity {
 
-    public TextView titleTxt,noRecordFoundTxt;
-    public RecyclerView proceedShortRecycler;
-    public ShortLeaveHistoryAdapter adapter;
-    public ArrayList<ShortLeaveHistoryModel> list = new ArrayList<>();
-    public String userId = "", authCode = "";
+    public TextView titleTxt;
     public ConnectionDetector conn;
-    public String shortLeaveUrl = SettingConstant.BaseUrl + "AppManagerProceededShortLeaveRequestDashBoardList";
+    public String userid = "", authcode = "", empId = "";
+    public TextView weekOfTxt;
+    public String weekOfUrl = SettingConstant.BaseUrl + "AppEmployeeWeeklyOff";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_proceed_short_leave_list);
+        setContentView(R.layout.activity_manager_weak_off);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -61,7 +54,6 @@ public class ProceedShortLeaveList extends AppCompatActivity {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(this.getResources().getColor(R.color.status_color));
         }
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.mgrtoolbar);
         setSupportActionBar(toolbar);
@@ -83,45 +75,43 @@ public class ProceedShortLeaveList extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Proceeded Short Leave Request");
+        Intent intent = getIntent();
+        if (intent != null)
+        {
+            empId = intent.getStringExtra("empId");
+        }
 
-        proceedShortRecycler = (RecyclerView) findViewById(R.id.proceed_short_leave_recycler);
-        noRecordFoundTxt = (TextView) findViewById(R.id.norecordfound);
+        titleTxt.setText("Weak Off");
 
-        conn = new ConnectionDetector(ProceedShortLeaveList.this);
+        weekOfTxt = (TextView) findViewById(R.id.weekoftxt);
 
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ProceedShortLeaveList.this)));
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ProceedShortLeaveList.this)));
-
-        adapter = new ShortLeaveHistoryAdapter(ProceedShortLeaveList.this,list,ProceedShortLeaveList.this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ProceedShortLeaveList.this);
-        proceedShortRecycler.setLayoutManager(mLayoutManager);
-        proceedShortRecycler.setItemAnimator(new DefaultItemAnimator());
-        proceedShortRecycler.setAdapter(adapter);
-
-        proceedShortRecycler.getRecycledViewPool().setMaxRecycledViews(0, 0);
-
+        conn = new ConnectionDetector(ManagerWeakOffActivity.this);
+        userid =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ManagerWeakOffActivity.this)));
+        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ManagerWeakOffActivity.this)));
 
         if (conn.getConnectivityStatus()>0)
         {
-            shortLeaveHistoryList(authCode,userId);
+            weekOfurl(authcode,userid, empId);
         }else
-            {
-                conn.showNoInternetAlret();
-            }
+        {
+            conn.showNoInternetAlret();
+        }
+
+
 
 
     }
 
-    //Short Leave History List
-    public void shortLeaveHistoryList(final String AuthCode , final String AdminID) {
+    // get week of Text
+    public void weekOfurl( final String AuthCode , final String Admin, final String EmployeeID ) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ProceedShortLeaveList.this,R.style.AppCompatAlertDialogStyle);
+
+        final ProgressDialog pDialog = new ProgressDialog(ManagerWeakOffActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
         StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, shortLeaveUrl, new Response.Listener<String>() {
+                Request.Method.POST, weekOfUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -129,54 +119,28 @@ public class ProceedShortLeaveList extends AppCompatActivity {
                     Log.e("Login", response);
                     JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
 
-                    if (list.size()>0)
-                    {
-                        list.clear();
-                    }
                     for (int i=0 ; i<jsonArray.length();i++)
                     {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                        String LeaveApplication_Id = jsonObject.getString("LeaveApplication_Id");
-                        String LeaveTypeName = jsonObject.getString("LeaveTypeName");
-                        String StartDate = jsonObject.getString("StartDateText");
-                        String TimeFrom = jsonObject.getString("TimeFrom");
-                        String TimeTo = jsonObject.getString("TimeTo");
-                        String AppliedDate = jsonObject.getString("AppliedDate");
-                        String StatusText = jsonObject.getString("StatusText");
-                        String CommentText = jsonObject.getString("CommentText");
+                        String EmployeeWeeklyOff = jsonObject.getString("EmployeeWeeklyOff");
+                        if (jsonObject.has("MsgNotification"))
+                        {
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+                            Toast.makeText(ManagerWeakOffActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
 
+                        }
 
-                        list.add(new ShortLeaveHistoryModel(LeaveApplication_Id,LeaveTypeName,StartDate,TimeFrom,TimeTo,AppliedDate,
-                                StatusText,CommentText,"0"));
-
+                        weekOfTxt.setText(EmployeeWeeklyOff);
 
 
                     }
 
-                    if (list.size() == 0)
-                    {
-                        noRecordFoundTxt.setVisibility(View.VISIBLE);
-                        proceedShortRecycler.setVisibility(View.GONE);
-                    }else
-                    {
-                        noRecordFoundTxt.setVisibility(View.GONE);
-                        proceedShortRecycler.setVisibility(View.VISIBLE);
-                    }
-
-                    adapter.notifyDataSetChanged();
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-
                     Log.e("checking json excption" , e.getMessage());
                     e.printStackTrace();
-
-                }catch (StringIndexOutOfBoundsException ex)
-                {
-                    Toast.makeText(ProceedShortLeaveList.this,"Error in request processing", Toast.LENGTH_SHORT).show();
-                    pDialog.dismiss();
-                    //  Log.e("checking exception", ex.getMessage());
                 }
             }
         }, new Response.ErrorListener() {
@@ -185,7 +149,7 @@ public class ProceedShortLeaveList extends AppCompatActivity {
                 VolleyLog.d("Login", "Error: " + error.getMessage());
                 // Log.e("checking now ",error.getMessage());
 
-                Toast.makeText(ProceedShortLeaveList.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManagerWeakOffActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
 
 
@@ -194,8 +158,10 @@ public class ProceedShortLeaveList extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
+
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("LoginAdminID",Admin);
+                params.put("EmployeeID",EmployeeID);
 
 
                 Log.e("Parms", params.toString());

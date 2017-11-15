@@ -13,9 +13,10 @@ public class LeaveSummarryModel
     public String approved;
     public String balance;
     public String LeaveAvail;
+    public String SPLeaveText;
 
     public LeaveSummarryModel(String leaveType, String leaveYear, String entitilement,
-                              String carryOver, String approved, String balance, String LeaveAvail) {
+                              String carryOver, String approved, String balance, String LeaveAvail, String SPLeaveText) {
         this.leaveType = leaveType;
         this.leaveYear = leaveYear;
         this.entitilement = entitilement;
@@ -23,6 +24,11 @@ public class LeaveSummarryModel
         this.approved = approved;
         this.balance = balance;
         this.LeaveAvail = LeaveAvail;
+        this.SPLeaveText = SPLeaveText;
+    }
+
+    public String getSPLeaveText() {
+        return SPLeaveText;
     }
 
     public String getLeaveAvail() {

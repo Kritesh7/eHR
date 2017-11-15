@@ -239,7 +239,8 @@ public class AssestDetailsFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("LoginAdminID",AdminID);
+                params.put("EmployeeID",AdminID);
 
                 Log.e("Parms", params.toString());
                 return params;

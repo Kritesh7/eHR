@@ -177,17 +177,49 @@
             android:name=".Manager.ManagerActivity.ProceedLeaveRequestListActivity"
             android:label="@string/title_activity_proceed_leave_request_list"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Manager.ManagerActivity.ProceedShortLeaveList"
+            android:name=".Manager.ManagerActivity.ProceedShortLeaveListActivity"
             android:label="@string/title_activity_proceed_short_leave_list"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Manager.ManagerActivity.RequestToApprovedShortLeaveActivity"
             android:label="@string/title_activity_reequest_to_approved_short_leave"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".Manager.ManagerActivity.RequestToApproveShortLeaveCancelationActivity"
+            android:label="@string/title_activity_request_to_approve_short_leave_cancelation"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.RequestToApproveLeaveActivity"
+            android:label="@string/title_activity_request_to_approve_leave"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.RequestToApproveLeaveCancelActivity"
+            android:label="@string/title_activity_request_to_approve_leave_cancel"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerFilterActivity"
+            android:label="@string/title_activity_manager_filter"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerAssetDetailsActivity"
+            android:label="@string/title_activity_manager_asset_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerLeaveMangementActivity"
+            android:label="@string/title_activity_manager_leave_mangement"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerLeaveSummeryActivity"
+            android:label="@string/title_activity_manager_leave_summery"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerWeakOffActivity"
+            android:label="@string/title_activity_manager_weak_off"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

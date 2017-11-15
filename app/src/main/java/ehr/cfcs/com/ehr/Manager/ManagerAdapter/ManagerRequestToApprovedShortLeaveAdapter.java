@@ -56,11 +56,14 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
     public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeShortLeaveDelete";
     public String authCode = "", userId = "";
     public PopupWindow popupWindow;
+    public String checkStatus = "";
 
-    public ManagerRequestToApprovedShortLeaveAdapter(Context context, ArrayList<ManagerRequestToApprovedShortLeaveModel> list, Activity activity) {
+    public ManagerRequestToApprovedShortLeaveAdapter(Context context, ArrayList<ManagerRequestToApprovedShortLeaveModel> list,
+                                                     Activity activity, String checkStatus ) {
         this.context = context;
         this.list = list;
         this.activity = activity;
+        this.checkStatus = checkStatus;
     }
 
     @Override
@@ -88,6 +91,7 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
         holder.AppliedDateTxt.setText(model.getAppliedDate());
         holder.statusTxt.setText(model.getStatusText());
         holder.commentTxt.setText(model.getCommentText());
+        holder.empNameTxt.setText(model.getUserName());
         holder.mainLay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,7 +107,7 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
             @Override
             public void onClick(View view) {
 
-                setPopupWindow("Reject");
+                setPopupWindow("Reject",authCode,userId,model.getLeaveApplication_Id(),position);
             }
         });
 
@@ -111,7 +115,7 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
             @Override
             public void onClick(View view) {
 
-                setPopupWindow("Approve");
+                setPopupWindow("Approve",authCode,userId,model.getLeaveApplication_Id(),position);
             }
         });
 
@@ -134,7 +138,7 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView leaveTypeTxt,startDateTxt,timeFromTxt,timeToTxt, AppliedDateTxt,statusTxt,commentTxt;
+        public TextView leaveTypeTxt,startDateTxt,timeFromTxt,timeToTxt, AppliedDateTxt,statusTxt,commentTxt, empNameTxt;
         public ImageView approvedBtn, rejectBtn;
         public LinearLayout mainLay,btnLay;
         public View view;;
@@ -145,6 +149,7 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
             leaveTypeTxt = (TextView)itemView.findViewById(R.id.short_leave_type);
             startDateTxt = (TextView)itemView.findViewById(R.id.short_start_date);
             timeFromTxt = (TextView)itemView.findViewById(R.id.short_time_from);
+            empNameTxt = (TextView) itemView.findViewById(R.id.short_leavename);
             timeToTxt = (TextView)itemView.findViewById(R.id.short_time_to);
             statusTxt = (TextView)itemView.findViewById(R.id.short_status);
             AppliedDateTxt = (TextView)itemView.findViewById(R.id.short_applied_date);
@@ -162,7 +167,8 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
         }
     }
 
-    private void setPopupWindow(final String check) {
+    private void setPopupWindow(final String check, final String authCode, final String userId, final String leaveId,
+                                final int postion) {
 
 
 
@@ -188,22 +194,55 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
         if (check.equalsIgnoreCase("Approve"))
         {
             cancel.setText("Approve");
+
+
         }else {
             cancel.setText("Reject");
+
         }
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (remarkTxt.getText().toString().equalsIgnoreCase(""))
-                {
-                    remarkTxt.setError("Please enter remark");
-                    Toast.makeText(activity, "Plesae enter remark", Toast.LENGTH_SHORT).show();
-                }else {
+                if (check.equalsIgnoreCase("Approve")) {
 
-                    //showSettingsAlert(position, authCode, recordId, userId, remarkTxt.getText().toString());
-                }
+                    if (remarkTxt.getText().toString().equalsIgnoreCase("")) {
+                        remarkTxt.setError("Please enter remark");
+                        Toast.makeText(activity, "Plesae enter remark", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        if (remarkTxt.getText().toString().equalsIgnoreCase("")) {
+                            remarkTxt.setError("Please enter remark");
+                        } else {
+
+                            if (checkStatus.equalsIgnoreCase("Short Leave Request")) {
+                                apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                        "2", "1");
+                            }else
+                                {
+                                    apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                            "2", "6");
+                                }
+                        }
+                    }
+                }else
+                    {
+                        if (remarkTxt.getText().toString().equalsIgnoreCase(""))
+                        {
+                            remarkTxt.setError("Please enter remark");
+                        }else {
+
+                            if (checkStatus.equalsIgnoreCase("Short Leave Request")) {
+                                apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                        "2", "3");
+                            }else
+                                {
+                                    apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                            "2", "8");
+                                }
+                        }
+                    }
 
 
             }
@@ -220,7 +259,7 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
     }
 
     //approve reject API
-    public void deleteMethod(final String AuthCode ,final String LeaveApplicationID, final String userId,
+    public void apiRejectToApprove(final String AuthCode ,final String LeaveApplicationID, final String userId,
                              final int postion, final String Remark, final String type, final String status) {
 
         final ProgressDialog pDialog = new ProgressDialog(context,R.style.AppCompatAlertDialogStyle);
@@ -239,14 +278,13 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
                     if (jsonObject.has("status"))
                     {
                         String status = jsonObject.getString("status");
+                        String MsgNotification = jsonObject.getString("MsgNotification");
 
                         if (status.equalsIgnoreCase("success"))
                         {
-                            //remove(postion);
-                            //  notifyDataSetChanged(postion);
-                            notifyItemChanged(postion);
+                            remove(postion);
                             popupWindow.dismiss();
-                            Toast.makeText(context, "Delete successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, MsgNotification, Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -291,5 +329,15 @@ public class ManagerRequestToApprovedShortLeaveAdapter extends RecyclerView.Adap
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
+    }
+
+    //remove list
+    public void remove(int position) {
+        if (position < 0 || position >= list.size()) {
+            return;
+        }
+        list.remove(position);
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
 }

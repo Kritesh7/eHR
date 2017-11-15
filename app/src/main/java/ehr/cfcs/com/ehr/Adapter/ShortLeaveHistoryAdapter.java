@@ -89,6 +89,7 @@ public class ShortLeaveHistoryAdapter extends RecyclerView.Adapter<ShortLeaveHis
         holder.AppliedDateTxt.setText(model.getAppliedDate());
         holder.statusTxt.setText(model.getStatusText());
         holder.commentTxt.setText(model.getCommentText());
+        holder.empNameTxt.setText(model.getUserName());
         holder.mainLay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,7 +129,7 @@ public class ShortLeaveHistoryAdapter extends RecyclerView.Adapter<ShortLeaveHis
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView leaveTypeTxt,startDateTxt,timeFromTxt,timeToTxt, AppliedDateTxt,statusTxt,commentTxt;
+        public TextView leaveTypeTxt,startDateTxt,timeFromTxt,timeToTxt, AppliedDateTxt,statusTxt,commentTxt, empNameTxt;
         public ImageView delBtn;
         public LinearLayout mainLay,btnLay;
         public View view;;
@@ -147,6 +148,7 @@ public class ShortLeaveHistoryAdapter extends RecyclerView.Adapter<ShortLeaveHis
             btnLay = (LinearLayout) itemView.findViewById(R.id.btnLay);
             view = (View) itemView.findViewById(R.id.view2);
             mainLay = (LinearLayout)itemView.findViewById(R.id.short_leave_main_lay);
+            empNameTxt = (TextView) itemView.findViewById(R.id.short_leave_name);
 
 
 

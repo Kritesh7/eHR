@@ -91,6 +91,7 @@ public class ProceedLeaveRequestListActivity extends AppCompatActivity {
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ProceedLeaveRequestListActivity.this)));
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ProceedLeaveRequestListActivity.this)));
         conn = new ConnectionDetector(ProceedLeaveRequestListActivity.this);
+
         adapter = new LeaveMangementAdapter(ProceedLeaveRequestListActivity.this,list,ProceedLeaveRequestListActivity.this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ProceedLeaveRequestListActivity.this);
         proceedRecy.setLayoutManager(mLayoutManager);
@@ -100,16 +101,22 @@ public class ProceedLeaveRequestListActivity extends AppCompatActivity {
         proceedRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
         // show list
+
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (conn.getConnectivityStatus()>0)
         {
             leaveManagementData(authCode,userId);
 
         }else
-            {
-                conn.showNoInternetAlret();
-            }
-
-
+        {
+            conn.showNoInternetAlret();
+        }
 
     }
 
@@ -143,9 +150,9 @@ public class ProceedLeaveRequestListActivity extends AppCompatActivity {
                         String StatusText = jsonObject.getString("StatusText");
                         String LeaveApplication_Id = jsonObject.getString("LeaveApplication_Id");
                         String Noofdays = jsonObject.getString("Noofdays");
-                        //String IsDeleteable = jsonObject.getString("IsDeleteable");
+                        String UserName = jsonObject.getString("UserName");
 
-                        list.add(new LeaveManagementModel(LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,
+                        list.add(new LeaveManagementModel(UserName,LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,
                                 LeaveApplication_Id,Noofdays,"0"));
 
 

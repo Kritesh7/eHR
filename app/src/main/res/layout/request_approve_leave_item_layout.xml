@@ -13,7 +13,7 @@
     >
 
     <LinearLayout
-        android:id="@+id/short_leave_main_lay"
+        android:id="@+id/leave_management_main_lay"
         android:padding="10dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
@@ -42,7 +42,7 @@
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/short_leave_name"
+                android:id="@+id/leave_type_name"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
@@ -56,6 +56,7 @@
             android:layout_height="1dp"
             android:background="#e0e0e0"
             android:elevation=".5dp"/>
+
 
 
         <LinearLayout
@@ -80,7 +81,7 @@
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/short_leave_type"
+                android:id="@+id/leave_type"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
@@ -117,7 +118,7 @@
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/short_start_date"
+                android:id="@+id/start_date"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
@@ -143,7 +144,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Time From"/>
+                android:text="End Date"/>
 
             <TextView
                 android:textColor="@color/status_color"
@@ -154,50 +155,13 @@
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/short_time_from"
+                android:id="@+id/end_date"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
                 android:text="Leave Type"/>
         </LinearLayout>
-
-        <View
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#e0e0e0"
-            android:elevation=".5dp"/>
-        <LinearLayout
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:textColor="@color/status_color"
-                android:textStyle="bold"
-                android:layout_width="0dp"
-                android:layout_weight="4.5"
-                android:layout_height="wrap_content"
-                android:text="Time To"/>
-
-            <TextView
-                android:textColor="@color/status_color"
-                android:textStyle="bold"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text=":"/>
-
-            <TextView
-                android:id="@+id/short_time_to"
-                android:textColor="@color/dahboard_textcolor"
-                android:layout_width="0dp"
-                android:layout_weight="4.5"
-                android:layout_height="wrap_content"
-                android:text="Leave Type"/>
-        </LinearLayout>
-
         <View
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
@@ -216,7 +180,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Applied Date"/>
+                android:text="No. of Days"/>
 
             <TextView
                 android:textColor="@color/status_color"
@@ -227,7 +191,45 @@
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/short_applied_date"
+                android:id="@+id/noofdaystxt"
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:text="Leave Type"/>
+        </LinearLayout>
+
+
+
+        <View
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:text="Applied On"/>
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text=":"/>
+
+            <TextView
+                android:id="@+id/appliedon"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
@@ -264,7 +266,7 @@
                 android:text=":"/>
 
             <TextView
-                android:id="@+id/short_status"
+                android:id="@+id/status"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
@@ -272,65 +274,36 @@
                 android:text="Leave Type"/>
         </LinearLayout>
 
-        <View
-            android:visibility="gone"
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#e0e0e0"
-            android:elevation=".5dp"/>
+       <View
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#e0e0e0"
+        android:elevation=".5dp"/>
 
         <LinearLayout
-            android:visibility="gone"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:textColor="@color/status_color"
-                android:textStyle="bold"
-                android:layout_width="0dp"
-                android:layout_weight="4.5"
-                android:layout_height="wrap_content"
-                android:text="Comment"/>
-
-            <TextView
-                android:textColor="@color/status_color"
-                android:textStyle="bold"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text=":"/>
-
-            <TextView
-                android:id="@+id/short_comment"
-                android:textColor="@color/dahboard_textcolor"
-                android:layout_width="0dp"
-                android:layout_weight="4.5"
-                android:layout_height="wrap_content"
-                android:text="Leave Type"/>
-        </LinearLayout>
-
-        <View
-            android:id="@+id/view2"
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#e0e0e0"
-            android:elevation=".5dp"/>
-
-        <LinearLayout
-            android:id="@+id/btnLay"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/delbtn"
+                android:id="@+id/rejectbtn"
                 android:padding="5dp"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight=".5"
                 android:layout_height="wrap_content"
-                android:src="@drawable/delbtn"
+                android:src="@drawable/reject"
+                />
+
+
+            <ImageView
+                android:id="@+id/approedbtn"
+                android:padding="5dp"
+                android:layout_width="0dp"
+                android:layout_weight=".5"
+                android:layout_height="wrap_content"
+                android:src="@drawable/approved"
                 />
 
         </LinearLayout>

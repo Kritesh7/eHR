@@ -49,4 +49,16 @@
     <string name="title_activity_reequest_to_approved_short_leave">
         ReequestToApprovedShortLeaveActivity
     </string>
+    <string name="title_activity_request_to_approve_short_leave_cancelation">
+        RequestToApproveShortLeaveCancelationActivity
+    </string>
+    <string name="title_activity_request_to_approve_leave">RequestToApproveLeaveActivity</string>
+    <string name="title_activity_request_to_approve_leave_cancel">
+        RequestToApproveLeaveCancelActivity
+    </string>
+    <string name="title_activity_manager_filter">ManagerFilterActivity</string>
+    <string name="title_activity_manager_asset_details">ManagerAssetDetailsActivity</string>
+    <string name="title_activity_manager_leave_mangement">ManagerLeaveMangementActivity</string>
+    <string name="title_activity_manager_leave_summery">ManagerLeaveSummeryActivity</string>
+    <string name="title_activity_manager_weak_off">ManagerWeakOffActivity</string>
 </resources>

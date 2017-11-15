@@ -1,12 +1,9 @@
-package ehr.cfcs.com.ehr.Adapter;
+package ehr.cfcs.com.ehr.Manager.ManagerAdapter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,11 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +32,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import ehr.cfcs.com.ehr.Main.NewAddLeaveMangementActivity;
 import ehr.cfcs.com.ehr.Main.ViewLeavemangementActivity;
+import ehr.cfcs.com.ehr.Manager.ManagerModel.ManagerLeaveRequestApproveAndRejectModel;
 import ehr.cfcs.com.ehr.Model.LeaveManagementModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
@@ -49,22 +44,24 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 /**
- * Created by Admin on 18-09-2017.
+ * Created by Admin on 14-11-2017.
  */
 
-public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAdapter.ViewHolder>
+public class ManagerLeaveRequestApproveAndRejectAdapter extends RecyclerView.Adapter<ManagerLeaveRequestApproveAndRejectAdapter.ViewHolder>
 {
-
     public Context context ;
-    public ArrayList<LeaveManagementModel> list =new ArrayList<>();
-    Activity activity;
+    public ArrayList<ManagerLeaveRequestApproveAndRejectModel> list =new ArrayList<>();
+    public Activity activity;
+    public  String checkStatus;
     public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveDelete";
     public String authCode = "", userId = "";
     public PopupWindow popupWindow;
 
-    public LeaveMangementAdapter(Context context, ArrayList<LeaveManagementModel> list, Activity activity) {
+    public ManagerLeaveRequestApproveAndRejectAdapter(Context context, ArrayList<ManagerLeaveRequestApproveAndRejectModel> list, Activity activity,
+                                                      String checkStatus) {
         this.context = context;
         this.list = list;
+        this.checkStatus = checkStatus;
         this.activity = activity;
     }
 
@@ -72,24 +69,25 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.leavemangaemnet_layout, parent, false);
-        return new LeaveMangementAdapter.ViewHolder(itemView);
+                inflate(R.layout.request_approve_leave_item_layout, parent, false);
+        return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        final LeaveManagementModel model = list.get(position);
+        ManagerLeaveRequestApproveAndRejectModel model = list.get(position);
 
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(context)));
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(context)));
 
 
         holder.leaveTypeTxt.setText(model.getLeaveType());
+        holder.appliedOnTxt.setText(model.getAppliedOn());
         holder.startDateTxt.setText(model.getStartDate());
         holder.endDateTxt.setText(model.getEndDate());
-        holder.appliedOnTxt.setText(model.getAppliedOn());
         holder.statusTxt.setText(model.getStatus());
+        holder.noOfDaysTxt.setText(model.getNoofdays());
         holder.empNameTxt.setText(model.getUserName());
 
         holder.mainLay.setOnClickListener(new View.OnClickListener() {
@@ -103,28 +101,21 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
             }
         });
 
-        holder.noOfDaysTxt.setText(model.getNoofdays());
-
-        if (model.getIsDeleteable().equalsIgnoreCase("1"))
-        {
-            holder.btnLay.setVisibility(View.VISIBLE);
-            holder.view.setVisibility(View.VISIBLE);
-        }else
-            {
-                holder.btnLay.setVisibility(View.GONE);
-                holder.view.setVisibility(View.GONE);
-            }
-
-        //delete leave
-        holder.delBtn.setOnClickListener(new View.OnClickListener() {
+        holder.rejectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-
-                setPopupWindow(position,authCode,model.getLeaveApplication_Id(),userId);
+                setPopupWindow("Reject",authCode,userId,model.getLeaveApplication_Id(),position);
             }
         });
 
+        holder.approvedBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                setPopupWindow("Approve",authCode,userId,model.getLeaveApplication_Id(),position);
+            }
+        });
 
     }
 
@@ -138,75 +129,119 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
         public ImageView delBtn;
         public LinearLayout mainLay, btnLay;
         public View view;
+        public ImageView approvedBtn, rejectBtn;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             leaveTypeTxt = (TextView)itemView.findViewById(R.id.leave_type);
+            empNameTxt = (TextView) itemView.findViewById(R.id.leave_type_name);
             startDateTxt = (TextView)itemView.findViewById(R.id.start_date);
             endDateTxt = (TextView)itemView.findViewById(R.id.end_date);
             appliedOnTxt = (TextView)itemView.findViewById(R.id.appliedon);
             statusTxt = (TextView)itemView.findViewById(R.id.status);
             noOfDaysTxt = (TextView)itemView.findViewById(R.id.noofdaystxt);
-            delBtn = (ImageView)itemView.findViewById(R.id.delbtn);
-            btnLay = (LinearLayout) itemView.findViewById(R.id.btnLay);
-            view = (View) itemView.findViewById(R.id.view2);
-            empNameTxt = (TextView) itemView.findViewById(R.id.leave_user);
+            rejectBtn = (ImageView)itemView.findViewById(R.id.rejectbtn);
+            approvedBtn = (ImageView)itemView.findViewById(R.id.approedbtn);
             mainLay = (LinearLayout)itemView.findViewById(R.id.leave_management_main_lay);
 
-
-
-
-
         }
     }
 
-    public void remove(int position) {
-        if (position < 0 || position >= list.size()) {
-            return;
+    private void setPopupWindow(final String check, final String authCode, final String userId, final String leaveId,
+                                final int postion) {
+
+
+
+        LayoutInflater layoutInflater = (LayoutInflater)activity.getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View popupView = layoutInflater.inflate(R.layout.popup_layout, null);
+        Button cancel , backBtn;
+        final EditText remarkTxt;
+        popupWindow = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT,
+                true);
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.setAnimationStyle(R.style.animationName);
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        //
+
+        cancel = (Button) popupView.findViewById(R.id.cancel_leaverequest);
+        remarkTxt = (EditText)popupView.findViewById(R.id.remarktxt);
+        backBtn = (Button)popupView.findViewById(R.id.backbtn);
+
+        if (check.equalsIgnoreCase("Approve"))
+        {
+            cancel.setText("Approve");
+
+
+        }else {
+            cancel.setText("Reject");
+
         }
-        list.remove(position);
-        notifyItemRemoved(position);
-        notifyDataSetChanged();
-    }
 
-    public void showSettingsAlert(final int postion, final String authcode, final String recordId, final String userid,
-                                  final String remark) {
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                if (check.equalsIgnoreCase("Approve")) {
 
-        // Setting Dialog Title
-        //  alertDialog.setTitle("Alert");
+                    if (remarkTxt.getText().toString().equalsIgnoreCase("")) {
+                        remarkTxt.setError("Please enter remark");
+                        Toast.makeText(activity, "Please enter remark", Toast.LENGTH_SHORT).show();
+                    } else {
 
-        // Setting Dialog Message
-        alertDialog.setMessage("Are You Sure You Want to Delete?");
+                        if (remarkTxt.getText().toString().equalsIgnoreCase("")) {
+                            remarkTxt.setError("Please enter remark");
+                        } else {
 
-        // On pressing the Settings button.
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
+                            if (checkStatus.equalsIgnoreCase("Leave Request")) {
+                                apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                        "2", "1");
+                            }else
+                            {
+                                apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                        "2", "6");
+                            }
+                        }
+                    }
+                }else
+                {
+                    if (remarkTxt.getText().toString().equalsIgnoreCase(""))
+                    {
+                        remarkTxt.setError("Please enter remark");
+                    }else {
 
+                        if (checkStatus.equalsIgnoreCase("Leave Request")) {
+                            apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                    "2", "3");
+                        }else
+                        {
+                            apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                    "2", "8");
+                        }
+                    }
+                }
 
-
-                    deleteMethod(authcode, recordId, userid, postion, remark,"1","5");
 
             }
         });
 
-        // On pressing the cancel button
-        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                popupWindow.dismiss();
             }
         });
 
-        // Showing Alert Message
-        alertDialog.show();
     }
 
-
-    //delete the Details
-    public void deleteMethod(final String AuthCode ,final String LeaveApplicationID, final String userId,
-                             final int postion, final String Remark, final String Type, final String status) {
+    //approve reject API
+    public void apiRejectToApprove(final String AuthCode ,final String LeaveApplicationID, final String userId,
+                                   final int postion, final String Remark, final String type, final String status) {
 
         final ProgressDialog pDialog = new ProgressDialog(context,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -224,13 +259,13 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
                     if (jsonObject.has("status"))
                     {
                         String status = jsonObject.getString("status");
+                        String MsgNotification = jsonObject.getString("MsgNotification");
 
                         if (status.equalsIgnoreCase("success"))
                         {
-                            //remove(postion);
-                            notifyItemChanged(postion);
+                            remove(postion);
                             popupWindow.dismiss();
-                            Toast.makeText(context, "Delete successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, MsgNotification, Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -261,9 +296,8 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
                 params.put("LeaveApplicationID",LeaveApplicationID);
                 params.put("AdminID",userId);
                 params.put("Remark",Remark);
-                params.put("Type",Type);
+                params.put("Type",type);
                 params.put("Status",status);
-
 
 
                 Log.e("Parms", params.toString());
@@ -278,53 +312,13 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
 
     }
 
-    private void setPopupWindow(final int position,final String authCode, final String recordId, final String userId) {
-
-
-
-        LayoutInflater layoutInflater = (LayoutInflater)activity.getBaseContext()
-                .getSystemService(LAYOUT_INFLATER_SERVICE);
-        final View popupView = layoutInflater.inflate(R.layout.popup_layout, null);
-        Button cancel, backBtn;
-        final EditText remarkTxt;
-        popupWindow = new PopupWindow(popupView,
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT,
-                true);
-        popupWindow.setTouchable(true);
-        popupWindow.setFocusable(true);
-        popupWindow.setAnimationStyle(R.style.animationName);
-        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-
-
-        cancel = (Button) popupView.findViewById(R.id.cancel_leaverequest);
-        remarkTxt = (EditText)popupView.findViewById(R.id.remarktxt);
-        backBtn = (Button)popupView.findViewById(R.id.backbtn);
-
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (remarkTxt.getText().toString().equalsIgnoreCase(""))
-                {
-                    remarkTxt.setError("Please enter remark");
-                    Toast.makeText(activity, "Plesae enter remark", Toast.LENGTH_SHORT).show();
-                }else {
-
-                    showSettingsAlert(position, authCode, recordId, userId, remarkTxt.getText().toString());
-                }
-
-
-            }
-        });
-
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                popupWindow.dismiss();
-            }
-        });
-
+    //remove list
+    public void remove(int position) {
+        if (position < 0 || position >= list.size()) {
+            return;
+        }
+        list.remove(position);
+        notifyItemRemoved(position);
+        notifyDataSetChanged();
     }
-
 }
