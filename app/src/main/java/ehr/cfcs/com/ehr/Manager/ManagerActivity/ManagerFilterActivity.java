@@ -187,9 +187,48 @@ public class ManagerFilterActivity extends AppCompatActivity {
                     ik.putExtra("empId", empId);
                     startActivity(ik);
                     overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
                 }else if(checkingActivity.equalsIgnoreCase("Weak Off"))
                 {
                     Intent ik = new Intent(ManagerFilterActivity.this, ManagerWeakOffActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
+                }else if (checkingActivity.equalsIgnoreCase("Leave History"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerTeamLeaveHistoryActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
+                }else if (checkingActivity.equalsIgnoreCase("Short Leave History"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerShortLeaveHistoryActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Attendance Report"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerAttendanceReportActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Team Average Report"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerTeamAvearageReportActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Administrative Information"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerOfficealyDataActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else  if (checkingActivity.equalsIgnoreCase("Medical And Insurance"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerMedicalActivity.class);
                     ik.putExtra("empId", empId);
                     startActivity(ik);
                     overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);

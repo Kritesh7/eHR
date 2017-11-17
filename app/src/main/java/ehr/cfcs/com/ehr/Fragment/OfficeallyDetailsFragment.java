@@ -121,7 +121,7 @@ public class OfficeallyDetailsFragment extends Fragment {
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
-        adapter = new OfficelyAdapter(getActivity(),list,getActivity());
+        adapter = new OfficelyAdapter(getActivity(),list,getActivity(), "FirstOne");
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         officelyRecycler.setLayoutManager(mLayoutManager);
         officelyRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -166,7 +166,7 @@ public class OfficeallyDetailsFragment extends Fragment {
         super.onResume();
         if (conn.getConnectivityStatus()>0) {
 
-            officeallyDocsList(authCode,userId,"0");
+            officeallyDocsList(authCode,userId);
 
         }else
         {
@@ -176,7 +176,7 @@ public class OfficeallyDetailsFragment extends Fragment {
 
 
     //Officeally docs List Api
-    public void officeallyDocsList(final String AuthCode , final String AdminID, final String AppStatus) {
+    public void officeallyDocsList(final String AuthCode , final String AdminID) {
 
         final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -251,8 +251,8 @@ public class OfficeallyDetailsFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
-                params.put("AppStatus",AppStatus);
+                params.put("LoginAdminID",AdminID);
+                params.put("EmployeeID",AdminID);
 
                 Log.e("Parms", params.toString());
                 return params;

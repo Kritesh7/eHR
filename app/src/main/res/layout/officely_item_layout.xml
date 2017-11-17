@@ -199,8 +199,8 @@
         </LinearLayout>
 
 
-
         <View
+            android:id="@+id/attcahmnetview"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -208,6 +208,53 @@
             android:elevation=".5dp"/>
 
         <LinearLayout
+            android:id="@+id/attchmentlay"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                android:text="Attachment"/>
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text=":"/>
+
+            <ImageView
+                android:id="@+id/navigatebtn"
+                android:padding="5dp"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:src="@drawable/download"
+                />
+
+        </LinearLayout>
+
+
+
+        <View
+            android:id="@+id/view3"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
+
+        <LinearLayout
+            android:id="@+id/outattchalay"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

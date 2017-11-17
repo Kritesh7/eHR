@@ -32,6 +32,7 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,11 +68,13 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
     };
     public String checkNavigateStr = "MedialAnssurance";
     public String userid = "";
+    public String checkNaviagte;
 
-    public MedicalAnssuredAdapter(Context context, ArrayList<MedicalAnssuranceModel> list, Activity activity) {
+    public MedicalAnssuredAdapter(Context context, ArrayList<MedicalAnssuranceModel> list, Activity activity, String checkNaviagte) {
         this.context = context;
         this.list = list;
         this.activity = activity;
+        this.checkNaviagte = checkNaviagte;
     }
 
     @Override
@@ -147,6 +150,17 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
                 }
             }
         });
+
+        if (checkNaviagte.equalsIgnoreCase("FirstOne"))
+        {
+            holder.btnLay.setVisibility(View.VISIBLE);
+            holder.view2.setVisibility(View.VISIBLE);
+
+        }else
+            {
+                holder.btnLay.setVisibility(View.GONE);
+                holder.view2.setVisibility(View.GONE);
+            }
     }
 
     @Override
@@ -158,8 +172,8 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
         public TextView policyTypeTxt,policyNumberTxt,policyDurationTxt,policyNameTxt, amountInsuredTxt, policyByTxt;
         public ImageView delBtn;
         public ImageView mainLay;
-        public View view;
-        public LinearLayout downloadLay;
+        public View view, view2;
+        public LinearLayout downloadLay, btnLay;
         public ImageView downloadBtn;
 
         public ViewHolder(View itemView) {
@@ -176,6 +190,8 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
             downloadLay = (LinearLayout) itemView.findViewById(R.id.downloadOptionLay);
             view = (View)itemView.findViewById(R.id.view);
             downloadBtn = (ImageView) itemView.findViewById(R.id.downloadOptionBtn);
+            btnLay = (LinearLayout) itemView.findViewById(R.id.btnlay);
+            view2 = (View) itemView.findViewById(R.id.view2);
 
         }
     }

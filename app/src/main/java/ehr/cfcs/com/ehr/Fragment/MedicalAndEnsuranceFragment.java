@@ -122,7 +122,7 @@ public class MedicalAndEnsuranceFragment extends Fragment {
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
 
-        adapter = new MedicalAnssuredAdapter(getActivity(),list, getActivity());
+        adapter = new MedicalAnssuredAdapter(getActivity(),list, getActivity(),"FirstOne");
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         medicalAnssuredRecy.setLayoutManager(mLayoutManager);
         medicalAnssuredRecy.setItemAnimator(new DefaultItemAnimator());
@@ -264,7 +264,8 @@ public class MedicalAndEnsuranceFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("LoginAdminID",AdminID);
+                params.put("EmployeeID",AdminID);
 
 
                 Log.e("Parms", params.toString());

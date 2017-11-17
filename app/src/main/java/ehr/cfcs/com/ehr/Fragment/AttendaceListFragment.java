@@ -308,10 +308,10 @@ public class AttendaceListFragment extends Fragment {
                         String LateArrivalText = jsonObject.getString("LateArrival");
                         String EarlyLeavingText = jsonObject.getString("EarlyLeaving");
                         String StatusText = jsonObject.getString("StatusText");
-                        //String IsRequest = jsonObject.getString("IsRequest");
+                        String Name = jsonObject.getString("Name");
 
 
-                        list.add(new AttendanceListModel(AttendanceLogID,AttendanceDateText,InTime,OutTime,WorkTime
+                        list.add(new AttendanceListModel(Name,AttendanceLogID,AttendanceDateText,InTime,OutTime,WorkTime
                                 ,Halfday,LateArrivalText,EarlyLeavingText,StatusText,""));
 
 
@@ -352,7 +352,8 @@ public class AttendaceListFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("LoginAdminID",AdminID);
+                params.put("EmployeeID",AdminID);
                 params.put("Month",Month);
                 params.put("Year",year);
 

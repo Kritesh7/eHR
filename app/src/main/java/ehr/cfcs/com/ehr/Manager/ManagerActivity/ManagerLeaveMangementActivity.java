@@ -17,7 +17,7 @@ import ehr.cfcs.com.ehr.R;
 public class ManagerLeaveMangementActivity extends AppCompatActivity {
 
     public TextView titleTxt;
-    public LinearLayout firstTilesLay, secondTileLay;
+    public LinearLayout firstTilesLay, secondTileLay, thirdLay, fourthLay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +50,12 @@ public class ManagerLeaveMangementActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Leave Management Dashboard");
+        titleTxt.setText("Leave Management");
 
         firstTilesLay = (LinearLayout) findViewById(R.id.firstTiles);
         secondTileLay = (LinearLayout) findViewById(R.id.secondTile);
+        thirdLay = (LinearLayout) findViewById(R.id.thirdlay);
+        fourthLay = (LinearLayout) findViewById(R.id.fourthtile);
 
         firstTilesLay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +76,29 @@ public class ManagerLeaveMangementActivity extends AppCompatActivity {
                 ik.putExtra("CheckingTheActivity","Weak Off");
                 startActivity(ik);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+
+        thirdLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent ik = new Intent(ManagerLeaveMangementActivity.this,ManagerFilterActivity.class);
+                ik.putExtra("CheckingTheActivity","Leave History");
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+
+        fourthLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent ik = new Intent(ManagerLeaveMangementActivity.this,ManagerFilterActivity.class);
+                ik.putExtra("CheckingTheActivity","Short Leave History");
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
             }
         });
 

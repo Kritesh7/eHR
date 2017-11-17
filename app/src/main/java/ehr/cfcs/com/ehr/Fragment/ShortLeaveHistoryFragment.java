@@ -364,7 +364,8 @@ public class ShortLeaveHistoryFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("LoginAdminID",AdminID);
+                params.put("EmployeeID",AdminID);
                 params.put("Month",Month);
                 params.put("Year",year);
 

@@ -61,4 +61,17 @@
     <string name="title_activity_manager_leave_mangement">ManagerLeaveMangementActivity</string>
     <string name="title_activity_manager_leave_summery">ManagerLeaveSummeryActivity</string>
     <string name="title_activity_manager_weak_off">ManagerWeakOffActivity</string>
+    <string name="title_activity_manager_team_leave_history">ManagerTeamLeaveHistoryActivity
+    </string>
+    <string name="title_activity_manager_short_leave_history">ManagerShortLeaveHistoryActivity
+    </string>
+    <string name="title_activity_manager_attendace_report">ManagerAttendaceReportActivity</string>
+    <string name="title_activity_manager_attendance_report">ManagerAttendanceReportActivity</string>
+    <string name="title_activity_manager_team_avearage_report">ManagerTeamAvearageReportActivity
+    </string>
+    <string name="title_activity_manager_employee_data_dashboard">
+        ManagerEmployeeDataDashboardActivity
+    </string>
+    <string name="title_activity_manager_officealy_data">ManagerOfficealyDataActivity</string>
+    <string name="title_activity_manager_medical">ManagerMedicalActivity</string>
 </resources>

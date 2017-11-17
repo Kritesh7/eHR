@@ -3,9 +3,10 @@ package ehr.cfcs.com.ehr.Model;
 /**
  * Created by Admin on 10-10-2017.
  */
-
 public class AttendanceListModel
 {
+
+    public String Name;
     public String AttendanceLogID;
     public String Date;
     public String InTime;
@@ -18,9 +19,10 @@ public class AttendanceListModel
     public String IsRequest;
 
 
-    public AttendanceListModel(String attendanceLogID, String date, String inTime,
+    public AttendanceListModel(String Name,String attendanceLogID, String date, String inTime,
                                String outTime, String workTime, String halfday, String lateArrival, String earlyLeaving, String status,
                                String IsRequest) {
+        this.Name = Name;
         AttendanceLogID = attendanceLogID;
         Date = date;
         InTime = inTime;
@@ -31,6 +33,10 @@ public class AttendanceListModel
         EarlyLeaving = earlyLeaving;
         Status = status;
         IsRequest = IsRequest;
+    }
+
+    public String getName() {
+        return Name;
     }
 
     public String getIsRequest() {

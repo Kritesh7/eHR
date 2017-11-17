@@ -20,6 +20,8 @@
     <style name="NavigationDrawerStyle">
         <item name="android:listDivider">@color/navitmes</item>
         <item name="android:textColorSecondary">@color/navitmes</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:thumbTextPadding">1dp</item>
     </style>
 
 

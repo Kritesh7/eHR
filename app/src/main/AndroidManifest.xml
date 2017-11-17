@@ -219,6 +219,38 @@
         <activity
             android:name=".Manager.ManagerActivity.ManagerWeakOffActivity"
             android:label="@string/title_activity_manager_weak_off"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerTeamLeaveHistoryActivity"
+            android:label="@string/title_activity_manager_team_leave_history"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerShortLeaveHistoryActivity"
+            android:label="@string/title_activity_manager_short_leave_history"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerReportDashboardActivity"
+            android:label="@string/title_activity_manager_attendace_report"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerAttendanceReportActivity"
+            android:label="@string/title_activity_manager_attendance_report"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerTeamAvearageReportActivity"
+            android:label="@string/title_activity_manager_team_avearage_report"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerEmployeeDataDashboardActivity"
+            android:label="@string/title_activity_manager_employee_data_dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerOfficealyDataActivity"
+            android:label="@string/title_activity_manager_officealy_data"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerMedicalActivity"
+            android:label="@string/title_activity_manager_medical"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

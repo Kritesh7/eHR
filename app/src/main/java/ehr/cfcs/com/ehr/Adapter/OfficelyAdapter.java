@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,11 +64,13 @@ public class OfficelyAdapter extends RecyclerView.Adapter<OfficelyAdapter.ViewHo
     public String authCode = "", userId = "";
     public Activity activity;
     public String checkNavigateStr = "OfficealDocs";
+    public String checkNavigate ;
 
-    public OfficelyAdapter(Context context, ArrayList<OfficealyModel> list,Activity activity) {
+    public OfficelyAdapter(Context context, ArrayList<OfficealyModel> list,Activity activity, String checkNavigate) {
         this.context = context;
         this.list = list;
         this.activity = activity;
+        this.checkNavigate = checkNavigate;
     }
 
     @Override
@@ -141,6 +144,35 @@ public class OfficelyAdapter extends RecyclerView.Adapter<OfficelyAdapter.ViewHo
                 }
             }
         });
+
+       holder.navigateBtnDownload.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+
+               if (!model.getFileNameText().equalsIgnoreCase(""))
+               {
+                   if (checkPermissions()) {
+
+                       new DownloadTask(context, SettingConstant.DownloadUrl + model.getFileNameText(),checkNavigateStr);
+                   }
+
+               }
+           }
+       });
+
+       if (checkNavigate.equalsIgnoreCase("FirstOne"))
+       {
+           holder.attcahLay.setVisibility(View.GONE);
+           holder.view.setVisibility(View.GONE);
+           holder.withOutLay.setVisibility(View.VISIBLE);
+           holder.view2.setVisibility(View.VISIBLE);
+       }else
+           {
+               holder.attcahLay.setVisibility(View.VISIBLE);
+               holder.view.setVisibility(View.VISIBLE);
+               holder.withOutLay.setVisibility(View.GONE);
+               holder.view2.setVisibility(View.GONE);
+           }
     }
 
     @Override
@@ -150,8 +182,10 @@ public class OfficelyAdapter extends RecyclerView.Adapter<OfficelyAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView documentTypeTxt,noOfDocumentTxt,issuesDateTxt,expiryDateTxt, placeOfIssuesTxt;
-        public ImageView downloadBtn,deleteBtn;
+        public ImageView downloadBtn,deleteBtn,navigateBtnDownload;
         public CardView mainLay;
+        public LinearLayout attcahLay, withOutLay;
+        public View view, view2;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -163,6 +197,12 @@ public class OfficelyAdapter extends RecyclerView.Adapter<OfficelyAdapter.ViewHo
             placeOfIssuesTxt = (TextView)itemView.findViewById(R.id.placeof_issues);
             downloadBtn = (ImageView) itemView.findViewById(R.id.downloadOptionBtn);
             deleteBtn = (ImageView) itemView.findViewById(R.id.delbtn);
+            navigateBtnDownload = (ImageView) itemView.findViewById(R.id.navigatebtn);
+            attcahLay = (LinearLayout) itemView.findViewById(R.id.attchmentlay);
+            view = (View)itemView.findViewById(R.id.attcahmnetview);
+            withOutLay = (LinearLayout) itemView.findViewById(R.id.outattchalay);
+            view2 = (View) itemView.findViewById(R.id.view3);
+
 
            // mainLay = (CardView)itemView.findViewById(R.id.leave_management_main_lay);
 

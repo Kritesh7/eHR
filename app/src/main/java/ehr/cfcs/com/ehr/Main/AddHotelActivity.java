@@ -722,8 +722,6 @@ public class AddHotelActivity extends AppCompatActivity {
         return dateFormat.format(cal.getTime());
     }
 
-
-
     @Override
     public void onBackPressed() {
 

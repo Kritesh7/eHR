@@ -55,6 +55,7 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
         holder.lateArivalTxt.setText(model.getLateArrival());
         holder.earlyLeavingTxt.setText(model.getEarlyLeaving());
         holder.statusTxt.setText(model.getStatus());
+        holder.nameTxt.setText(model.getName());
 
         holder.mainLay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +75,7 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView dateTxt,inTimeTxt,outTimeTxt,workTimeTxt,halfDayTxt,lateArivalTxt,earlyLeavingTxt,statusTxt;
+        public TextView dateTxt,inTimeTxt,outTimeTxt,workTimeTxt,halfDayTxt,lateArivalTxt,earlyLeavingTxt,statusTxt, nameTxt;
 
         public LinearLayout mainLay;
 
@@ -89,6 +90,7 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
             lateArivalTxt = (TextView)itemView.findViewById(R.id.attendacelist_latearival);
             earlyLeavingTxt = (TextView)itemView.findViewById(R.id.attendacelist_earlyleaving);
             statusTxt = (TextView)itemView.findViewById(R.id.attendacelist_status);
+            nameTxt = (TextView) itemView.findViewById(R.id.attendancelist_name);
 
 
             mainLay = (LinearLayout)itemView.findViewById(R.id.attendacelistlay);

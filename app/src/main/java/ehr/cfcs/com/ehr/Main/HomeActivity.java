@@ -41,6 +41,7 @@ import ehr.cfcs.com.ehr.Fragment.HotelBookingListFragment;
 import ehr.cfcs.com.ehr.Fragment.LanguagesFragment;
 import ehr.cfcs.com.ehr.Fragment.LeaveManagementFragment;
 import ehr.cfcs.com.ehr.Fragment.LeaveSummarryFragment;
+import ehr.cfcs.com.ehr.Fragment.ManagerDashBoardFragment;
 import ehr.cfcs.com.ehr.Fragment.MedicalAndEnsuranceFragment;
 import ehr.cfcs.com.ehr.Fragment.MedicalDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.OfficeallyDetailsFragment;
@@ -208,6 +209,8 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         navigationItemIndex = 27;
                         CURRENT_TAG = TAG_Manager;
+                        titleTxt.setText("Manager Dashboard");
+
 
                         break;
 
@@ -831,10 +834,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 27:
 
-                navigationItemIndex = 0;
-                Intent ik = new Intent(HomeActivity.this,ManagerDashboardActivity.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                newFragment = new ManagerDashBoardFragment();
+                transaction.replace(R.id.home_navigation_framelayout, newFragment);
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                return newFragment ;
 
             default:
                 return new DashBoardFragment();
