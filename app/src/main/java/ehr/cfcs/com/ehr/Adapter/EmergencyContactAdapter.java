@@ -27,11 +27,13 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
     public Context context;
     public ArrayList<EmergencyContactModel> list = new ArrayList<>();
     public Activity activity;
+    public String checkNavigate;
 
-    public EmergencyContactAdapter(Context context, ArrayList<EmergencyContactModel> list, Activity activity) {
+    public EmergencyContactAdapter(Context context, ArrayList<EmergencyContactModel> list, Activity activity,  String checkNavigate) {
         this.context = context;
         this.list = list;
         this.activity = activity;
+        this.checkNavigate =  checkNavigate;
     }
 
     @Override
@@ -69,23 +71,27 @@ public class EmergencyContactAdapter extends RecyclerView.Adapter<EmergencyConta
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(context, AddNewEmergencyContactDetailsActivity.class);
-                i.putExtra("RecordId",model.getRecordId());
-                i.putExtra("Mode","EditMode");
-                i.putExtra("Title",model.getTitle());
-                i.putExtra("Name",model.getName());
-                i.putExtra("Type",model.getType());
-                i.putExtra("RelationshipName",model.getRelationshipname());
-                i.putExtra("Address",model.getAddress());
-                i.putExtra("City",model.getCity());
-                i.putExtra("State", model.getState());
-                i.putExtra("PostalCode", model.getPostalcode());
-                i.putExtra("CountryName",model.getCounteryName());
-                i.putExtra("TelephoneNumber",model.getTelephoneNumber());
-                i.putExtra("MobileNumber",model.getMobileNumber());
-                i.putExtra("Email",model.getEmail());
-                activity.startActivity(i);
-                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                if (checkNavigate.equalsIgnoreCase("FirstOne")) {
+
+                    Intent i = new Intent(context, AddNewEmergencyContactDetailsActivity.class);
+                    i.putExtra("RecordId", model.getRecordId());
+                    i.putExtra("Mode", "EditMode");
+                    i.putExtra("Title", model.getTitle());
+                    i.putExtra("Name", model.getName());
+                    i.putExtra("Type", model.getType());
+                    i.putExtra("RelationshipName", model.getRelationshipname());
+                    i.putExtra("Address", model.getAddress());
+                    i.putExtra("City", model.getCity());
+                    i.putExtra("State", model.getState());
+                    i.putExtra("PostalCode", model.getPostalcode());
+                    i.putExtra("CountryName", model.getCounteryName());
+                    i.putExtra("TelephoneNumber", model.getTelephoneNumber());
+                    i.putExtra("MobileNumber", model.getMobileNumber());
+                    i.putExtra("Email", model.getEmail());
+                    activity.startActivity(i);
+                    activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
+                }
             }
         });
 

@@ -14,15 +14,15 @@ import android.widget.TextView;
 
 import ehr.cfcs.com.ehr.R;
 
-public class ManagerEmployeeDataDashboardActivity extends AppCompatActivity {
+public class ManagerSkillsAndCareerDashboard extends AppCompatActivity {
 
     public TextView titleTxt;
-    public LinearLayout firstLay, secondLay, thirdTilesLay, fourthTileLay, fivthLay, sixthLay;
+    public LinearLayout fourthLay,thirdLay, secondLay, firstLay;
 
-     @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager_employee_data_dashboard);
+        setContentView(R.layout.activity_manager_skills_and_career_dashboard);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -51,55 +51,42 @@ public class ManagerEmployeeDataDashboardActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Employee Data");
+        titleTxt.setText("Skill Dashboard");
 
-        firstLay = (LinearLayout) findViewById(R.id.firsttile);
-        fivthLay = (LinearLayout) findViewById(R.id.firsttile);
+        fourthLay = (LinearLayout) findViewById(R.id.fourthtile);
+        thirdLay = (LinearLayout) findViewById(R.id.thirdtiles);
         secondLay = (LinearLayout) findViewById(R.id.secondtiles);
-        thirdTilesLay = (LinearLayout) findViewById(R.id.thirdtiles);
-        fourthTileLay = (LinearLayout) findViewById(R.id.fourthtile);
-        fivthLay = (LinearLayout) findViewById(R.id.fivthlay);
-        sixthLay = (LinearLayout) findViewById(R.id.sixthtiles);
+        firstLay = (LinearLayout) findViewById(R.id.firsttile);
+
+        fourthLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent ik = new Intent(ManagerSkillsAndCareerDashboard.this,ManagerFilterActivity.class);
+                ik.putExtra("CheckingTheActivity","Skills Details");
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+
+        thirdLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent ik = new Intent(ManagerSkillsAndCareerDashboard.this,ManagerFilterActivity.class);
+                ik.putExtra("CheckingTheActivity","Language Details");
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
+            }
+        });
 
         secondLay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent ik = new Intent(ManagerEmployeeDataDashboardActivity.this,ManagerFilterActivity.class);
-                ik.putExtra("CheckingTheActivity","Administrative Information");
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-        thirdTilesLay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerEmployeeDataDashboardActivity.this,ManagerFilterActivity.class);
-                ik.putExtra("CheckingTheActivity","Medical And Insurance");
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-        fourthTileLay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerEmployeeDataDashboardActivity.this,ManagerFilterActivity.class);
-                ik.putExtra("CheckingTheActivity","Address And Contact");
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-        fivthLay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerEmployeeDataDashboardActivity.this,ManagerFilterActivity.class);
-                ik.putExtra("CheckingTheActivity","Emergency Contact Address");
+                Intent ik = new Intent(ManagerSkillsAndCareerDashboard.this,ManagerFilterActivity.class);
+                ik.putExtra("CheckingTheActivity","Previous Experience Details");
                 startActivity(ik);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -109,27 +96,22 @@ public class ManagerEmployeeDataDashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent ik = new Intent(ManagerEmployeeDataDashboardActivity.this,ManagerFilterActivity.class);
-                ik.putExtra("CheckingTheActivity","Personal Information");
+                Intent ik = new Intent(ManagerSkillsAndCareerDashboard.this,ManagerFilterActivity.class);
+                ik.putExtra("CheckingTheActivity","Education Details");
                 startActivity(ik);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-
             }
         });
 
-        sixthLay.setOnClickListener(new View.OnClickListener() {
+       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerEmployeeDataDashboardActivity.this,ManagerSkillsAndCareerDashboard.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
-        });
-
-
+        });*/
     }
-
     @Override
     public void onBackPressed() {
 
@@ -138,5 +120,6 @@ public class ManagerEmployeeDataDashboardActivity extends AppCompatActivity {
                 R.anim.push_right_out);
 
     }
+
 
 }

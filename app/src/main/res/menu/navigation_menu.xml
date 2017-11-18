@@ -25,7 +25,7 @@
 
         <item
             android:id="@+id/nav_Asset_details"
-            android:title="Assets Details"
+            android:title="Assets Detail"
             android:icon="@drawable/assets_details_new"/>
 
         <item
@@ -65,14 +65,14 @@
 
         <item
             android:id="@+id/nav_book_me"
-            android:title="Book Me A Prevision"
+            android:title="Book Me A Provision"
             >
 
             <menu>
                 <item
                     android:id="@+id/nav_stationary_request"
                     android:icon="@drawable/stationary_icon"
-                    android:title="Stationary Request" />
+                    android:title="Stationary List" />
                 <item
                     android:id="@+id/nav_document_list"
                     android:icon="@drawable/document_icon"
@@ -96,7 +96,7 @@
 
         <item
             android:id="@+id/nav_employ_data"
-            android:title="Employ Data"
+            android:title="Employee Data"
             >
 
             <menu>
@@ -107,32 +107,32 @@
                 <item
                     android:id="@+id/nav_personaldetails"
                     android:icon="@drawable/personal_details"
-                    android:title="Personal Details" />
+                    android:title="Personal Data" />
 
                 <item
                     android:id="@+id/nav_medical_detials"
                     android:icon="@drawable/medical_details_new"
-                    android:title="Medical Details" />
+                    android:title="Medical Data" />
 
                 <item
                     android:id="@+id/nav_officeally_details"
                     android:icon="@drawable/officially"
-                    android:title="Officially Details" />
+                    android:title="Official Data" />
 
                 <item
                     android:id="@+id/nav_contact_details"
                     android:icon="@drawable/addressbook"
-                    android:title="Contacts Address" />
+                    android:title="Address" />
 
                 <item
                     android:id="@+id/nav_emergency_contact_details"
                     android:icon="@drawable/emgcon"
-                    android:title="Emergency Contacts Address" />
+                    android:title="Emergency Address" />
 
                 <item
                     android:id="@+id/nav_contact_phone"
                     android:icon="@drawable/contact_details"
-                    android:title="Contacts Phone" />
+                    android:title="Contact Phone" />
 
                 <item
                     android:id="@+id/nav_dependents"
@@ -142,7 +142,7 @@
                 <item
                     android:id="@+id/nav_medical_and_anssurence"
                     android:icon="@drawable/medical_assurance"
-                    android:title="Medical and Insurance" />
+                    android:title="Medical And Insurance" />
 
 
             </menu>
@@ -152,7 +152,7 @@
 
         <item
             android:id="@+id/nav_skills_devlopment"
-            android:title="Skills and Development"
+            android:title="Skill And Career"
             >
 
             <menu>
@@ -173,11 +173,6 @@
                     android:id="@+id/nav_skills"
                     android:icon="@drawable/skills"
                     android:title="Skills" />
-
-               <!-- <item
-                    android:id="@+id/nav_resume"
-                    android:icon="@drawable/resume"
-                    android:title="Resume" />-->
 
             </menu>
 

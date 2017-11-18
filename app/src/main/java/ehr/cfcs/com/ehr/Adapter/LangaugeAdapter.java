@@ -28,11 +28,13 @@ public class LangaugeAdapter extends RecyclerView.Adapter<LangaugeAdapter.ViewHo
     public Context context;
     public ArrayList<LanguageModel> list = new ArrayList<>();
     public Activity activity;
+    public String checkNavigate;
 
-    public LangaugeAdapter(Context context, ArrayList<LanguageModel> list, Activity activity) {
+    public LangaugeAdapter(Context context, ArrayList<LanguageModel> list, Activity activity, String checkNavigate) {
         this.context = context;
         this.list = list;
         this.activity = activity;
+        this.checkNavigate = checkNavigate;
     }
 
     @Override
@@ -79,15 +81,19 @@ public class LangaugeAdapter extends RecyclerView.Adapter<LangaugeAdapter.ViewHo
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(context, AddNewLnaguageActivity.class);
-                i.putExtra("ActionMode", "EditMode");
-                i.putExtra("RecordId", model.getRecordID());
-                i.putExtra("LangageName", model.getLangaugae());
-                i.putExtra("Read",model.getRead());
-                i.putExtra("Write",model.getWrite());
-                i.putExtra("Speak",model.getSpeak());
-                activity.startActivity(i);
-                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                if (checkNavigate.equalsIgnoreCase("FirstOne")) {
+
+                    Intent i = new Intent(context, AddNewLnaguageActivity.class);
+                    i.putExtra("ActionMode", "EditMode");
+                    i.putExtra("RecordId", model.getRecordID());
+                    i.putExtra("LangageName", model.getLangaugae());
+                    i.putExtra("Read", model.getRead());
+                    i.putExtra("Write", model.getWrite());
+                    i.putExtra("Speak", model.getSpeak());
+                    activity.startActivity(i);
+                    activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
+                }
             }
         });
 

@@ -1,14 +1,17 @@
 package ehr.cfcs.com.ehr.Main;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.hardware.Camera;
 import android.media.MediaScannerConnection;
@@ -29,6 +32,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -36,6 +40,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +54,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,6 +62,7 @@ import java.util.Calendar;
 
 import ehr.cfcs.com.ehr.Fragment.AttendanceFragment;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.CameraView;
 import ehr.cfcs.com.ehr.Source.GPSTracker;
 import ehr.cfcs.com.ehr.Source.LocationAddress;
 
@@ -76,6 +84,8 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
     public Button cancelBtn;
     public ImageView profileSelectImg;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    private Camera mCamera = null;
+    private CameraView mCameraView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,11 +119,14 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
         });
 
         titleTxt.setText("Add Attendance");
+        profileImg = (ImageView)findViewById(R.id.pro_image);
+        subBtn = (Button)findViewById(R.id.submitbtn);
 
-        locationImg = (ImageView)findViewById(R.id.locationimg);
+
+        /*locationImg = (ImageView)findViewById(R.id.locationimg);
         locationTxt = (EditText)findViewById(R.id.locationtxt);
         subBtn = (Button)findViewById(R.id.submitbtn);
-        profileImg = (ImageView)findViewById(R.id.procam);
+
         profileSelectImg = (ImageView)findViewById(R.id.pro_image);
         cancelBtn = (Button)findViewById(R.id.cancelbtn);
 
@@ -154,9 +167,176 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
                 onBackPressed();
             }
         });
+*/
 
+
+        try{
+
+           if (checkCameraRear())
+           {
+               
+               if (checkCameraFront(AttendanceModule.this)) {
+                   mCamera = Camera.open(1);
+               }else
+                   {
+                       mCamera = Camera.open();
+                   }
+           }else
+               {
+                   Toast.makeText(this, "Camera is Not support your device", Toast.LENGTH_SHORT).show();
+               }
+           
+             //you can use open(int) to use different cameras
+
+        } catch (Exception e){
+            Log.d("ERROR", "Failed to get camera: " + e.getMessage());
+        }
+
+        if(mCamera != null) {
+            mCameraView = new CameraView(this, mCamera);//create a SurfaceView to show camera data
+            FrameLayout camera_view = (FrameLayout)findViewById(R.id.camera_view);
+            camera_view.addView(mCameraView);//add the SurfaceView to the layout
+        }
+
+        //btn to close the application
+        ImageButton imgClose = (ImageButton)findViewById(R.id.imgClose);
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.exit(0);
+            }
+        });
+
+
+        //click on button and take pic
+
+
+        final Camera.PictureCallback jpegCallback = new Camera.PictureCallback() {
+            public void onPictureTaken(byte[] data, Camera camera) {
+                FileOutputStream outStream = null;
+                Bitmap bm = null;
+
+                if (data != null) {
+                    int screenWidth = getResources().getDisplayMetrics().widthPixels;
+                    int screenHeight = getResources().getDisplayMetrics().heightPixels;
+                    bm = BitmapFactory.decodeByteArray(data, 0, (data != null) ? data.length : 0);
+
+                    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                        // Notice that width and height are reversed
+                        Bitmap scaled = Bitmap.createScaledBitmap(bm, screenHeight, screenWidth, true);
+                        int w = scaled.getWidth();
+                        int h = scaled.getHeight();
+                        // Setting post rotate to 90
+                        Matrix mtx = new Matrix();
+
+
+
+                        int CameraEyeValue = setPhotoOrientation(AttendanceModule.this, checkCameraFront(AttendanceModule.this)==true ? 1:0); // CameraID = 1 : front 0:back
+                        if(checkCameraFront(AttendanceModule.this)) { // As Front camera is Mirrored so Fliping the Orientation
+                            if (CameraEyeValue == 270) {
+                                mtx.postRotate(90);
+                            } else if (CameraEyeValue == 90) {
+                                mtx.postRotate(270);
+                            }
+                        }else{
+                            mtx.postRotate(CameraEyeValue); // CameraEyeValue is default to Display Rotation
+                        }
+
+                        bm = Bitmap.createBitmap(scaled, 0, 0, w, h, mtx, true);
+                    }else{// LANDSCAPE MODE
+                        //No need to reverse width and height
+                        Bitmap scaled = Bitmap.createScaledBitmap(bm, screenWidth, screenHeight, true);
+                        bm=scaled;
+                    }
+                }
+
+
+
+
+
+                    profileImg.setImageBitmap(bm);
+
+                    camera.startPreview();
+            }
+        };
+
+        subBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                mCamera.takePicture(null,null,jpegCallback);
+            }
+        });
 
     }
+
+    //check if you have a front Camera
+    public static boolean checkCameraFront(Context context) {
+        if(context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //Check if you have Camera in your device 
+    public static boolean checkCameraRear() {
+        int numCamera = Camera.getNumberOfCameras();
+        if(numCamera > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int setPhotoOrientation(Activity activity, int cameraId) {
+        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+        // do something for phones running an SDK before lollipop
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360; // compensate the mirror
+        } else { // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+
+        return result;
+    }
+
+    /*public static boolean checkCameraRear() {
+        int numCamera = Camera.getNumberOfCameras();
+        if(numCamera > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }*/
+    /*public static boolean checkCameraRear() {
+        int numCamera = Camera.getNumberOfCameras();
+        if(numCamera > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -166,6 +346,15 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
             selectImage();
         }
 
+    }
+
+    int getFrontCameraId() {
+        Camera.CameraInfo ci = new Camera.CameraInfo();
+        for (int i = 0 ; i < Camera.getNumberOfCameras(); i++) {
+            Camera.getCameraInfo(i, ci);
+            if (ci.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) return i;
+        }
+        return -1; // No front-facing camera found
     }
 
     //uploadImage work

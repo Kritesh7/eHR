@@ -53,11 +53,13 @@ public class EducationDetailsAdapter extends RecyclerView.Adapter<EducationDetai
     public Activity activity;
     public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeEducationDelete";
     public String userId = "", authCode = "";
+    public String checkNavigate;
 
-    public EducationDetailsAdapter(Context context, ArrayList<EducationModel> list, Activity activity) {
+    public EducationDetailsAdapter(Context context, ArrayList<EducationModel> list, Activity activity, String checkNavigate) {
         this.context = context;
         this.list = list;
         this.activity = activity;
+        this.checkNavigate = checkNavigate;
     }
 
     @Override
@@ -187,6 +189,16 @@ public class EducationDetailsAdapter extends RecyclerView.Adapter<EducationDetai
             }
         });
 
+        if (checkNavigate.equalsIgnoreCase("FirstOne"))
+        {
+            holder.view2.setVisibility(View.VISIBLE);
+            holder.btnLay.setVisibility(View.VISIBLE);
+        }else
+            {
+                holder.view2.setVisibility(View.GONE);
+                holder.btnLay.setVisibility(View.GONE);
+            }
+
 
 
     }
@@ -198,9 +210,9 @@ public class EducationDetailsAdapter extends RecyclerView.Adapter<EducationDetai
 
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView qualificationTxt,desciplineTxt,passingDateTxt,instituteTxt, courseTypeTxt, commentTxt, statusTxt;
-        public View view, commentView;
+        public View view, commentView, view2;
         public ImageView editBtn, delBtn;
-        public LinearLayout mainLay,highestDegreeTxt, commLay;
+        public LinearLayout mainLay,highestDegreeTxt, commLay, btnLay;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -219,6 +231,8 @@ public class EducationDetailsAdapter extends RecyclerView.Adapter<EducationDetai
             commLay = (LinearLayout) itemView.findViewById(R.id.commlay);
             editBtn = (ImageView) itemView.findViewById(R.id.editBtn);
             delBtn = (ImageView) itemView.findViewById(R.id.delbtn);
+            btnLay = (LinearLayout) itemView.findViewById(R.id.btnlay);
+            view2 = (View) itemView.findViewById(R.id.view2);
 
 
 

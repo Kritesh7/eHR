@@ -121,7 +121,7 @@ public class LanguagesFragment extends Fragment {
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
 
-        adapter = new LangaugeAdapter(getActivity(),list, getActivity());
+        adapter = new LangaugeAdapter(getActivity(),list, getActivity(),"FirstOne");
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         langauageRecy.setLayoutManager(mLayoutManager);
         langauageRecy.setItemAnimator(new DefaultItemAnimator());
@@ -254,7 +254,8 @@ public class LanguagesFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("LoginAdminID",AdminID);
+                params.put("EmployeeID",AdminID);
 
                 Log.e("Parms", params.toString());
                 return params;

@@ -122,7 +122,7 @@ public class EducationDetailsFragment extends Fragment {
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
 
-        adapter = new EducationDetailsAdapter(getActivity(),list, getActivity());
+        adapter = new EducationDetailsAdapter(getActivity(),list, getActivity(),"FirstOne");
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         educationRecycler.setLayoutManager(mLayoutManager);
         educationRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -282,7 +282,8 @@ public class EducationDetailsFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("LoginAdminID",AdminID);
+                params.put("EmployeeID",AdminID);
 
                 Log.e("Parms", params.toString());
                 return params;

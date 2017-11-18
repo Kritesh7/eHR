@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -70,6 +71,7 @@ public class SkillsFragment extends Fragment {
     public String skillsListUrl = SettingConstant.BaseUrl + "AppEmployeeSkillList";
     public ConnectionDetector conn;
     public String userId = "",authCode = "";
+    public TextView noCust;
 
 
     private OnFragmentInteractionListener mListener;
@@ -114,13 +116,14 @@ public class SkillsFragment extends Fragment {
 
         skillRecycler = (RecyclerView)rootView.findViewById(R.id.skill_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
 
         conn = new ConnectionDetector(getActivity());
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
 
-        adapter = new SkillAdapter(getActivity(),list,getActivity());
+        adapter = new SkillAdapter(getActivity(),list,getActivity(),"FirstOne");
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         skillRecycler.setLayoutManager(mLayoutManager);
         skillRecycler.setItemAnimator(new DefaultItemAnimator());
@@ -219,6 +222,17 @@ public class SkillsFragment extends Fragment {
 
                     }
 
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        skillRecycler.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        skillRecycler.setVisibility(View.VISIBLE);
+                    }
+
+
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();
 
@@ -243,7 +257,8 @@ public class SkillsFragment extends Fragment {
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("LoginAdminID",AdminID);
+                params.put("EmployeeID",AdminID);
 
                 Log.e("Parms", params.toString());
                 return params;

@@ -27,11 +27,14 @@ public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.ViewHolder>
     public Context context;
     public ArrayList<SkillsModel> list = new ArrayList<>();
     public Activity activity;
+    public String checkNavigate;
 
-    public SkillAdapter(Context context, ArrayList<SkillsModel> list, Activity activity) {
+
+    public SkillAdapter(Context context, ArrayList<SkillsModel> list, Activity activity,String checkNavigate) {
         this.context = context;
         this.list = list;
         this.activity = activity;
+        this.checkNavigate = checkNavigate;
     }
 
     @Override
@@ -64,16 +67,20 @@ public class SkillAdapter extends RecyclerView.Adapter<SkillAdapter.ViewHolder>
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(context, AddNewSkilActivity.class);
-                i.putExtra("ActionMode", "EditMode");
-                i.putExtra("RecordId", model.getRecordID());
-                i.putExtra("SkillName", model.getSkill());
-                i.putExtra("ProficeiancyName",model.getProficency());
-                i.putExtra("SourceName",model.getSource());
-                i.putExtra("CurrentelyUsed",model.getCurrentUsed());
-                i.putExtra("LastUsedDate", model.getLastUsed());
-                activity.startActivity(i);
-                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                if (checkNavigate.equalsIgnoreCase("FirstOne")) {
+
+                    Intent i = new Intent(context, AddNewSkilActivity.class);
+                    i.putExtra("ActionMode", "EditMode");
+                    i.putExtra("RecordId", model.getRecordID());
+                    i.putExtra("SkillName", model.getSkill());
+                    i.putExtra("ProficeiancyName", model.getProficency());
+                    i.putExtra("SourceName", model.getSource());
+                    i.putExtra("CurrentelyUsed", model.getCurrentUsed());
+                    i.putExtra("LastUsedDate", model.getLastUsed());
+                    activity.startActivity(i);
+                    activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
+                }
             }
         });
     }

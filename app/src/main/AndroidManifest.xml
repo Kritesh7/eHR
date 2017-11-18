@@ -9,6 +9,7 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -251,6 +252,38 @@
         <activity
             android:name=".Manager.ManagerActivity.ManagerMedicalActivity"
             android:label="@string/title_activity_manager_medical"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerAddressContactActivity"
+            android:label="@string/title_activity_manager_address_contact"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerEmergencyAddressActivity"
+            android:label="@string/title_activity_manager_emergency_address"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.PersonalDeatilsActivity"
+            android:label="@string/title_activity_personal_deatils"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerSkillsAndCareerDashboard"
+            android:label="@string/title_activity_manager_skills_and_career_dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerSkillsActivity"
+            android:label="@string/title_activity_manager_skills"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerLangaugeActivity"
+            android:label="@string/title_activity_manager_langauge"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerPreviousExprinceActivity"
+            android:label="@string/title_activity_manager_previous_exprince"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerEducationDetailsActivity"
+            android:label="@string/title_activity_manager_education_details"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

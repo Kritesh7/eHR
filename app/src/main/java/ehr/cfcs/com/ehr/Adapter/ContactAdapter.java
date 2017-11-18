@@ -27,11 +27,13 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
     public ArrayList<ContactModel> list = new ArrayList<>();
     public Context context;
     public Activity activity;
+    public String checkNavigate;
 
-    public ContactAdapter(ArrayList<ContactModel> list, Context context, Activity activity) {
+    public ContactAdapter(ArrayList<ContactModel> list, Context context, Activity activity, String checkNavigate) {
         this.list = list;
         this.context = context;
         this.activity = activity;
+        this.checkNavigate = checkNavigate;
     }
 
     @Override
@@ -71,17 +73,21 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(context, AddNewContactActivity.class);
-                i.putExtra("RecordId",model.getRecordId());
-                i.putExtra("Mode","EditMode");
-                i.putExtra("AddressType",model.getAddressType());
-                i.putExtra("Address",model.getAddress());
-                i.putExtra("City",model.getCity());
-                i.putExtra("State", model.getState());
-                i.putExtra("PostalCode", model.getPostalcode());
-                i.putExtra("CountryName",model.getCounteryName());
-                activity.startActivity(i);
-                activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                if (checkNavigate.equalsIgnoreCase("FirstOne")) {
+
+                    Intent i = new Intent(context, AddNewContactActivity.class);
+                    i.putExtra("RecordId", model.getRecordId());
+                    i.putExtra("Mode", "EditMode");
+                    i.putExtra("AddressType", model.getAddressType());
+                    i.putExtra("Address", model.getAddress());
+                    i.putExtra("City", model.getCity());
+                    i.putExtra("State", model.getState());
+                    i.putExtra("PostalCode", model.getPostalcode());
+                    i.putExtra("CountryName", model.getCounteryName());
+                    activity.startActivity(i);
+                    activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
+                }
             }
         });
     }

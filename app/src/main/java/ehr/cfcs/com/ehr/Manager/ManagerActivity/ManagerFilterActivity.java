@@ -232,6 +232,48 @@ public class ManagerFilterActivity extends AppCompatActivity {
                     ik.putExtra("empId", empId);
                     startActivity(ik);
                     overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Address And Contact"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerAddressContactActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Emergency Contact Address"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerEmergencyAddressActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Personal Information"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, PersonalDeatilsActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Skills Details"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerSkillsActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Language Details"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerLangaugeActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Previous Experience Details"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerPreviousExprinceActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Education Details"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerEducationDetailsActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
                 }
             }
         });

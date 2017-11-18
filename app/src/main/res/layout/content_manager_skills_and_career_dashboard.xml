@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerEmployeeDataDashboardActivity"
-    tools:showIn="@layout/activity_manager_employee_data_dashboard">
+    tools:context="ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerSkillsAndCareerDashboard"
+    tools:showIn="@layout/activity_manager_skills_and_career_dashboard">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -20,7 +20,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3.3">
+            android:layout_weight=".5">
 
             <!-- app:cardBackgroundColor="#D1C4E9"
  -->
@@ -47,7 +47,7 @@
                         android:layout_gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:src="@drawable/mgrprs"/>
+                        android:src="@drawable/edu"/>
 
                     <TextView
                         android:textSize="16sp"
@@ -55,7 +55,7 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Team Profile"/>
+                        android:text="Education Details"/>
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -84,7 +84,7 @@
                         android:layout_gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:src="@drawable/mgrdoc"/>
+                        android:src="@drawable/exp"/>
 
                     <TextView
                         android:textSize="16sp"
@@ -93,7 +93,7 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Administrative Information"/>
+                        android:text="Previous Experience"/>
 
 
                 </LinearLayout>
@@ -104,7 +104,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3.3">
+            android:layout_weight=".5">
 
             <!-- app:cardBackgroundColor="#D1C4E9"
  -->
@@ -131,7 +131,7 @@
                         android:layout_gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:src="@drawable/mgrhlt"/>
+                        android:src="@drawable/lang"/>
 
                     <TextView
                         android:textSize="16sp"
@@ -139,7 +139,7 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Medical And Insurance"/>
+                        android:text="Language"/>
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -168,7 +168,7 @@
                         android:layout_gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:src="@drawable/mgradd"/>
+                        android:src="@drawable/skill"/>
 
                     <TextView
                         android:textSize="16sp"
@@ -177,105 +177,13 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Address"/>
+                        android:text="Skills"/>
 
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
-
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3.3">
-
-            <!-- app:cardBackgroundColor="#D1C4E9"
- -->
-            <android.support.v7.widget.CardView
-                android:layout_gravity="center"
-                android:layout_width="0dp"
-                android:layout_weight=".5"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="5dp">
-
-                <LinearLayout
-                    android:id="@+id/fivthlay"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:src="@drawable/mgremg"/>
-
-                    <TextView
-                        android:textSize="16sp"
-                        android:textColor="@color/dahboard_textcolor"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Emergency Address"/>
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-
-                android:layout_width="0dp"
-                android:layout_weight=".5"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="5dp">
-
-                <LinearLayout
-                    android:id="@+id/sixthtiles"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:src="@drawable/care"/>
-
-                    <TextView
-                        android:textSize="16sp"
-                        android:textColor="@color/dahboard_textcolor"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Skill And Career"/>
-
-
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-
-
-            <!--app:cardBackgroundColor="#90CAF9"-->
-
-
-
-        </LinearLayout>
-
-
 
     </LinearLayout>
 

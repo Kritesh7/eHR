@@ -18,6 +18,17 @@
         android:orientation="vertical">
 
 
+        <TextView
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Record Not Found!"
+            android:textStyle="bold"
+            android:id="@+id/no_record_txt"
+            android:textSize="18sp"
+            android:gravity="center"/>
+
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/skill_recycler"
             android:layout_width="match_parent"

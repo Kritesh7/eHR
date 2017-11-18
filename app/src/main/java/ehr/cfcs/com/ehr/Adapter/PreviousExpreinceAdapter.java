@@ -53,11 +53,13 @@ public class PreviousExpreinceAdapter extends RecyclerView.Adapter<PreviousExpre
     public Activity activity;
     public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeePreviousExperienceDelete";
     public String authCode = "";
+    public String checkNavigate;
 
-    public PreviousExpreinceAdapter(Context context, ArrayList<PreviousExpreinceModel> list, Activity activity) {
+    public PreviousExpreinceAdapter(Context context, ArrayList<PreviousExpreinceModel> list, Activity activity, String checkNavigate) {
         this.context = context;
         this.list = list;
         this.activity = activity;
+        this.checkNavigate = checkNavigate;
     }
 
     @Override
@@ -176,6 +178,16 @@ public class PreviousExpreinceAdapter extends RecyclerView.Adapter<PreviousExpre
             }
         });
 
+        if (checkNavigate.equalsIgnoreCase("FirstOne"))
+        {
+            holder.view2.setVisibility(View.VISIBLE);
+            holder.btnLay.setVisibility(View.VISIBLE);
+        }else
+            {
+                holder.view2.setVisibility(View.GONE);
+                holder.btnLay.setVisibility(View.GONE);
+            }
+
     }
 
     @Override
@@ -186,8 +198,8 @@ public class PreviousExpreinceAdapter extends RecyclerView.Adapter<PreviousExpre
     class ViewHolder extends RecyclerView.ViewHolder {
         public TextView companyNametxt,joingDateTxt,jobDescTxt,jobPeriodeTxt, designationTxt, statusTxt, commTxt,releivingdate;
         public ImageView editBtn, delBtn;
-        public LinearLayout commLay;
-        public View view;
+        public LinearLayout commLay, btnLay;
+        public View view, view2;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -204,6 +216,9 @@ public class PreviousExpreinceAdapter extends RecyclerView.Adapter<PreviousExpre
             commTxt = (TextView) itemView.findViewById(R.id.comment);
             view = (View) itemView.findViewById(R.id.view);
             releivingdate = (TextView) itemView.findViewById(R.id.relivingdatetxt);
+            btnLay = (LinearLayout) itemView.findViewById(R.id.btnlay);
+            view2 = (View) itemView.findViewById(R.id.view2);
+
         }
     }
 

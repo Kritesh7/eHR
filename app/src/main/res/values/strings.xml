@@ -74,4 +74,14 @@
     </string>
     <string name="title_activity_manager_officealy_data">ManagerOfficealyDataActivity</string>
     <string name="title_activity_manager_medical">ManagerMedicalActivity</string>
+    <string name="title_activity_manager_address_contact">ManagerAddressContactActivity</string>
+    <string name="title_activity_manager_emergency_address">ManagerEmergencyAddressActivity</string>
+    <string name="title_activity_personal_deatils">PersonalDeatilsActivity</string>
+    <string name="title_activity_manager_skills_and_career_dashboard">
+        ManagerSkillsAndCareerDashboard
+    </string>
+    <string name="title_activity_manager_skills">ManagerSkillsActivity</string>
+    <string name="title_activity_manager_langauge">ManagerLangaugeActivity</string>
+    <string name="title_activity_manager_previous_exprince">ManagerPreviousExprinceActivity</string>
+    <string name="title_activity_manager_education_details">ManagerEducationDetailsActivity</string>
 </resources>

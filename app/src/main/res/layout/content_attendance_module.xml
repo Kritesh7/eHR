@@ -27,43 +27,9 @@
             >
 
 
-            <!--<TextView
-                android:padding="10dp"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Attendance"
-                android:textColor="@color/purple700"/>-->
 
-            <!-- <LinearLayout
-                 android:gravity="center"
-                 android:padding="10dp"
-                 android:layout_width="match_parent"
-                 android:layout_height="0dp"
-                 android:layout_weight=".1">
 
-                 <TextView
-                     android:textStyle="bold"
-                     android:textSize="18sp"
-                     android:textColor="@color/purple500"
-                     android:layout_width="0dp"
-                     android:layout_weight=".5"
-                     android:layout_height="wrap_content"
-                     android:text="9 Sep 2017"/>
-
-                 <TextView
-                     android:textStyle="bold"
-                     android:textSize="18sp"
-                     android:layout_width="0dp"
-                     android:layout_weight=".5"
-                     android:textColor="@color/purple500"
-                     android:layout_height="wrap_content"
-                     android:text="10:32 Am"/>
-             </LinearLayout>
- -->
-
-            <RadioGroup
+          <!--  <RadioGroup
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
                 android:layout_marginTop="10dp"
@@ -84,13 +50,6 @@
                     android:layout_height="wrap_content"
                     android:buttonTint="@color/status_color"
                     android:text="Out"/>
-
-                <!-- <RadioButton
-                     android:layout_width="0dp"
-                     android:layout_weight="3.3"
-                     android:layout_height="wrap_content"
-                     android:buttonTint="@color/status_color"
-                     android:text="Speak"/>-->
 
             </RadioGroup>
 
@@ -177,6 +136,41 @@
                     android:layout_weight=".3"
                     android:hint="Remark"/>
         </LinearLayout>
+        </LinearLayout>-->
+
+            <FrameLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                tools:context=".MainActivity">
+
+                <FrameLayout
+                    android:id="@+id/camera_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp">
+
+                </FrameLayout>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imgClose"
+                    android:layout_gravity="right|top"
+                    android:background="@android:drawable/ic_menu_close_clear_cancel"
+                    android:padding="20dp"/>
+
+            </FrameLayout>
+
+            <ImageView
+                android:scaleType="fitXY"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:id="@+id/pro_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/prf"/>
+
         </LinearLayout>
 
 
