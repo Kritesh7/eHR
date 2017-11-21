@@ -36,8 +36,9 @@
 
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/status_color</item>
-        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorPrimary">@color/status_color</item>
         <item name="android:background">@color/white</item>
+        <item name="android:textColorSecondary">@color/status_color</item>
     </style>
 
     <style name="animationName" parent="android:Animation">

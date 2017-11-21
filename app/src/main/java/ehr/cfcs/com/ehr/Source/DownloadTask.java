@@ -10,8 +10,11 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.BuildConfig;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -71,6 +74,8 @@ public class DownloadTask
         //Start Downloading Task
         new DownloadingTask().execute();
     }
+
+
 
     /**
      * Background Async Task to download file
@@ -238,7 +243,23 @@ public class DownloadTask
                       //  context.startActivity(Intent.createChooser(intent, "Open Download Folder"));
 
 
-                        Uri uri = Uri.fromFile(apkStorage);
+                        //Uri uri= FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+".provider", apkStorage);
+                       // Uri uri = Uri.fromFile(apkStorage);
+
+                        Uri uri;
+
+                      //  Intent intent = new Intent();
+                          //  intent.setAction(Intent.ACTION_VIEW);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                               // intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                uri = FileProvider.getUriForFile(context, "ehr.cfcs.com.ehr.provider", apkStorage);
+                                //intent.setDataAndType(contentUri, type);
+                            }else
+                                {
+                                    uri = Uri.fromFile(apkStorage);
+                                }
+
+
 
                         Intent intent = new Intent(Intent.ACTION_VIEW);
                         if (apkStorage.toString().contains(".doc") || apkStorage.toString().contains(".docx")) {

@@ -126,7 +126,7 @@ public class AttendaceListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_attendace_list, container, false);
 
         ateendanceListRecy = (RecyclerView) rootView.findViewById(R.id.attendace_list_recycler);
-        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
+       // fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
         monthSpinner = (Spinner)rootView.findViewById(R.id.monthspinner);
         yearSpinner = (Spinner) rootView.findViewById(R.id.yearspinner);
         serchBtn = (ImageView)rootView.findViewById(R.id.serchresult);
@@ -145,7 +145,7 @@ public class AttendaceListFragment extends Fragment {
 
         ateendanceListRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+      /*  fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -154,7 +154,7 @@ public class AttendaceListFragment extends Fragment {
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
 
             }
-        });
+        });*/
 
         //current month and year
         Calendar c= Calendar.getInstance();

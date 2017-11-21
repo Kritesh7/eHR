@@ -13,6 +13,7 @@ import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -53,8 +54,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -72,6 +76,7 @@ import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
 import ehr.cfcs.com.ehr.Source.DownloadTask;
+import ehr.cfcs.com.ehr.Source.FilePath;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
@@ -91,6 +96,7 @@ public class AddMedicalandAnssuranceActivity extends AppCompatActivity {
     public Button addBtn, uploadBtn;
     public StringTokenizer tokens;
     private int yy, mm, dd;
+    private static final int FILE_SELECT_CODE = 0;
     private int mYear, mMonth, mDay, mHour, mMinute;
     public String policyTypeIdStr = "", authcode = "", userId = "", actionMode = "", recordidStr = "",policyTypeStr = ""
             ,policyNameStr = "", policyNumberStr = "", policyDurationStr = "", policyByStr = "", insuranceCompStr = ""
@@ -420,16 +426,66 @@ public class AddMedicalandAnssuranceActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (checkPermissions()) {
-                    new DownloadTask(AddMedicalandAnssuranceActivity.this, SettingConstant.DownloadUrl + fileStr,"MedialAnssurance");
+
+                    DownloadFromUrl();
+                   // new DownloadTask(AddMedicalandAnssuranceActivity.this, SettingConstant.DownloadUrl + fileStr,"MedialAnssurance");
                 }
             }
         });
     }
 
+    public void DownloadFromUrl() {
+        try {
+
+            URL url = new URL(SettingConstant.DownloadUrl + fileStr);
+            HttpURLConnection c = (HttpURLConnection) url.openConnection();
+            c.setRequestMethod("GET");
+            c.setDoOutput(true);
+            c.connect();
+
+            String Path = Environment.getExternalStorageDirectory() + "/download/";
+            Log.v("PortfolioManger", "PATH: " + Path);
+            File file = new File(Path);
+            file.mkdirs();
+            FileOutputStream fos = new FileOutputStream("site.html");
+
+            InputStream is = c.getInputStream();
+
+            byte[] buffer = new byte[702];
+            int len1 = 0;
+            while ((len1 = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, len1);
+            }
+            fos.close();
+            is.close();
+        } catch (IOException e) {
+            Log.d("PortfolioManger", "Error: " + e);
+        }
+        Log.v("PortfolioManger", "Check: ");
+    }
+
+
+
+
     //choose attcahment
     private void showFileChooser() {
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("file/*");
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        try {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    FILE_SELECT_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(this, "Please install a File Manager.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+       /* Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("file*//*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         try {
@@ -439,81 +495,65 @@ public class AddMedicalandAnssuranceActivity extends AppCompatActivity {
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(AddMedicalandAnssuranceActivity.this, "Please install a File Manager.",
                     Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == Activity.RESULT_OK) {
-
-                Uri selectedFileURI = data.getData();
-
-                if (data.getData() != null) {
+        switch (requestCode) {
+            case FILE_SELECT_CODE:
+                if (resultCode == RESULT_OK) {
 
 
-                    Log.e("Checking Null", selectedFileURI + "");
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
                     Bitmap bitmap = null;
+                    Log.d("Checking One", "File Uri: " + uri.toString());
+                    // Get the path
+                    String path = null;
 
-                    try {
-                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedFileURI);
+                    path = FilePath.getPath(AddMedicalandAnssuranceActivity.this, uri);
 
-                        File file = new File(selectedFileURI.getPath().toString());
-                        Log.d("", "File : " + file.getName());
-                        uploadedFileName = file.getName().toString();
-                        tokens = new StringTokenizer(uploadedFileName, ":");
+                    if (path == null)
+                        path = FilePath.getPath(AddMedicalandAnssuranceActivity.this, uri);// From File Manager
 
-                        // String filename=selectedFileURI.getPath().substring(selectedFileURI.getPath().lastIndexOf("/")+1);
-
-                        imageExtenstion = selectedFileURI.getPath().substring(selectedFileURI.getPath().lastIndexOf("."));
-                        Log.e("File Name", imageExtenstion);
-                        first = tokens.nextToken();
-
-                        mDialog = new ProgressDialog(AddMedicalandAnssuranceActivity.this);
-                        mDialog.setMessage("Uploading " + file.getName());
-                        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                        // mDialog.show();
-
-                        new MyTask(mDialog);
+                    if (path != null)
+                        bitmap = BitmapFactory.decodeFile(path);
 
 
-                        if (imageExtenstion.equalsIgnoreCase(".jpg")) {
+                    Log.d("Checking", "File Path: " + path);
+                    File file = new File(FilePath.getPath(AddMedicalandAnssuranceActivity.this, uri));
+                    Log.d("", "File : " + file.getName());
+                    uploadedFileName = file.getName().toString();
 
-                            imageBase64 = getEncoded64ImageStringFromBitmap(bitmap);
-                            Log.e("checking the frount 64", getEncoded64ImageStringFromBitmap(bitmap) + "Null");
-                        }else
-                        {
-                            imageBase64 = convertFileToByteArray(file);
-                            Log.e("checking the frount 64", convertFileToByteArray(file) + "Null");
-                        }
+                    imageExtenstion = path.substring(path.lastIndexOf("."));
+                    Log.e("File Name", imageExtenstion);
+                    // first = tokens.nextToken();
 
-                        //File select Successfully Text Visibile
-                        fileSelectTxt.setVisibility(View.VISIBLE);
-                        uploadBtn.setVisibility(View.GONE);
+                    mDialog = new ProgressDialog(AddMedicalandAnssuranceActivity.this);
+                    mDialog.setMessage("Uploading " + file.getName());
+                    mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    // mDialog.show();
 
-                        //Gone Download button
-                        downloadBtn.setVisibility(View.GONE);
-                        editTxt.setVisibility(View.VISIBLE);
+                    new MyTask(mDialog);
 
-                    } catch (IOException e) {
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.e("File Name", e.getMessage());
-                    } catch (StringIndexOutOfBoundsException e) {
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.e("Error", e.getMessage());
+
+                    if (imageExtenstion.equalsIgnoreCase(".jpg")) {
+
+                        imageBase64 = getEncoded64ImageStringFromBitmap(bitmap);
+                        Log.e("checking the frount 64", getEncoded64ImageStringFromBitmap(bitmap) + "Null");
+                    } else {
+                        imageBase64 = convertFileToByteArray(file);
+                        Log.e("checking the frount 64", convertFileToByteArray(file) + "Null");
                     }
 
-
-                } else {
-                    Log.e("Checking Null", "Null");
+                    //File select Successfully Text Visibile
+                    fileSelectTxt.setVisibility(View.VISIBLE);
+                    uploadBtn.setVisibility(View.GONE);
+                    //  }
                 }
-
-
-                // input Stream
-
-
-            }
+                break;
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 

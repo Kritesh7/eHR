@@ -43,7 +43,9 @@
         <activity
             android:name=".Main.AttendanceModule"
             android:label="@string/title_activity_attendance_module"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -55,6 +57,16 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="ehr.cfcs.com.ehr.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
 
         <activity
             android:name=".Main.ShoweRouteLocation"
@@ -284,6 +296,10 @@
         <activity
             android:name=".Manager.ManagerActivity.ManagerEducationDetailsActivity"
             android:label="@string/title_activity_manager_education_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerAttendanceLogDetailsActivity"
+            android:label="@string/title_activity_manager_attendance_log_details"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

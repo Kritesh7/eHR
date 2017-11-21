@@ -13,8 +13,14 @@
             android:title="Manager" />
 
         <item
+            android:id="@+id/nav_log_attendance"
+            android:title="Attendance Basic Log"
+            android:icon="@drawable/attlist"
+            />
+
+        <item
             android:id="@+id/nav_attendance"
-            android:title="Attendance"
+            android:title="Attendance List"
             android:icon="@drawable/attendance_icon"
             />
 

@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -29,6 +30,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -46,6 +48,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -53,18 +61,32 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import ehr.cfcs.com.ehr.Fragment.AttendanceFragment;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.CameraView;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
 import ehr.cfcs.com.ehr.Source.GPSTracker;
 import ehr.cfcs.com.ehr.Source.LocationAddress;
+import ehr.cfcs.com.ehr.Source.SettingConstant;
+import ehr.cfcs.com.ehr.Source.SharedPrefs;
+import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 public class AttendanceModule extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -86,6 +108,13 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     private Camera mCamera = null;
     private CameraView mCameraView = null;
+    public TextView timeTxt, dateTxt, addTxt;
+    public ConnectionDetector conn;
+    public String imageBase64 = "";
+    public String addUrl = SettingConstant.BaseUrl + "AppEmployeeAttendanceLogInsUpdt";
+    public String authCode = "",userId = "";
+    public EditText remarkTxt;
+    public  ProgressDialog pDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,9 +147,51 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
+        gpsTracker = new GPSTracker(AttendanceModule.this, AttendanceModule.this);
+        conn = new ConnectionDetector(AttendanceModule.this);
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AttendanceModule.this)));
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AttendanceModule.this)));
+
+
         titleTxt.setText("Add Attendance");
         profileImg = (ImageView)findViewById(R.id.pro_image);
         subBtn = (Button)findViewById(R.id.submitbtn);
+        timeTxt = (TextView) findViewById(R.id.time);
+        dateTxt = (TextView) findViewById(R.id.date);
+        addTxt = (TextView) findViewById(R.id.addreestxt);
+        remarkTxt = (EditText) findViewById(R.id.remarktxt);
+
+
+        //current Time incresing
+        CountDownTimer newtimer = new CountDownTimer(1000000000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                Calendar c = Calendar.getInstance();
+
+
+                timeTxt.setText(String.format("%02d:%02d:%02d", c.get(Calendar.HOUR), c.get(Calendar.MINUTE),c.get(Calendar.SECOND)));
+            }
+            public void onFinish() {
+
+            }
+        };
+        newtimer.start();
+
+        //set current date
+        dateTxt.setText(getCurrentTime());
+
+        if (gpsTracker.canGetLocation())
+        {
+            LocationAddress locationAddress = new LocationAddress();
+            locationAddress.getAddressFromLocation(gpsTracker.getLatitude(), gpsTracker.getLongitude(), AttendanceModule.this,
+                    new GeocoderHandler());
+
+
+
+        }else
+            {
+                gpsTracker.showSettingsAlert();
+            }
 
 
         /*locationImg = (ImageView)findViewById(R.id.locationimg);
@@ -229,8 +300,6 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
                         // Setting post rotate to 90
                         Matrix mtx = new Matrix();
 
-
-
                         int CameraEyeValue = setPhotoOrientation(AttendanceModule.this, checkCameraFront(AttendanceModule.this)==true ? 1:0); // CameraID = 1 : front 0:back
                         if(checkCameraFront(AttendanceModule.this)) { // As Front camera is Mirrored so Fliping the Orientation
                             if (CameraEyeValue == 270) {
@@ -253,8 +322,9 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
 
 
 
+                imageBase64 = getEncoded64ImageStringFromBitmap(bm);
 
-                    profileImg.setImageBitmap(bm);
+                // profileImg.setImageBitmap(bm);
 
                     camera.startPreview();
             }
@@ -265,10 +335,133 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View view) {
 
                 mCamera.takePicture(null,null,jpegCallback);
+
+                pDialog = new ProgressDialog(AttendanceModule.this,R.style.AppCompatAlertDialogStyle);
+                pDialog.setTitle("Mark Attendance");
+                pDialog.setMessage("Please Wait...");
+                pDialog.show();
+
+                new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // This method will be executed once the timer is over
+                        // Start your app main activity
+                        if (imageBase64.equalsIgnoreCase(""))
+                        {
+                            Toast.makeText(AttendanceModule.this, "Plesae clcik the pic properely", Toast.LENGTH_SHORT).show();
+                        }else if (addTxt.getText().toString().equalsIgnoreCase(""))
+                        {
+                            addTxt.setError("Please get address");
+                        }else if (gpsTracker.getLongitude() == 0 || gpsTracker.getLongitude() == 0)
+                        {
+                            Toast.makeText(AttendanceModule.this, "Please get location", Toast.LENGTH_SHORT).show();
+                        }else {
+
+                            if (conn.getConnectivityStatus() > 0) {
+
+                                attendaceDetails(userId, gpsTracker.getLongitude() + "", gpsTracker.getLatitude() + "", addTxt.getText().toString(),
+                                        remarkTxt.getText().toString(), imageBase64, authCode, ".jpeg");
+                            } else {
+
+                                conn.showNoInternetAlret();
+                            }
+
+                        }
+                    }}, 3000);
+
+
+
+
             }
         });
 
     }
+
+    //add Attendnace Request
+    public void attendaceDetails(final String AdminID  ,final String Lang, final String Lat, final String LocationAddress,
+                              final String Remark, final String FileJson, final String AuthCode, final String FileExtension)  {
+
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, addUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    if (jsonObject.has("status"))
+                    {
+                        String status = jsonObject.getString("status");
+
+                        if (status.equalsIgnoreCase("success"))
+                        {
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+                            Toast.makeText(AttendanceModule.this, MsgNotification, Toast.LENGTH_SHORT).show();
+                            onBackPressed();
+                        }
+                    }
+
+
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(AttendanceModule.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("AdminID",AdminID);
+                params.put("AuthCode",AuthCode);
+                params.put("Lang",Lang);
+                params.put("Lat",Lat);
+                params.put("LocationAddress",LocationAddress);
+                params.put("Remark",Remark);
+                params.put("FileExtension",FileExtension);
+                params.put("FileJson",FileJson);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+    //get current time
+    public static String getCurrentTime() {
+        //date output format
+        DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
+
+        Calendar cal = Calendar.getInstance();
+        String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(cal.getTime());
+        //sdf = new DateFormatSymbols().getShortMonths()[month];
+
+        return dateFormat.format(cal.getTime());
+    }
+
 
     //check if you have a front Camera
     public static boolean checkCameraFront(Context context) {
@@ -430,9 +623,9 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(10.0f));
 
-        LocationAddress locationAddress = new LocationAddress();
-        locationAddress.getAddressFromLocation(innerlat, inerlog, AttendanceModule.this,
-                new GeocoderHandler());
+
+
+
     }
     // get address with the help of lat log
     private class GeocoderHandler extends Handler {
@@ -444,15 +637,27 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
                 case 1:
                     Bundle bundle = message.getData();
                     locationAddress = bundle.getString("address");
+
                     break;
                 default:
                     locationAddress = null;
             }
 
-
-
+            Log.e("checking address", locationAddress);
+            //set Current Address
+            addTxt.setText(locationAddress);
 
         }
+    }
+
+    //convert bitmap to base64
+    public String getEncoded64ImageStringFromBitmap(Bitmap bitmap) {
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
     @Override

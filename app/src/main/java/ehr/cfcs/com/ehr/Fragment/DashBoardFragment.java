@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import ehr.cfcs.com.ehr.Main.AttendanceModule;
 import ehr.cfcs.com.ehr.Main.HomeActivity;
 import ehr.cfcs.com.ehr.Main.NewAddLeaveMangementActivity;
 import ehr.cfcs.com.ehr.R;
@@ -86,20 +87,9 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(1,"Attendance List");
-
-                FragmentManager fragmentManager = getFragmentManager();
-                Fragment frag = new AttendaceListFragment();
-
-                /*fragmentManager.setCustomAnimations(
-                        R.anim.push_right_in,
-                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);*/
-                // update the main content by replacing fragments
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, frag)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .addToBackStack(null)
-                        .commit();
+                Intent i = new Intent(getActivity(), AttendanceModule.class);
+                startActivity(i);
+                getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
 
             }
         });

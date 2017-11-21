@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,17 +32,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-import ehr.cfcs.com.ehr.Adapter.LeaveMangementAdapter;
-import ehr.cfcs.com.ehr.Adapter.MedicalAnssuredAdapter;
+import ehr.cfcs.com.ehr.Adapter.AttendanceListAdapter;
+import ehr.cfcs.com.ehr.Adapter.AttendanceLogListAdapter;
 import ehr.cfcs.com.ehr.Main.AddCabActivity;
-import ehr.cfcs.com.ehr.Main.AddMedicalandAnssuranceActivity;
-import ehr.cfcs.com.ehr.Model.CabListModel;
-import ehr.cfcs.com.ehr.Model.LeaveManagementModel;
-import ehr.cfcs.com.ehr.Model.MedicalAnssuranceModel;
+import ehr.cfcs.com.ehr.Main.AttendanceModule;
+import ehr.cfcs.com.ehr.Model.AttendanceListModel;
+import ehr.cfcs.com.ehr.Model.AttendanceLogDetailsModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
@@ -49,12 +57,12 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MedicalAndEnsuranceFragment.OnFragmentInteractionListener} interface
+ * {@link AttendanceLogListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MedicalAndEnsuranceFragment#newInstance} factory method to
+ * Use the {@link AttendanceLogListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MedicalAndEnsuranceFragment extends Fragment {
+public class AttendanceLogListFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,18 +72,22 @@ public class MedicalAndEnsuranceFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public MedicalAnssuredAdapter adapter;
-    public ArrayList<MedicalAnssuranceModel> list = new ArrayList<>();
-    public RecyclerView medicalAnssuredRecy;
-    public FloatingActionButton fab;
-    public String policyUrl = SettingConstant.BaseUrl + "AppEmployeeMedicalPolicy";
+    public AttendanceLogListAdapter adapter;
+    public ArrayList<AttendanceLogDetailsModel> list = new ArrayList<>();
+    public RecyclerView attendanceLogRecy;
+    public TextView noRecordFoundTxt;
     public ConnectionDetector conn;
-    public String userId = "",authCode = "";
-    public TextView noCust ;
+    public String userId = "", authCode = "";
+    public ImageView calBtn;
+    public TextView calTxt;
+    public String attendnaceListUrl = SettingConstant.BaseUrl + "AppEmployeeAttendanceLogList";
+    private int yy, mm, dd;
+    private int mYear, mMonth, mDay, mHour, mMinute;
+    public FloatingActionButton fab;
 
     private OnFragmentInteractionListener mListener;
 
-    public MedicalAndEnsuranceFragment() {
+    public AttendanceLogListFragment() {
         // Required empty public constructor
     }
 
@@ -85,11 +97,11 @@ public class MedicalAndEnsuranceFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MedicalAndEnsuranceFragment.
+     * @return A new instance of fragment AttendanceLogListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MedicalAndEnsuranceFragment newInstance(String param1, String param2) {
-        MedicalAndEnsuranceFragment fragment = new MedicalAndEnsuranceFragment();
+    public static AttendanceLogListFragment newInstance(String param1, String param2) {
+        AttendanceLogListFragment fragment = new AttendanceLogListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -110,45 +122,79 @@ public class MedicalAndEnsuranceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_medical_and_ensurance, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_attendance_log_list, container, false);
 
-        medicalAnssuredRecy = (RecyclerView)rootView.findViewById(R.id.medical_anssured_recycler);
-        fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
-        noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
-
+        attendanceLogRecy = (RecyclerView) rootView.findViewById(R.id.attendace_log_list_recycler);
+        noRecordFoundTxt = (TextView) rootView.findViewById(R.id.norecordfound);
+        calBtn = (ImageView) rootView.findViewById(R.id.calBtn);
+        calTxt = (TextView) rootView.findViewById(R.id.caldatetxt);
+        fab = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
         conn = new ConnectionDetector(getActivity());
+
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(getActivity())));
 
-
-        adapter = new MedicalAnssuredAdapter(getActivity(),list, getActivity(),"FirstOne");
+        adapter = new AttendanceLogListAdapter(getActivity(),list, getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        medicalAnssuredRecy.setLayoutManager(mLayoutManager);
-        medicalAnssuredRecy.setItemAnimator(new DefaultItemAnimator());
-        medicalAnssuredRecy.setAdapter(adapter);
+        attendanceLogRecy.setLayoutManager(mLayoutManager);
+        attendanceLogRecy.setItemAnimator(new DefaultItemAnimator());
+        attendanceLogRecy.setAdapter(adapter);
 
-        medicalAnssuredRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
+        attendanceLogRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        //prepareInsDetails();
+        calTxt.setText(getCurrentTime());
+
+        calBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                yy = year;
+                                mm = monthOfYear;
+                                dd = dayOfMonth;
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(Calendar.MONTH, monthOfYear);
+                                String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(calendar.getTime());
+                                sdf = new DateFormatSymbols().getShortMonths()[monthOfYear];
+
+                                Log.e("checking,............", sdf + " null");
+                                calTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
+
+                                attendaceList(authCode,userId,dayOfMonth + "-" + sdf + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+
+
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(getActivity(), AddMedicalandAnssuranceActivity.class);
-                i.putExtra("RecordId","");
-                i.putExtra("Mode","AddMode");
-                i.putExtra("PolicyType","");
-                i.putExtra("PolicyName","");
-                i.putExtra("PolicyNumber","");
-                i.putExtra("PolicyDuration","");
-                i.putExtra("PolicyBy","");
-                i.putExtra("InsuranceCompany","");
-                i.putExtra("AmountInsured","");
-                i.putExtra("StartDate","");
-                i.putExtra("EndDate", "");
-                i.putExtra("File","");
+                Intent i = new Intent(getActivity(), AttendanceModule.class);
                 startActivity(i);
                 getActivity().overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -157,46 +203,41 @@ public class MedicalAndEnsuranceFragment extends Fragment {
         return rootView;
     }
 
-
-
     @Override
     public void onResume() {
         super.onResume();
-        if (conn.getConnectivityStatus()>0) {
-
-            medicalAndAnssuranceList(authCode,userId);
-
+        //List Bind
+        if (conn.getConnectivityStatus()>0)
+        {
+            attendaceList(authCode,userId,getCurrentTime());
         }else
         {
             conn.showNoInternetAlret();
         }
+
     }
-   /* private void prepareInsDetails() {
 
-        MedicalAnssuranceModel model = new MedicalAnssuranceModel("Full Time","28032017","6 Months","Adahr Policy","5000 Rs.");
-        list.add(model);
-        model = new MedicalAnssuranceModel("Full Time","28032017","6 Months","Adahr Policy","5000 Rs.");
-        list.add(model);
-        model = new MedicalAnssuranceModel("Full Time","28032017","6 Months","Adahr Policy","5000 Rs.");
-        list.add(model);
-        model = new MedicalAnssuranceModel("Full Time","28032017","6 Months","Adahr Policy","5000 Rs.");
-        list.add(model);
-        model = new MedicalAnssuranceModel("Full Time","28032017","6 Months","Adahr Policy","5000 Rs.");
-        list.add(model);
+    //get current time
+    public static String getCurrentTime() {
+        //date output format
+        DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
 
-        adapter.notifyDataSetChanged();
+        Calendar cal = Calendar.getInstance();
+        String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(cal.getTime());
+        //sdf = new DateFormatSymbols().getShortMonths()[month];
 
-    }*/
+        return dateFormat.format(cal.getTime());
+    }
 
-    // Medical and Anssurance data
-    public void medicalAndAnssuranceList(final String AuthCode , final String AdminID) {
+    //Attendace List
+    public void attendaceList(final String AuthCode , final String AdminID, final String LogDate) {
 
         final ProgressDialog pDialog = new ProgressDialog(getActivity(),R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
         StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, policyUrl, new Response.Listener<String>() {
+                Request.Method.POST, attendnaceListUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -211,21 +252,21 @@ public class MedicalAndEnsuranceFragment extends Fragment {
                     for (int i=0 ; i<jsonArray.length();i++)
                     {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String Name = jsonObject.getString("Name");
-                        String Number = jsonObject.getString("Number");
-                        String Duration = jsonObject.getString("Duration");
-                        String AmountInsured = jsonObject.getString("AmountInsured");
-                        String PolicyTypeName = jsonObject.getString("PolicyTypeName");
-                        String PolicyBy = jsonObject.getString("PolicyBy");
-                        String RecordID = jsonObject.getString("RecordID");
-                        String InsuranceCompany = jsonObject.getString("InsuranceCompany");
-                        String StartDate = jsonObject.getString("StartDate");
-                        String EndDate = jsonObject.getString("EndDate");
-                        String FileNameText = jsonObject.getString("FileNameText");
+
+                        String UserName = jsonObject.getString("UserName");
+                        String EmpID = jsonObject.getString("EmpID");
+                        String DesignationName = jsonObject.getString("DesignationName");
+                        String ZoneName = jsonObject.getString("ZoneName");
+                        String LogDateText = jsonObject.getString("LogDateText");
+                        String LogTime = jsonObject.getString("LogTime");
+                        String LocationAddress = jsonObject.getString("LocationAddress");
+                        String LocationPhoto = jsonObject.getString("FileNameText");
+                        String Remark = jsonObject.getString("Remark");
+                        String LogTypeText = jsonObject.getString("LogTypeText");
 
 
-                        list.add(new MedicalAnssuranceModel(PolicyTypeName,Number,Duration,Name,AmountInsured,PolicyBy,RecordID,
-                                InsuranceCompany,StartDate,EndDate,FileNameText));
+                        list.add(new AttendanceLogDetailsModel(UserName,EmpID,DesignationName,LogTime,LogDateText,LogTypeText
+                                ,LocationAddress,Remark,LocationPhoto,ZoneName));
 
 
 
@@ -233,14 +274,13 @@ public class MedicalAndEnsuranceFragment extends Fragment {
 
                     if (list.size() == 0)
                     {
-                        noCust.setVisibility(View.VISIBLE);
-                        medicalAnssuredRecy.setVisibility(View.GONE);
+                        noRecordFoundTxt.setVisibility(View.VISIBLE);
+                        attendanceLogRecy.setVisibility(View.GONE);
                     }else
                     {
-                        noCust.setVisibility(View.GONE);
-                        medicalAnssuredRecy.setVisibility(View.VISIBLE);
+                        noRecordFoundTxt.setVisibility(View.GONE);
+                        attendanceLogRecy.setVisibility(View.VISIBLE);
                     }
-
 
                     adapter.notifyDataSetChanged();
                     pDialog.dismiss();
@@ -268,6 +308,9 @@ public class MedicalAndEnsuranceFragment extends Fragment {
                 params.put("AuthCode",AuthCode);
                 params.put("LoginAdminID",AdminID);
                 params.put("EmployeeID",AdminID);
+                params.put("LogDate",LogDate);
+
+
 
 
                 Log.e("Parms", params.toString());
@@ -304,8 +347,8 @@ public class MedicalAndEnsuranceFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-*/
+    }*/
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

@@ -4,8 +4,10 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -23,10 +25,11 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static int SPLASH_TIME_OUT = 3000;
+    private static int SPLASH_TIME_OUT = 2000;
     public ConnectionDetector conn;
     public GPSTracker gps;
     public String loginStatus = "";
+    private static final int REQUEST_WRITE_PERMISSION = 20;
     //public ProgressDialog progressDialog;
 
     @Override
@@ -34,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        if (android.os.Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -45,28 +48,56 @@ public class SplashActivity extends AppCompatActivity {
         gps = new GPSTracker(SplashActivity.this,SplashActivity.this);
         loginStatus =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getStatus(SplashActivity.this)));
 
+      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_NETWORK_STATE
+            }, REQUEST_WRITE_PERMISSION);
+        }else
+            {
+
+                checkGPS();
+            }*/
+
+
        /* progressDialog = ProgressDialog.show(SplashActivity.this,"Loading...",
                 "Loading application View, please wait...", false, false);*/
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_NETWORK_STATE
+            }, REQUEST_WRITE_PERMISSION);
+        }else
+        {
+
+            checkGPS();
+        }
 
 
 
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // This method will be executed once the timer is over
-                // Start your app main activity
-
-                checkGPS();
-
-            }
-        }, SPLASH_TIME_OUT);
+    protected void onRestart() {
+        super.onRestart();
+        Intent i = new Intent(getApplicationContext(), SplashActivity.class);
+        startActivity(i);
+        finish();
     }
+
+   /* @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_NETWORK_STATE
+            }, REQUEST_WRITE_PERMISSION);
+        }else
+        {
+
+            checkGPS();
+        }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -90,30 +121,52 @@ public class SplashActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void  checkGPS()
-    {  if (ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    public void  checkGPS(){
+
+
+   /* {  if (ContextCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         ActivityCompat.requestPermissions(SplashActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
-    } else {
+    } else {*/
         // Toast.makeText(mContext, "You need have granted permission", Toast.LENGTH_SHORT).show();
         if (conn.getConnectivityStatus() > 0) {
             if (gps.canGetLocation()) {
 
                 if (loginStatus.equalsIgnoreCase("1")) {
 
-                    Intent i = new Intent(getApplicationContext(), HomeActivity.class);
-                    startActivity(i);
-                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-                    finish();
+                      new Handler().postDelayed(new Runnable() {
+
+                          @Override
+                          public void run() {
+                              // This method will be executed once the timer is over
+                              // Start your app main activity
+                              Intent i = new Intent(getApplicationContext(), HomeActivity.class);
+                              startActivity(i);
+                              overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                              finish();
+                          }}, SPLASH_TIME_OUT);
+
+
                     //progressDialog.dismiss();
 
                 }else
                     {
 
-                        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(i);
-                        overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-                        finish();
+                        new Handler().postDelayed(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                // This method will be executed once the timer is over
+                                // Start your app main activity
+                                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                                startActivity(i);
+                                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                                finish();
+
+                            }}, SPLASH_TIME_OUT);
+
+
+
                         //progressDialog.dismiss();
 
                     }
@@ -129,9 +182,20 @@ public class SplashActivity extends AppCompatActivity {
         {
             conn.showNoInternetAlret();
         }
+   // }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+
+            case REQUEST_WRITE_PERMISSION:
+                checkGPS();
+        }
+
+
+
     }
-
-
 }

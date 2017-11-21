@@ -274,6 +274,12 @@ public class ManagerFilterActivity extends AppCompatActivity {
                     ik.putExtra("empId", empId);
                     startActivity(ik);
                     overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+                }else if (checkingActivity.equalsIgnoreCase("Attendance Basic Log"))
+                {
+                    Intent ik = new Intent(ManagerFilterActivity.this, ManagerAttendanceLogDetailsActivity.class);
+                    ik.putExtra("empId", empId);
+                    startActivity(ik);
+                    overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
                 }
             }
         });

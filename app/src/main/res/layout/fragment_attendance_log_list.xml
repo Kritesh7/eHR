@@ -3,9 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
-    tools:context="ehr.cfcs.com.ehr.Fragment.AttendaceListFragment">
-
+    tools:context="ehr.cfcs.com.ehr.Fragment.AttendanceLogListFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,46 +31,30 @@
                 android:layout_weight=".8"
                 android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:elevation="10dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/white"
-                android:layout_width="0dp"
-                android:layout_weight=".5"
-                android:layout_height="wrap_content">
-
-            <Spinner
-                android:id="@+id/monthspinner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </Spinner>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:elevation="10dp"
-                android:background="@color/white"
-                android:layout_width="0dp"
-                android:layout_weight=".5"
-                android:layout_height="wrap_content">
-
-            <Spinner
-                android:id="@+id/yearspinner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
 
-             </Spinner>
+                <LinearLayout
+                    android:elevation="10dp"
+                    android:background="@color/white"
+                    android:layout_width="0dp"
+                    android:layout_weight=".5"
+                    android:layout_height="wrap_content">
+
+                   <TextView
+                       android:id="@+id/caldatetxt"
+                       android:padding="5dp"
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="DATE"/>
 
                 </LinearLayout>
 
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/serchresult"
+                android:id="@+id/calBtn"
                 android:elevation="10dp"
-                android:src="@drawable/srchbtn"
+                android:src="@drawable/calwhite"
                 android:layout_width="0dp"
                 android:layout_weight=".2"
                 android:layout_height="wrap_content" />
@@ -82,7 +64,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="10dp"
-            android:id="@+id/attendace_list_recycler"
+            android:id="@+id/attendace_log_list_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -101,13 +83,12 @@
 
     </LinearLayout>
 
-
-  <!--  <android.support.design.widget.FloatingActionButton
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@drawable/plus" />-->
+        app:srcCompat="@drawable/plus" />
 
 </FrameLayout>

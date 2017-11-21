@@ -28,6 +28,7 @@ import com.squareup.picasso.Picasso;
 import ehr.cfcs.com.ehr.Fragment.AssestDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.AttendaceListFragment;
 import ehr.cfcs.com.ehr.Fragment.AttendanceFragment;
+import ehr.cfcs.com.ehr.Fragment.AttendanceLogListFragment;
 import ehr.cfcs.com.ehr.Fragment.ContactPhoneFragment;
 import ehr.cfcs.com.ehr.Fragment.ContactsDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.DashBoardFragment;
@@ -94,6 +95,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     private static final String TAG_WeekOf = "Week Of";
     private static final String TAG_Holiday_List = "Holiday List";
     private static final String TAG_Contact_Phone = "Contact Phone";
+    private static final String TAG_AttendanceLogList = "AttendanceLogList";
     public String userNameStr = "", photoStr = "", empIdStr = "", designationStr = "",companLogoStr = "";
     public static int navigationItemIndex = 0;
     public Toolbar toolbar;
@@ -418,6 +420,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         CURRENT_TAG = TAG_Contact_Phone;
                         titleTxt.setText("Contact Phone");
                         break;
+
+                    case R.id.nav_log_attendance:
+
+                        navigationItemIndex = 28;
+                        CURRENT_TAG = TAG_AttendanceLogList;
+                        titleTxt.setText("Attendance Log List");
+                        break;
+
 
 
 
@@ -842,6 +852,19 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 transaction.addToBackStack(null);
                 transaction.commit();
                 return newFragment ;
+
+            case 28:
+
+                newFragment = new AttendanceLogListFragment();
+                transaction.replace(R.id.home_navigation_framelayout, newFragment);
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                return newFragment ;
+
+
 
             default:
                 return new DashBoardFragment();

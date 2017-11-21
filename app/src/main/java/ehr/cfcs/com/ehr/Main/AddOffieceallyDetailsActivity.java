@@ -4,10 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
@@ -15,6 +17,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -61,6 +65,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URLConnection;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -77,6 +82,7 @@ import ehr.cfcs.com.ehr.Model.PolicyTypeModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.FilePath;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
@@ -91,7 +97,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
     public ArrayList<DocumentTypeModel> documentTypeList = new ArrayList<>();
     public Button uploadBtn;
     public StringTokenizer tokens;
-    public String uploadedFileName = "", first = "", file_1 = "";
+    public String uploadedFileName = "";
     public File file1;
     private ProgressDialog mDialog;
     String[] permissions = new String[]{
@@ -113,6 +119,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
             ,documentTxt = "";
     public LinearLayout fileSelectTxt;
     public ImageView crossBtn;
+    private static final int FILE_SELECT_CODE = 0;
 
 
     @Override
@@ -345,19 +352,36 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
     }
 
     private void showFileChooser() {
+
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("file/*");
+        intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         try {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Select a File to Upload"),
+                    FILE_SELECT_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(this, "Please install a File Manager.",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        //Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        //intent.setType("*/*");
+       // startActivityForResult(intent, 7);
+
+       /* try {
             startActivityForResult(
                     Intent.createChooser(intent, "Select a File to Upload"),
                     1);
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(AddOffieceallyDetailsActivity.this, "Please install a File Manager.",
                     Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
+
 
     @Override
     public void onBackPressed() {
@@ -370,31 +394,38 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+       /* super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 7) {
             if (resultCode == Activity.RESULT_OK) {
 
-                Uri selectedFileURI = data.getData();
+
 
                 if (data.getData() != null) {
 
-
-                    Log.e("Checking Null", selectedFileURI + "");
+                    //Log.e("Checking Null", selectedFileURI + "");
                     Bitmap bitmap = null;
-
                     try {
-                        bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedFileURI);
 
-                        File file = new File(selectedFileURI.getPath().toString());
+                        Uri selectedFileURI = data.getData();
+                        String path = getRealPathFromURI(selectedFileURI);
+
+                        Log.e("checking path name", path + " null");
+
+                        if (path == null)
+                            path = selectedFileURI.getPath(); // From File Manager
+
+                        if (path != null)
+                            bitmap  = BitmapFactory.decodeFile(path);
+
+                        //bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedFileURI);
+
+                        File file = new File(selectedFileURI.getPath());
                         Log.d("", "File : " + file.getName());
                         uploadedFileName = file.getName().toString();
-                        tokens = new StringTokenizer(uploadedFileName, ":");
 
-                        // String filename=selectedFileURI.getPath().substring(selectedFileURI.getPath().lastIndexOf("/")+1);
-
-                        imageExtenstion = selectedFileURI.getPath().substring(selectedFileURI.getPath().lastIndexOf("."));
+                        imageExtenstion = path.substring(selectedFileURI.getPath().lastIndexOf("."));
                         Log.e("File Name", imageExtenstion);
-                        first = tokens.nextToken();
+                       // first = tokens.nextToken();
 
                         mDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this);
                         mDialog.setMessage("Uploading " + file.getName());
@@ -418,9 +449,6 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                         fileSelectTxt.setVisibility(View.VISIBLE);
                         uploadBtn.setVisibility(View.GONE);
 
-                    } catch (IOException e) {
-                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.e("File Name", e.getMessage());
                     } catch (StringIndexOutOfBoundsException e) {
                         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         Log.e("Error", e.getMessage());
@@ -436,7 +464,294 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
 
             }
+        }*/
+
+        switch (requestCode) {
+            case FILE_SELECT_CODE:
+                if (resultCode == RESULT_OK) {
+                    //File directory = null,photoDirectory = null;
+
+
+                    //if there is no SD card, create new directory objects to make directory on device
+                   /* if (Environment.getExternalStorageState() == null) {
+                        //create new file directory object
+
+
+                        directory = new File(Environment.getDataDirectory()
+                                + "/RobotiumTestLog/");
+                        photoDirectory = new File(Environment.getDataDirectory()
+                                + "/Robotium-Screenshots/");
+            *//*
+             * this checks to see if there are any previous test photo files
+             * if there are any photos, they are deleted for the sake of
+             * memory
+             *//*
+                        if (photoDirectory.exists()) {
+                            File[] dirFiles = photoDirectory.listFiles();
+                            if (dirFiles.length != 0) {
+                                for (int ii = 0; ii <= dirFiles.length; ii++) {
+                                    dirFiles[ii].delete();
+                                }
+                            }
+                        }
+                        // if no directory exists, create new directory
+                        if (!directory.exists()) {
+                            directory.mkdir();
+                        }
+
+                        // if phone DOES have sd card
+                    } else if (Environment.getExternalStorageState() != null) {
+                        // search for directory on SD card
+                        directory = new File(Environment.getExternalStorageDirectory()
+                                + "/RobotiumTestLog/");
+                        photoDirectory = new File(
+                                Environment.getExternalStorageDirectory()
+                                        + "/Robotium-Screenshots/");
+
+
+                        Bitmap bitmap = null;
+                       // Log.d("Checking One", "File Uri: " + uri.toString());
+                        // Get the path
+                        String path = null;
+
+                        path = directory.getPath();
+                        Log.e("checking the Path", path+ "Null");
+
+                        if (path != null)
+                            bitmap = BitmapFactory.decodeFile(path);
+
+
+
+                        mDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this);
+                        mDialog.setMessage("Uploading " + directory.getName());
+                        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                        // mDialog.show();
+
+                        new MyTask(mDialog);
+
+
+                        if (imageExtenstion.equalsIgnoreCase(".jpg")) {
+
+                            imageBase64 = getEncoded64ImageStringFromBitmap(bitmap);
+                            Log.e("checking the frount 64", getEncoded64ImageStringFromBitmap(bitmap) + "Null");
+                        } else {
+                            imageBase64 = convertFileToByteArray(directory);
+                            Log.e("checking the frount 64", convertFileToByteArray(directory) + "Null");
+                        }
+
+                        //File select Successfully Text Visibile
+                        fileSelectTxt.setVisibility(View.VISIBLE);
+                        uploadBtn.setVisibility(View.GONE);
+                       *//* if (photoDirectory.exists()) {
+                            File[] dirFiles = photoDirectory.listFiles();
+                            if (dirFiles.length > 0) {
+                                for (int ii = 0; ii < dirFiles.length; ii++) {
+                                    dirFiles[ii].delete();
+                                }
+                                dirFiles = null;
+                            }
+                        }*//*
+                        // if no directory exists, create new directory to store test
+                        // results
+                        if (!directory.exists()) {
+                            directory.mkdir();
+                        }
+                    } else {*/
+
+                        // Get the Uri of the selected file
+                        Uri uri = data.getData();
+                        Bitmap bitmap = null;
+                        Log.d("Checking One", "File Uri: " + uri.toString());
+                        // Get the path
+                        String path = null;
+
+                        path = FilePath.getPath(AddOffieceallyDetailsActivity.this, uri);
+
+                        if (path == null)
+                            path = FilePath.getPath(AddOffieceallyDetailsActivity.this, uri);// From File Manager
+
+                        if (path != null)
+                            bitmap = BitmapFactory.decodeFile(path);
+
+
+                        Log.d("Checking", "File Path: " + path);
+                        File file = new File(FilePath.getPath(AddOffieceallyDetailsActivity.this, uri));
+                        Log.d("", "File : " + file.getName());
+                        uploadedFileName = file.getName().toString();
+
+                        imageExtenstion = path.substring(path.lastIndexOf("."));
+                        Log.e("File Name", imageExtenstion);
+                        // first = tokens.nextToken();
+
+                        mDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this);
+                        mDialog.setMessage("Uploading " + file.getName());
+                        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                        // mDialog.show();
+
+                        new MyTask(mDialog);
+
+
+                        if (imageExtenstion.equalsIgnoreCase(".jpg")) {
+
+                            imageBase64 = getEncoded64ImageStringFromBitmap(bitmap);
+                            Log.e("checking the frount 64", getEncoded64ImageStringFromBitmap(bitmap) + "Null");
+                        } else {
+                            imageBase64 = convertFileToByteArray(file);
+                            Log.e("checking the frount 64", convertFileToByteArray(file) + "Null");
+                        }
+
+                        //File select Successfully Text Visibile
+                        fileSelectTxt.setVisibility(View.VISIBLE);
+                        uploadBtn.setVisibility(View.GONE);
+                  //  }
+                }
+                break;
         }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    public static String getPath(final Context context, final Uri uri)
+    {
+        //check here to KITKAT or new version
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+            }
+
+            //DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[] {
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+
+            // Return the remote address
+            if (isGooglePhotosUri(uri))
+                return uri.getLastPathSegment();
+
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+
+
+    public static String getDataColumn(Context context, Uri uri,
+                                       String selection, String[] selectionArgs) {
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = { column };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection,
+                    selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri
+                .getAuthority());
+    }
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri
+                .getAuthority());
+    }
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri
+                .getAuthority());
+    }
+
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri
+                .getAuthority());
+    }
+
+   /* public static String getPath(Context context, Uri uri) throws URISyntaxException {
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = { "_data" };
+            Cursor cursor = null;
+
+            try {
+                cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                int column_index = cursor.getColumnIndexOrThrow("_data");
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+                // Eat it
+            }
+        }
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
+    }
+*/
+    public String getRealPathFromURI(Uri contentUri) {
+        String [] proj      = {MediaStore.Images.Media.DATA};
+        Cursor cursor       = managedQuery( contentUri, proj, null, null,null);
+
+        if (cursor == null)
+            return null;
+
+        int column_index    = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+        cursor.moveToFirst();
+
+        return cursor.getString(column_index);
     }
 
 

@@ -84,4 +84,7 @@
     <string name="title_activity_manager_langauge">ManagerLangaugeActivity</string>
     <string name="title_activity_manager_previous_exprince">ManagerPreviousExprinceActivity</string>
     <string name="title_activity_manager_education_details">ManagerEducationDetailsActivity</string>
+    <string name="title_activity_manager_attendance_log_details">
+        ManagerAttendanceLogDetailsActivity
+    </string>
 </resources>

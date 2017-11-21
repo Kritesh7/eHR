@@ -17,7 +17,7 @@ import ehr.cfcs.com.ehr.R;
 public class ManagerReportDashboardActivity extends AppCompatActivity {
 
     public TextView titleTxt;
-    public LinearLayout firstLay, secondLay;
+    public LinearLayout firstLay, secondLay, thirdLay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +55,8 @@ public class ManagerReportDashboardActivity extends AppCompatActivity {
 
         firstLay = (LinearLayout) findViewById(R.id.firstlay);
         secondLay = (LinearLayout) findViewById(R.id.secondlay);
+        thirdLay = (LinearLayout) findViewById(R.id.loglay);
+
 
         firstLay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,6 +78,18 @@ public class ManagerReportDashboardActivity extends AppCompatActivity {
                 ik.putExtra("CheckingTheActivity","Team Average Report");
                 startActivity(ik);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+
+        thirdLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent ik = new Intent(ManagerReportDashboardActivity.this,ManagerFilterActivity.class);
+                ik.putExtra("CheckingTheActivity","Attendance Basic Log");
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+
             }
         });
 

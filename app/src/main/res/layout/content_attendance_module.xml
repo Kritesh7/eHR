@@ -10,170 +10,158 @@
 
     <LinearLayout
         android:id="@+id/mainlay"
-        android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/buttonlay"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/buttonlay">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
 
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
-
-
-
-
-          <!--  <RadioGroup
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:layout_width="0dp"
-                    android:layout_weight="5"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/status_color"
-                    android:text="In"/>
-
-                <RadioButton
-                    android:layout_width="0dp"
-                    android:layout_weight="5"
-                    android:layout_height="wrap_content"
-                    android:buttonTint="@color/status_color"
-                    android:text="Out"/>
-
-            </RadioGroup>
-
-
+            android:layout_height="match_parent">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight=".6"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:elevation="10dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <LinearLayout
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/border_layout"
+                    android:orientation="vertical"
+                    android:padding="2dp">
 
-                    <EditText
-                        android:id="@+id/locationtxt"
-                        android:layout_width="0dp"
-                        android:layout_weight=".8"
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp">
+
+                    <FrameLayout
+                        android:id="@+id/camera_view"
+                        android:layout_width="180dp"
+                        android:layout_height="240dp">
+
+
+
+                    </FrameLayout>
+
+                       <LinearLayout
+                           android:layout_gravity="center"
+                           android:gravity="center"
+                           android:layout_marginLeft="5dp"
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           android:orientation="vertical">
+
+                           <TextView
+                               android:layout_marginTop="10dp"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Date"
+                               android:textStyle="bold"
+                               android:textSize="18sp"/>
+
+
+                           <TextView
+                               android:layout_marginTop="10dp"
+                               android:id="@+id/date"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Date: "
+                               android:textColor="@color/status_color"
+                               android:textSize="16sp"
+                               />
+
+                           <TextView
+                               android:layout_marginTop="10dp"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Time"
+                               android:textStyle="bold"
+                               android:textSize="16sp"/>
+
+                           <TextView
+                               android:layout_marginTop="10dp"
+                               android:id="@+id/time"
+                               android:layout_width="wrap_content"
+                               android:layout_height="wrap_content"
+                               android:text="Time: "
+                               android:textColor="@color/status_color"
+                               android:textSize="16sp"
+                               />
+
+
+
+                       </LinearLayout>
+
+                    </LinearLayout>
+
+
+                    <ImageButton
+                        android:id="@+id/imgClose"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:hint="Your Location"
-                        android:textColor="@color/purple700" />
+                        android:layout_gravity="right|top"
+                        android:background="@android:drawable/ic_menu_close_clear_cancel"
+                        android:padding="20dp"
+                        android:visibility="gone" />
+
 
                     <ImageView
-                        android:id="@+id/locationimg"
-                        android:padding="5dp"
-                        android:layout_width="0dp"
-                        android:layout_weight=".2"
-                        android:src="@drawable/gps"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"/>
+                        android:id="@+id/pro_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@android:color/transparent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/prf"
+                        android:visibility="gone" />
+
 
                 </LinearLayout>
 
-                <FrameLayout
-                    android:layout_gravity="center"
+                <EditText
+                    android:id="@+id/remarktxt"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="Remark"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/purple700" />
 
-                    <ImageView
-                        android:scaleType="fitXY"
-                        android:layout_gravity="center"
-                        android:background="@android:color/transparent"
-                        android:id="@+id/pro_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:src="@drawable/prf"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
 
-                    <ImageView
-                        android:id="@+id/procam"
-                        android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/addreestxt"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|right"
-                        android:padding="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:src="@drawable/editcam" />
-                </FrameLayout>
+                        android:layout_weight=".8" />
 
-                <fragment
-                    android:layout_marginTop="5dp"
-                    android:id="@+id/mapwhere"
-                    android:name="com.google.android.gms.maps.SupportMapFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    <ImageView
+                        android:id="@+id/locationimg"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight=".2"
+                        android:padding="5dp"
+                        android:src="@drawable/gps" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:textColor="@color/purple700"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight=".3"
-                    android:hint="Remark"/>
-        </LinearLayout>
-        </LinearLayout>-->
-
-            <FrameLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                tools:context=".MainActivity">
-
-                <FrameLayout
-                    android:id="@+id/camera_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp">
-
-                </FrameLayout>
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imgClose"
-                    android:layout_gravity="right|top"
-                    android:background="@android:drawable/ic_menu_close_clear_cancel"
-                    android:padding="20dp"/>
-
-            </FrameLayout>
-
-            <ImageView
-                android:scaleType="fitXY"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:id="@+id/pro_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/prf"/>
-
-        </LinearLayout>
-
-
+        </ScrollView>
 
     </LinearLayout>
 

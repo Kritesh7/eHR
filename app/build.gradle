@@ -50,5 +50,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.basgeekball:awesome-validation:2.0'
+    compile 'com.github.chrisbanes.photoview:library:1.2.4'
     testCompile 'junit:junit:4.12'
 }
