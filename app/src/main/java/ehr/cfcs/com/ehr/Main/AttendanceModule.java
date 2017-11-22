@@ -153,13 +153,14 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AttendanceModule.this)));
 
 
-        titleTxt.setText("Add Attendance");
+        titleTxt.setText("Mark Attendance");
         profileImg = (ImageView)findViewById(R.id.pro_image);
         subBtn = (Button)findViewById(R.id.submitbtn);
         timeTxt = (TextView) findViewById(R.id.time);
         dateTxt = (TextView) findViewById(R.id.date);
         addTxt = (TextView) findViewById(R.id.addreestxt);
         remarkTxt = (EditText) findViewById(R.id.remarktxt);
+        cancelBtn = (Button)findViewById(R.id.cancelbtn);
 
 
         //current Time incresing
@@ -194,12 +195,21 @@ public class AttendanceModule extends AppCompatActivity implements OnMapReadyCal
             }
 
 
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                onBackPressed();
+            }
+        });
+
+
         /*locationImg = (ImageView)findViewById(R.id.locationimg);
         locationTxt = (EditText)findViewById(R.id.locationtxt);
         subBtn = (Button)findViewById(R.id.submitbtn);
 
         profileSelectImg = (ImageView)findViewById(R.id.pro_image);
-        cancelBtn = (Button)findViewById(R.id.cancelbtn);
+
 
         gpsTracker = new GPSTracker(AttendanceModule.this, AttendanceModule.this);
 

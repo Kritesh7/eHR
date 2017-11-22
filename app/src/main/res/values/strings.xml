@@ -87,4 +87,11 @@
     <string name="title_activity_manager_attendance_log_details">
         ManagerAttendanceLogDetailsActivity
     </string>
+    <string name="title_activity_manager_request_traning_list">ManagerRequestTraningListActivity
+    </string>
+    <string name="title_activity_manager_request_traning_details">
+        ManagerRequestTraningDetailsActivity
+    </string>
+    <string name="title_activity_manager_proceed_traning_list">ManagerProceedTraningListActivity
+    </string>
 </resources>

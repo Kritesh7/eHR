@@ -58,7 +58,7 @@
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Leave Request"/>
+                android:text="Apply For Leave"/>
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -96,7 +96,7 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Attendance"/>
+                        android:text="Mark Attendance"/>
 
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -125,7 +125,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:layout_height="wrap_content"
-                android:text="Book me a prevision"/>
+                android:text="Book Me A Provision"/>
 
         <LinearLayout
             android:padding="5dp"
@@ -158,7 +158,7 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Statitonary Request"/>
+                        android:text="Stationary List"/>
 
                 </LinearLayout>
 
@@ -243,7 +243,7 @@
                         android:gravity="center"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Hotel Booking List"/>
+                        android:text="Hotel List"/>
 
                 </LinearLayout>
 

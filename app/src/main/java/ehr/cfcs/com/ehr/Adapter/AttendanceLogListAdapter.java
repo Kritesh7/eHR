@@ -67,21 +67,42 @@ public class AttendanceLogListAdapter extends RecyclerView.Adapter<AttendanceLog
         holder.punchLocationTxt.setText(model.getPunchLocation());
         holder.remark.setText(model.getRemark());
         holder.punchTypeTxt.setText(model.getPunchType());
+        holder.zoneTxt.setText(model.getZoneName());
 
         if (model.getPunchType().equalsIgnoreCase("Machine"))
         {
             holder.punchLocationLay.setVisibility(View.GONE);
-            holder.remark.setVisibility(View.GONE);
+            holder.reamrkLay.setVisibility(View.GONE);
             holder.remarkView.setVisibility(View.GONE);
             holder.locationView.setVisibility(View.GONE);
 
         }else
             {
                 holder.punchLocationLay.setVisibility(View.VISIBLE);
-                holder.remark.setVisibility(View.VISIBLE);
-                holder.remarkView.setVisibility(View.VISIBLE);
+              /*  holder.remark.setVisibility(View.VISIBLE);
+                holder.remarkView.setVisibility(View.VISIBLE);*/
                 holder.locationView.setVisibility(View.VISIBLE);
 
+                if (model.getRemark().equalsIgnoreCase("") || model.getRemark().equalsIgnoreCase("null"))
+                {
+                    holder.reamrkLay.setVisibility(View.GONE);
+                    holder.remarkView.setVisibility(View.GONE);
+                }else
+                    {
+                        holder.reamrkLay.setVisibility(View.VISIBLE);
+                        holder.remarkView.setVisibility(View.VISIBLE);
+                    }
+
+                if (model.getPunchLocation().equalsIgnoreCase("") ||
+                        model.getPunchLocation().equalsIgnoreCase("null"))
+                {
+                    holder.punchLocationLay.setVisibility(View.GONE);
+                    holder.locationView.setVisibility(View.GONE);
+                }else
+                    {
+                        holder.punchLocationLay.setVisibility(View.VISIBLE);
+                        holder.locationView.setVisibility(View.VISIBLE);
+                    }
             }
 
         Log.e("check image Url",SettingConstant.DownloadUrl + model.getProfilePic());
@@ -119,7 +140,7 @@ public class AttendanceLogListAdapter extends RecyclerView.Adapter<AttendanceLog
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameTxt,designationTxt,punchTimeTxt,punchDateTxt,punchTypeTxt,punchLocationTxt,remark;
+        public TextView nameTxt,designationTxt,punchTimeTxt,punchDateTxt,punchTypeTxt,punchLocationTxt,remark, zoneTxt;
         public View locationView, remarkView;
         public LinearLayout punchLocationLay, reamrkLay;
         public de.hdodenhof.circleimageview.CircleImageView proImg;
@@ -134,8 +155,9 @@ public class AttendanceLogListAdapter extends RecyclerView.Adapter<AttendanceLog
             punchLocationTxt = (TextView)itemView.findViewById(R.id.punchlocation);
             remark = (TextView)itemView.findViewById(R.id.remark);
             nameTxt = (TextView) itemView.findViewById(R.id.name);
-            remarkView = (View) itemView.findViewById(R.id.reameklay) ;
+            remarkView = (View) itemView.findViewById(R.id.remarkview) ;
             locationView = (View) itemView.findViewById(R.id.locationview) ;
+            zoneTxt = (TextView) itemView.findViewById(R.id.zonename);
             proImg = (de.hdodenhof.circleimageview.CircleImageView) itemView.findViewById(R.id.pro_image);
 
 

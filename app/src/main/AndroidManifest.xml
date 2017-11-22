@@ -65,7 +65,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
 
         <activity
@@ -300,6 +300,18 @@
         <activity
             android:name=".Manager.ManagerActivity.ManagerAttendanceLogDetailsActivity"
             android:label="@string/title_activity_manager_attendance_log_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerRequestTraningListActivity"
+            android:label="@string/title_activity_manager_request_traning_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerRequestTraningDetailsActivity"
+            android:label="@string/title_activity_manager_request_traning_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Manager.ManagerActivity.ManagerProceedTraningListActivity"
+            android:label="@string/title_activity_manager_proceed_traning_list"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

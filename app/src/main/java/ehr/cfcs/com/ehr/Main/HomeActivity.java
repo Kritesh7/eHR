@@ -1,6 +1,8 @@
 package ehr.cfcs.com.ehr.Main;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
@@ -12,8 +14,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -45,6 +50,7 @@ import ehr.cfcs.com.ehr.Fragment.LeaveSummarryFragment;
 import ehr.cfcs.com.ehr.Fragment.ManagerDashBoardFragment;
 import ehr.cfcs.com.ehr.Fragment.MedicalAndEnsuranceFragment;
 import ehr.cfcs.com.ehr.Fragment.MedicalDetailsFragment;
+import ehr.cfcs.com.ehr.Fragment.MyProfileFragment;
 import ehr.cfcs.com.ehr.Fragment.OfficeallyDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.PersonalDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.PreviousExprienceFragment;
@@ -60,6 +66,7 @@ import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class HomeActivity extends AppCompatActivity implements DashBoardFragment.OnFragmentInteractionListener {
 
@@ -96,6 +103,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     private static final String TAG_Holiday_List = "Holiday List";
     private static final String TAG_Contact_Phone = "Contact Phone";
     private static final String TAG_AttendanceLogList = "AttendanceLogList";
+    private static final String TAG_MYProfile = "MY PROFILE";
     public String userNameStr = "", photoStr = "", empIdStr = "", designationStr = "",companLogoStr = "";
     public static int navigationItemIndex = 0;
     public Toolbar toolbar;
@@ -105,6 +113,8 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     public de.hdodenhof.circleimageview.CircleImageView proImg;
     public TextView nameTxt, designationTxt, empIdTxt;
     public ImageView backImg;
+    public PhotoViewAttacher mAttacher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +188,18 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 .into(backImg);
 
 
+        proImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Display display = getWindowManager().getDefaultDisplay();
+                int width = display.getWidth();
+                int height = display.getHeight();
+                loadPhoto(proImg,width,height);
+            }
+        });
+
+
         setUpNavigationView();
         if (savedInstanceState == null) {
             navigationItemIndex = 0;
@@ -188,6 +210,36 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         titleTxt.setText("Dashboard");
 
     }
+
+    private void loadPhoto(ImageView imageView, int width, int height) {
+
+        final Dialog dialog = new Dialog(HomeActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        //dialog.setContentView(R.layout.custom_fullimage_dialog);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.custom_fullimage_dialoge,
+                (ViewGroup)findViewById(R.id.layout_root));
+        ImageView image = (ImageView) layout.findViewById(R.id.fullimage);
+        ImageView croosImg = (ImageView) layout.findViewById(R.id.imgClose);
+
+        croosImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                dialog.dismiss();
+            }
+        });
+        image.setImageDrawable(imageView.getDrawable());
+        image.getLayoutParams().height = height;
+        image.getLayoutParams().width = width;
+        mAttacher = new PhotoViewAttacher(image);
+        image.requestLayout();
+        dialog.setContentView(layout);
+        dialog.show();
+
+    }
+
 
     private void setUpNavigationView() {
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
@@ -236,13 +288,13 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
 
 
-                    case R.id.nav_Traning:
+                  /*  case R.id.nav_Traning:
 
                         navigationItemIndex = 3;
                         CURRENT_TAG = TAG_Traning;
                         titleTxt.setText("Training");
 
-                        break;
+                        break;*/
 
                     case R.id.nav_Asset_details:
 
@@ -428,10 +480,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         titleTxt.setText("Attendance Log List");
                         break;
 
+                    case R.id.nav_pro:
 
+                        navigationItemIndex = 29;
+                        CURRENT_TAG = TAG_MYProfile;
+                        titleTxt.setText("My Profile");
+                        break;
 
-
-                    case R.id.nav_logout:
+                        case R.id.nav_logout:
 
                         navigationItemIndex = 22;
 
@@ -582,10 +638,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                /* FollowUpFragment followUpFragment = new FollowUpFragment();
                 return followUpFragment;*/
 
-            case 3:
-                //drawer.closeDrawers();
-                // movies fragment
-              /*  PayoutsListFragment payoutsListFragment = new PayoutsListFragment();*/
+           /* case 3:
 
                 newFragment = new TrainingFragment();
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -594,7 +647,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment ;*/
 
 
            /* ChatFragment chatFragment = new ChatFragment();
@@ -864,6 +917,17 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 transaction.commit();
                 return newFragment ;
 
+            case 29:
+
+
+                newFragment = new MyProfileFragment();
+                transaction.replace(R.id.home_navigation_framelayout, newFragment);
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                return newFragment ;
 
 
             default:

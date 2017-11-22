@@ -205,8 +205,7 @@ public class DownloadTask
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
         // Setting Dialog Title
-        //  alertDialog.setTitle("Alert");
-
+          alertDialog.setTitle("Alert");
         // Setting Dialog Message
         alertDialog.setMessage("You want to open this file");
 
@@ -214,102 +213,97 @@ public class DownloadTask
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
-                //First check if SD Card is present or not
-                if (new CheckForSDCard().isSDCardPresent()) {
 
-                    //Get Download Directory File
-                    File apkStorage = new File(
-                            Environment.getExternalStorageDirectory() + "/"
-                                    + UtilsMethods.downloadDirectory);
-
-                    Log.e("file Path", apkStorage.getPath() + "Null");
-
-                    //If file is not present then display Toast
-                    if (!apkStorage.exists())
-                        Toast.makeText(context, "Right now there is no directory. Please download some file first.", Toast.LENGTH_SHORT).show();
-
-                    else {
-//
-                        //If directory is present Open Folder
-
-                        /** Note: Directory will open only if there is a app to open directory like File Manager, etc.  **/
-
-                        //
-                        // Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        //Intent intent = new Intent(Intent.ACTION_VIEW);
-                       // Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()
-                       //         + "/"+UtilsMethods.downloadDirectory+"/");
-                       // intent.setDataAndType(uri,"*/*");
-                      //  context.startActivity(Intent.createChooser(intent, "Open Download Folder"));
+                //Get Download Directory File
+                File apkStorage = new File(
+                        Environment.getExternalStorageDirectory() + "/"
+                                + UtilsMethods.downloadDirectory + "/" + downloadFileName);
 
 
-                        //Uri uri= FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+".provider", apkStorage);
-                       // Uri uri = Uri.fromFile(apkStorage);
+                if (!apkStorage.exists())
+                    Toast.makeText(context, "Right now there is no directory. Please download some file first.", Toast.LENGTH_SHORT).show();
 
-                        Uri uri;
+                else {
 
-                      //  Intent intent = new Intent();
-                          //  intent.setAction(Intent.ACTION_VIEW);
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                               // intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                uri = FileProvider.getUriForFile(context, "ehr.cfcs.com.ehr.provider", apkStorage);
-                                //intent.setDataAndType(contentUri, type);
-                            }else
-                                {
-                                    uri = Uri.fromFile(apkStorage);
-                                }
+                    //If directory is present Open Folder
+
+                    /** Note: Directory will open only if there is a app to open directory like File Manager, etc.  **/
+
+                    //
+                    // Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    //Intent intent = new Intent(Intent.ACTION_VIEW);
+                    // Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()
+                    //         + "/"+UtilsMethods.downloadDirectory+"/");
+                    // intent.setDataAndType(uri,"*/*");
+                    //  context.startActivity(Intent.createChooser(intent, "Open Download Folder"));
 
 
+                    //Uri uri= FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+".provider", apkStorage);
+                    // Uri uri = Uri.fromFile(apkStorage);
 
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        if (apkStorage.toString().contains(".doc") || apkStorage.toString().contains(".docx")) {
-                            // Word document
-                            intent.setDataAndType(uri, "application/msword");
-                        } else if (apkStorage.toString().contains(".pdf")) {
-                            // PDF file
-                            intent.setDataAndType(uri, "application/pdf");
-                        } else if (apkStorage.toString().contains(".ppt") || apkStorage.toString().contains(".pptx")) {
-                            // Powerpoint file
-                            intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
-                        } else if (apkStorage.toString().contains(".xls") || apkStorage.toString().contains(".xlsx")) {
-                            // Excel file
-                            intent.setDataAndType(uri, "application/vnd.ms-excel");
-                        } else if (apkStorage.toString().contains(".zip") || apkStorage.toString().contains(".rar")) {
-                            // WAV audio file
-                            intent.setDataAndType(uri, "application/x-wav");
-                        } else if (apkStorage.toString().contains(".rtf")) {
-                            // RTF file
-                            intent.setDataAndType(uri, "application/rtf");
-                        } else if (apkStorage.toString().contains(".wav") || apkStorage.toString().contains(".mp3")) {
-                            // WAV audio file
-                            intent.setDataAndType(uri, "audio/x-wav");
-                        } else if (apkStorage.toString().contains(".gif")) {
-                            // GIF file
-                            intent.setDataAndType(uri, "image/gif");
-                        } else if (apkStorage.toString().contains(".jpg") || apkStorage.toString().contains(".jpeg") || apkStorage.toString().contains(".png")) {
-                            // JPG file
-                            intent.setDataAndType(uri, "image/jpeg");
-                        } else if (apkStorage.toString().contains(".txt")) {
-                            // Text file
-                            intent.setDataAndType(uri, "text/plain");
+                    Uri uri;
 
-                        } else if (apkStorage.toString().contains(".3gp") || apkStorage.toString().contains(".mpg") ||
-                                apkStorage.toString().contains(".mpeg") || apkStorage.toString().contains(".mpe") || apkStorage.toString().contains(".mp4") || apkStorage.toString().contains(".avi")) {
-                            // Video files
-                            intent.setDataAndType(uri, "video/*");
-                        } else {
-                            intent.setDataAndType(uri, "*/*");
-                        }
-
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(intent);
+                    //  Intent intent = new Intent();
+                    //  intent.setAction(Intent.ACTION_VIEW);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        // intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        uri = FileProvider.getUriForFile(context, "ehr.cfcs.com.ehr.provider", apkStorage);
+                        //intent.setDataAndType(contentUri, type);
+                    }else
+                    {
+                        uri = Uri.fromFile(apkStorage);
                     }
 
-                } else {
-                    Toast.makeText(context, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
+
+
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    if (apkStorage.toString().contains(".doc") || apkStorage.toString().contains(".docx")) {
+                        // Word document
+                        intent.setDataAndType(uri, "application/msword");
+                    } else if (apkStorage.toString().contains(".pdf")) {
+                        // PDF file
+                        intent.setDataAndType(uri, "application/pdf");
+                    } else if (apkStorage.toString().contains(".ppt") || apkStorage.toString().contains(".pptx")) {
+                        // Powerpoint file
+                        intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+                    } else if (apkStorage.toString().contains(".xls") || apkStorage.toString().contains(".xlsx")) {
+                        // Excel file
+                        intent.setDataAndType(uri, "application/vnd.ms-excel");
+                    } else if (apkStorage.toString().contains(".zip") || apkStorage.toString().contains(".rar")) {
+                        // WAV audio file
+                        intent.setDataAndType(uri, "application/x-wav");
+                    } else if (apkStorage.toString().contains(".rtf")) {
+                        // RTF file
+                        intent.setDataAndType(uri, "application/rtf");
+                    } else if (apkStorage.toString().contains(".wav") || apkStorage.toString().contains(".mp3")) {
+                        // WAV audio file
+                        intent.setDataAndType(uri, "audio/x-wav");
+                    } else if (apkStorage.toString().contains(".gif")) {
+                        // GIF file
+                        intent.setDataAndType(uri, "image/gif");
+                    } else if (apkStorage.toString().contains(".jpg") || apkStorage.toString().contains(".jpeg") || apkStorage.toString().contains(".png")) {
+                        // JPG file
+                        intent.setDataAndType(uri, "image/jpeg");
+                    } else if (apkStorage.toString().contains(".txt")) {
+                        // Text file
+                        intent.setDataAndType(uri, "text/plain");
+
+                    } else if (apkStorage.toString().contains(".3gp") || apkStorage.toString().contains(".mpg") ||
+                            apkStorage.toString().contains(".mpeg") || apkStorage.toString().contains(".mpe") || apkStorage.toString().contains(".mp4") || apkStorage.toString().contains(".avi")) {
+                        // Video files
+                        intent.setDataAndType(uri, "video/*");
+                    } else {
+                        intent.setDataAndType(uri, "*/*");
+                    }
+
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
                 }
 
-                dialog.dismiss();
+
+               /* Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl));
+                context.startActivity(browserIntent);
+                dialog.dismiss();*/
 
 
 
@@ -329,6 +323,104 @@ public class DownloadTask
 
 
 
+    }
+
+    public void old ()
+    {
+        //First check if SD Card is present or not
+        if (new CheckForSDCard().isSDCardPresent()) {
+
+            //Get Download Directory File
+            File apkStorage = new File(
+                    Environment.getExternalStorageDirectory() + "/"
+                            + UtilsMethods.downloadDirectory);
+
+            Log.e("file Path", apkStorage.getPath() + "Null");
+
+            //If file is not present then display Toast
+            if (!apkStorage.exists())
+                Toast.makeText(context, "Right now there is no directory. Please download some file first.", Toast.LENGTH_SHORT).show();
+
+            else {
+//
+                //If directory is present Open Folder
+
+                /** Note: Directory will open only if there is a app to open directory like File Manager, etc.  **/
+
+                //
+                // Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                //Intent intent = new Intent(Intent.ACTION_VIEW);
+                // Uri uri = Uri.parse(Environment.getExternalStorageDirectory().getPath()
+                //         + "/"+UtilsMethods.downloadDirectory+"/");
+                // intent.setDataAndType(uri,"*/*");
+                //  context.startActivity(Intent.createChooser(intent, "Open Download Folder"));
+
+
+                //Uri uri= FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID+".provider", apkStorage);
+                // Uri uri = Uri.fromFile(apkStorage);
+
+                Uri uri;
+
+                //  Intent intent = new Intent();
+                //  intent.setAction(Intent.ACTION_VIEW);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    // intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    uri = FileProvider.getUriForFile(context, "ehr.cfcs.com.ehr.provider", apkStorage);
+                    //intent.setDataAndType(contentUri, type);
+                }else
+                {
+                    uri = Uri.fromFile(apkStorage);
+                }
+
+
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                if (apkStorage.toString().contains(".doc") || apkStorage.toString().contains(".docx")) {
+                    // Word document
+                    intent.setDataAndType(uri, "application/msword");
+                } else if (apkStorage.toString().contains(".pdf")) {
+                    // PDF file
+                    intent.setDataAndType(uri, "application/pdf");
+                } else if (apkStorage.toString().contains(".ppt") || apkStorage.toString().contains(".pptx")) {
+                    // Powerpoint file
+                    intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+                } else if (apkStorage.toString().contains(".xls") || apkStorage.toString().contains(".xlsx")) {
+                    // Excel file
+                    intent.setDataAndType(uri, "application/vnd.ms-excel");
+                } else if (apkStorage.toString().contains(".zip") || apkStorage.toString().contains(".rar")) {
+                    // WAV audio file
+                    intent.setDataAndType(uri, "application/x-wav");
+                } else if (apkStorage.toString().contains(".rtf")) {
+                    // RTF file
+                    intent.setDataAndType(uri, "application/rtf");
+                } else if (apkStorage.toString().contains(".wav") || apkStorage.toString().contains(".mp3")) {
+                    // WAV audio file
+                    intent.setDataAndType(uri, "audio/x-wav");
+                } else if (apkStorage.toString().contains(".gif")) {
+                    // GIF file
+                    intent.setDataAndType(uri, "image/gif");
+                } else if (apkStorage.toString().contains(".jpg") || apkStorage.toString().contains(".jpeg") || apkStorage.toString().contains(".png")) {
+                    // JPG file
+                    intent.setDataAndType(uri, "image/jpeg");
+                } else if (apkStorage.toString().contains(".txt")) {
+                    // Text file
+                    intent.setDataAndType(uri, "text/plain");
+
+                } else if (apkStorage.toString().contains(".3gp") || apkStorage.toString().contains(".mpg") ||
+                        apkStorage.toString().contains(".mpeg") || apkStorage.toString().contains(".mpe") || apkStorage.toString().contains(".mp4") || apkStorage.toString().contains(".avi")) {
+                    // Video files
+                    intent.setDataAndType(uri, "video/*");
+                } else {
+                    intent.setDataAndType(uri, "*/*");
+                }
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+
+        } else {
+            Toast.makeText(context, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

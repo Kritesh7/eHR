@@ -1,15 +1,18 @@
 package ehr.cfcs.com.ehr.Manager.ManagerActivity;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,9 +27,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import ehr.cfcs.com.ehr.Manager.ManagerAdapter.ManagerRequestTraningAdapter;
+import ehr.cfcs.com.ehr.Manager.ManagerModel.ManagerRequestTraningModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
@@ -34,18 +40,21 @@ import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
-public class ManagerProceedRequestActivity extends AppCompatActivity {
+public class ManagerProceedTraningListActivity extends AppCompatActivity {
 
-    public TextView titleTxt, leavecountTxt, shortLeaveCountTxt, tranoingCountTxt;
-    public String countUrl = SettingConstant.BaseUrl + "AppManagerProceededRequestDashBoard";
+    public TextView titleTxt,noCust;
+    public ManagerRequestTraningAdapter adapter;
+    public ArrayList<ManagerRequestTraningModel> list = new ArrayList<>();
+    public RecyclerView traningRecy;
+    public String userId = "", authCode = "";
     public ConnectionDetector conn;
-    public String userId = "",authCode = "";
-    public LinearLayout firstTile, secondTile, thirdTile;
+    public String traningRequestUrl = SettingConstant.BaseUrl + "AppManagerToApproveTrainingRequestDashBoardList";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manager_proceed_request);
+        setContentView(R.layout.activity_manager_proceed_traning_list);
 
         if (android.os.Build.VERSION.SDK_INT >= 21) {
             Window window = this.getWindow();
@@ -73,74 +82,47 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Proceed Request");
-        conn = new ConnectionDetector(ManagerProceedRequestActivity.this);
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ManagerProceedRequestActivity.this)));
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ManagerProceedRequestActivity.this)));
+        titleTxt.setText("Training Proceed");
+
+        traningRecy = (RecyclerView) findViewById(R.id.mgr_traning_request_recycler);
+        noCust = (TextView) findViewById(R.id.no_record_txt);
+
+        conn = new ConnectionDetector(ManagerProceedTraningListActivity.this);
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ManagerProceedTraningListActivity.this)));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ManagerProceedTraningListActivity.this)));
 
 
+        adapter = new ManagerRequestTraningAdapter(ManagerProceedTraningListActivity.this,list,
+                ManagerProceedTraningListActivity.this,"2");
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ManagerProceedTraningListActivity.this);
+        traningRecy.setLayoutManager(mLayoutManager);
+        traningRecy.setItemAnimator(new DefaultItemAnimator());
+        traningRecy.setAdapter(adapter);
 
-        leavecountTxt = (TextView) findViewById(R.id.proceedleave);
-        shortLeaveCountTxt = (TextView) findViewById(R.id.proceedshortleave);
-        tranoingCountTxt = (TextView) findViewById(R.id.proceedtraning);
-        firstTile = (LinearLayout) findViewById(R.id.firsttile);
-        secondTile = (LinearLayout) findViewById(R.id.secondtile);
-        thirdTile = (LinearLayout) findViewById(R.id.thirdtile);
+        traningRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
-        firstTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerProceedRequestActivity.this,ProceedLeaveRequestListActivity.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-        secondTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerProceedRequestActivity.this,ProceedShortLeaveListActivity.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-        thirdTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent ik = new Intent(ManagerProceedRequestActivity.this,ManagerProceedTraningListActivity.class);
-                startActivity(ik);
-                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
-            }
-        });
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //get count of dashboard
+        //bind list
         if (conn.getConnectivityStatus()>0)
         {
-            getCount(authCode,userId);
+            traningRequestData(authCode,userId,"2");
         }else
         {
             conn.showNoInternetAlret();
         }
+
+
+
     }
 
-    //show dashbaord count api
-    public void getCount(final String AuthCode , final String AdminID) {
+    //Traning Request List Bind
+    public void traningRequestData(final String AuthCode , final String AdminID, final String Status) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ManagerProceedRequestActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(ManagerProceedTraningListActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
         StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, countUrl, new Response.Listener<String>() {
+                Request.Method.POST, traningRequestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -148,24 +130,45 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
                     Log.e("Login", response);
                     JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
 
+                    if (list.size()>0)
+                    {
+                        list.clear();
+                    }
                     for (int i=0 ; i<jsonArray.length();i++)
                     {
-                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        JSONObject object = jsonArray.getJSONObject(i);
+                        String ApplicationID = object.getString("ApplicationID");
+                        String DomainName = object.getString("DomainName");
+                        String CourseName = object.getString("CourseName");
+                        String StartDate = object.getString("StartDate");
+                        String EndDate = object.getString("EndDate");
+                        String ProficiencyName = object.getString("ProficiencyName");
+                        String EmployeeName = object.getString("EmployeeName");
+                        String StatusText = object.getString("StatusText");
 
-                        String LeaveCount = jsonObject.getString("LeaveCount");
-                        String ShortLeaveCount = jsonObject.getString("ShortLeaveCount");
-                        String TrainingCount = jsonObject.getString("TrainingCount");
 
 
-                        leavecountTxt.setText("("+LeaveCount+")");
-                        shortLeaveCountTxt.setText("("+ShortLeaveCount+")");
-                        tranoingCountTxt.setText("("+TrainingCount+")");
 
+                        list.add(new ManagerRequestTraningModel(DomainName,CourseName,StartDate  ,EndDate
+                                ,ProficiencyName,EmployeeName, ApplicationID,StatusText));
 
 
 
                     }
 
+
+
+                    if (list.size() == 0)
+                    {
+                        noCust.setVisibility(View.VISIBLE);
+                        traningRecy.setVisibility(View.GONE);
+                    }else
+                    {
+                        noCust.setVisibility(View.GONE);
+                        traningRecy.setVisibility(View.VISIBLE);
+                    }
+
+                    adapter.notifyDataSetChanged();
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
@@ -179,7 +182,7 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
                 VolleyLog.d("Login", "Error: " + error.getMessage());
                 // Log.e("checking now ",error.getMessage());
 
-                Toast.makeText(ManagerProceedRequestActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ManagerProceedTraningListActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
 
 
@@ -190,6 +193,7 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
                 params.put("AdminID",AdminID);
+                params.put("Status", Status);
 
 
                 Log.e("Parms", params.toString());
@@ -203,8 +207,6 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
-
-
     @Override
     public void onBackPressed() {
 
@@ -213,5 +215,6 @@ public class ManagerProceedRequestActivity extends AppCompatActivity {
                 R.anim.push_right_out);
 
     }
+
 
 }

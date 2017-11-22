@@ -33,8 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ehr.cfcs.com.ehr.Main.ViewLeavemangementActivity;
-import ehr.cfcs.com.ehr.Manager.ManagerModel.ManagerLeaveRequestApproveAndRejectModel;
-import ehr.cfcs.com.ehr.Model.LeaveManagementModel;
+import ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerRequestTraningDetailsActivity;
+import ehr.cfcs.com.ehr.Manager.ManagerModel.ManagerRequestTraningModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
@@ -44,58 +44,59 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 /**
- * Created by Admin on 14-11-2017.
+ * Created by Admin on 21-11-2017.
  */
 
-public class ManagerLeaveRequestApproveAndRejectAdapter extends RecyclerView.Adapter<ManagerLeaveRequestApproveAndRejectAdapter.ViewHolder>
+public class ManagerRequestTraningAdapter extends RecyclerView.Adapter<ManagerRequestTraningAdapter.ViewHolder>
 {
-    public Context context ;
-    public ArrayList<ManagerLeaveRequestApproveAndRejectModel> list =new ArrayList<>();
-    public Activity activity;
-    public  String checkStatus;
-    public String deleteUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveDelete";
-    public String authCode = "", userId = "";
-    public PopupWindow popupWindow;
 
-    public ManagerLeaveRequestApproveAndRejectAdapter(Context context, ArrayList<ManagerLeaveRequestApproveAndRejectModel> list, Activity activity,
-                                                      String checkStatus) {
+    public Context context;
+    public ArrayList<ManagerRequestTraningModel> list = new ArrayList<>();
+    public Activity activity;
+    public PopupWindow popupWindow;
+    public String authcode = "", userid = "", statusId = "";
+    public String approveRejectUrl = SettingConstant.BaseUrl + "AppManagerTrainingRequestApproveAndReject";
+
+    public ManagerRequestTraningAdapter(Context context, ArrayList<ManagerRequestTraningModel> list, Activity activity, String statusId) {
         this.context = context;
         this.list = list;
-        this.checkStatus = checkStatus;
         this.activity = activity;
+        this.statusId = statusId;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.request_approve_leave_item_layout, parent, false);
+                inflate(R.layout.manager_request_traning_layout, parent, false);
         return new ViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        ManagerLeaveRequestApproveAndRejectModel model = list.get(position);
+        ManagerRequestTraningModel model = list.get(position);
 
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(context)));
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(context)));
+        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(context)));
+        userid =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(context)));
 
 
-        holder.leaveTypeTxt.setText(model.getLeaveType());
-        holder.appliedOnTxt.setText(model.getAppliedOn());
+
+        holder.empNameTxt.setText(model.getEmpName());
+        holder.doaminNameTxt.setText(model.getDomainName());
+        holder.courseNameTxt.setText(model.getCourseName());
         holder.startDateTxt.setText(model.getStartDate());
         holder.endDateTxt.setText(model.getEndDate());
+        holder.profiNameTxt.setText(model.getProficenacyName());
         holder.statusTxt.setText(model.getStatus());
-        holder.noOfDaysTxt.setText(model.getNoofdays());
-        holder.empNameTxt.setText(model.getUserName());
 
         holder.mainLay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(context, ViewLeavemangementActivity.class);
-                i.putExtra("LeaveApplication_Id",model.getLeaveApplication_Id());
+                Intent i = new Intent(context, ManagerRequestTraningDetailsActivity.class);
+                i.putExtra("LeaveApplication_Id",model.getEmpId());
+                i.putExtra("CheckingNavigate",statusId);
                 activity.startActivity(i);
                 activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -105,7 +106,7 @@ public class ManagerLeaveRequestApproveAndRejectAdapter extends RecyclerView.Ada
             @Override
             public void onClick(View view) {
 
-                setPopupWindow("Reject",authCode,userId,model.getLeaveApplication_Id(),position);
+                setPopupWindow("Reject",authcode,userid, model.getEmpId(),position);
             }
         });
 
@@ -113,9 +114,24 @@ public class ManagerLeaveRequestApproveAndRejectAdapter extends RecyclerView.Ada
             @Override
             public void onClick(View view) {
 
-                setPopupWindow("Approve",authCode,userId,model.getLeaveApplication_Id(),position);
+                setPopupWindow("Approve",authcode,userid, model.getEmpId(),position);
             }
         });
+
+        //hide widget
+        if (statusId.equalsIgnoreCase("2"))
+        {
+            holder.btnLay.setVisibility(View.GONE);
+            holder.view.setVisibility(View.GONE);
+        }else
+            {
+                holder.btnLay.setVisibility(View.VISIBLE);
+                holder.view.setVisibility(View.VISIBLE);
+            }
+
+
+
+
 
     }
 
@@ -125,7 +141,7 @@ public class ManagerLeaveRequestApproveAndRejectAdapter extends RecyclerView.Ada
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView leaveTypeTxt,startDateTxt,endDateTxt,appliedOnTxt, statusTxt,noOfDaysTxt, empNameTxt;
+        public TextView empNameTxt,startDateTxt,endDateTxt,doaminNameTxt, profiNameTxt,courseNameTxt, statusTxt;
         public ImageView delBtn;
         public LinearLayout mainLay, btnLay;
         public View view;
@@ -134,16 +150,18 @@ public class ManagerLeaveRequestApproveAndRejectAdapter extends RecyclerView.Ada
         public ViewHolder(View itemView) {
             super(itemView);
 
-            leaveTypeTxt = (TextView)itemView.findViewById(R.id.leave_type);
-            empNameTxt = (TextView) itemView.findViewById(R.id.leave_type_name);
-            startDateTxt = (TextView)itemView.findViewById(R.id.start_date);
-            endDateTxt = (TextView)itemView.findViewById(R.id.end_date);
-            appliedOnTxt = (TextView)itemView.findViewById(R.id.appliedon);
-            statusTxt = (TextView)itemView.findViewById(R.id.status);
-            noOfDaysTxt = (TextView)itemView.findViewById(R.id.noofdaystxt);
+            empNameTxt = (TextView) itemView.findViewById(R.id.req_tran_name);
+            startDateTxt = (TextView)itemView.findViewById(R.id.req_tran_start_date);
+            endDateTxt = (TextView)itemView.findViewById(R.id.req_tran_end_date);
+            doaminNameTxt = (TextView)itemView.findViewById(R.id.req_tran_domain_name);
+            profiNameTxt = (TextView)itemView.findViewById(R.id.req_tran_proficeancy_name);
+            courseNameTxt = (TextView)itemView.findViewById(R.id.req_tran_course_name);
+            statusTxt = (TextView) itemView.findViewById(R.id.req_tran_status);
             rejectBtn = (ImageView)itemView.findViewById(R.id.rejectbtn);
             approvedBtn = (ImageView)itemView.findViewById(R.id.approedbtn);
             mainLay = (LinearLayout)itemView.findViewById(R.id.leave_management_main_lay);
+            btnLay = (LinearLayout) itemView.findViewById(R.id.btnlay);
+            view = (View) itemView.findViewById(R.id.view);
 
         }
     }
@@ -186,46 +204,19 @@ public class ManagerLeaveRequestApproveAndRejectAdapter extends RecyclerView.Ada
             @Override
             public void onClick(View v) {
 
-                if (check.equalsIgnoreCase("Approve")) {
 
-                    if (remarkTxt.getText().toString().equalsIgnoreCase("")) {
-                        remarkTxt.setError("Please enter remark");
-                        Toast.makeText(activity, "Please enter remark", Toast.LENGTH_SHORT).show();
-                    } else {
-/*
 
-                        if (remarkTxt.getText().toString().equalsIgnoreCase("")) {
-                            remarkTxt.setError("Please enter remark");
-                        } else {
-*/
+                    if (check.equalsIgnoreCase("Approve")) {
 
-                            if (checkStatus.equalsIgnoreCase("Leave Request")) {
-                                apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
-                                        "2", "1");
-                            }else
-                            {
-                                apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
-                                        "2", "6");
-                            }
-                       // }
-                    }
-                }else
-                {
-                    /*if (remarkTxt.getText().toString().equalsIgnoreCase(""))
+                            apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                    "2");
+
+
+                    }else
                     {
-                        remarkTxt.setError("Please enter remark");
-                    }else {*/
-
-                        if (checkStatus.equalsIgnoreCase("Leave Request")) {
-                            apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
-                                    "2", "3");
-                        }else
-                        {
-                            apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
-                                    "2", "8");
-                        }
-                  //  }
-                }
+                        apiRejectToApprove(authCode, leaveId, userId, postion, remarkTxt.getText().toString(),
+                                    "4");
+                    }
 
 
             }
@@ -242,15 +233,15 @@ public class ManagerLeaveRequestApproveAndRejectAdapter extends RecyclerView.Ada
     }
 
     //approve reject API
-    public void apiRejectToApprove(final String AuthCode ,final String LeaveApplicationID, final String userId,
-                                   final int postion, final String Remark, final String type, final String status) {
+    public void apiRejectToApprove(final String AuthCode ,final String ApplicationID, final String userId,
+                                   final int postion, final String Remark, final String status) {
 
         final ProgressDialog pDialog = new ProgressDialog(context,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
         StringRequest historyInquiry = new StringRequest(
-                Request.Method.POST, deleteUrl, new Response.Listener<String>() {
+                Request.Method.POST, approveRejectUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
@@ -295,12 +286,10 @@ public class ManagerLeaveRequestApproveAndRejectAdapter extends RecyclerView.Ada
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AuthCode",AuthCode);
-                params.put("LeaveApplicationID",LeaveApplicationID);
                 params.put("AdminID",userId);
-                params.put("Remark",Remark);
-                params.put("Type",type);
+                params.put("ApplicationID",ApplicationID);
                 params.put("Status",status);
-
+                params.put("Remark",Remark);
 
                 Log.e("Parms", params.toString());
                 return params;

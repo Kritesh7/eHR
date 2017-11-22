@@ -60,6 +60,7 @@ import ehr.cfcs.com.ehr.Main.ViewRequestDetailsActivity;
 import ehr.cfcs.com.ehr.Model.MedicalAnssuranceModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.CheckForSDCard;
 import ehr.cfcs.com.ehr.Source.DownloadTask;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
@@ -172,20 +173,20 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
 
 
 
-                    showProgress(SettingConstant.DownloadUrl + model.getFileNameText());
+                  /*  showProgress(SettingConstant.DownloadUrl + model.getFileNameText());
 
                     new Thread(new Runnable() {
                         public void run() {
-                            downloadFile(SettingConstant.DownloadUrl + model.getFileNameText());
+                            downloadFile(SettingConstant.DownloadUrl + model.getFileNameText(),model.getFileNameText());
                         }
-                    }).start();
+                    }).start();*/
 
 
                     //show online
                   /*  Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(SettingConstant.DownloadUrl + model.getFileNameText()));
                     activity.startActivity(browserIntent);
 */
-                   // new DownloadTask(context, SettingConstant.DownloadUrl + model.getFileNameText(),checkNavigateStr);
+                    new DownloadTask(context, SettingConstant.DownloadUrl + model.getFileNameText(),checkNavigateStr);
                 }
             }
         });
@@ -203,26 +204,64 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
     }
 
 
-    void downloadFile(String UrlStr){
+    void downloadFile(String UrlStr, String fileName){
 
         Log.e("checking the url is", UrlStr);
 
         try {
-            URL url = new URL("http://kmmc.in/wp-content/uploads/2014/01/lesson2.pdf");
+            URL url = new URL(UrlStr);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             Log.e("code:",urlConnection.getResponseCode()+ " f");
             urlConnection.setRequestMethod("GET");
-            urlConnection.setDoOutput(true);
+            //urlConnection.setDoOutput(true);
 
             //connect
             urlConnection.connect();
 
-            //set the path where we want to save the file
+            // getting file length
+            int lenghtOfFile = urlConnection.getContentLength();
+
+            Log.e("check file lenth",lenghtOfFile + "");
+
+            //If Connection response is not OK then show Logs
+          /*  if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                Log.e("Checking one", "Server returned HTTP " + urlConnection.getResponseCode()
+                        + " " + urlConnection.getResponseMessage());
+
+            }*/
+
+            File apkStorage = null;
+
+            //Get File if SD card is present
+            if (new CheckForSDCard().isSDCardPresent()) {
+
+                apkStorage = new File(
+                        Environment.getExternalStorageDirectory() + "/"
+                                + UtilsMethods.downloadDirectory);
+            } else
+                Toast.makeText(context, "Oops!! There is no SD Card.", Toast.LENGTH_SHORT).show();
+
+            //If File is not present create directory
+            if (!apkStorage.exists()) {
+                apkStorage.mkdir();
+                Log.e("Checking one", "Directory Created.");
+            }
+
+         //   outputFile = new File(apkStorage, downloadFileName);//Create Output file in Main File
+
+            //Create New File if not present
+          /*  if (!outputFile.exists()) {
+                outputFile.createNewFile();
+                Log.e(TAG, "File Created");
+            }
+*/
+
+            /*//set the path where we want to save the file
             File SDCardRoot = Environment.getExternalStorageDirectory();
             //create a new file, to save the downloaded file
-            File file = new File(SDCardRoot,"downloaded_file.pdf");
+            File file = new File(SDCardRoot,"HRMS_Docs");
 
-            FileOutputStream fileOutput = new FileOutputStream(file);
+            FileOutputStream fileOutput = new FileOutputStream(file);*/
 
             //Stream used for reading the data from the internet
             InputStream inputStream = urlConnection.getInputStream();
@@ -243,7 +282,7 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
             int bufferLength = 0;
 
             while ( (bufferLength = inputStream.read(buffer)) > 0 ) {
-                fileOutput.write(buffer, 0, bufferLength);
+               // fileOutput.write(buffer, 0, bufferLength);
                 downloadedSize += bufferLength;
                 // update the progressbar //
                 activity.runOnUiThread(new Runnable() {
@@ -255,7 +294,7 @@ public class MedicalAnssuredAdapter extends RecyclerView.Adapter<MedicalAnssured
                 });
             }
             //close the output stream when complete //
-            fileOutput.close();
+          //  fileOutput.close();
             activity.runOnUiThread(new Runnable() {
                 public void run() {
                     // pb.dismiss(); // if you want close it..

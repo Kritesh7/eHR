@@ -105,11 +105,7 @@ public class OfficelyAdapter extends RecyclerView.Adapter<OfficelyAdapter.ViewHo
                 {
                     if (checkPermissions()) {
 
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(SettingConstant.DownloadUrl + model.getFileNameText()));
-                        activity.startActivity(browserIntent);
-
-
-                      //  new DownloadTask(context, SettingConstant.DownloadUrl + model.getFileNameText(),checkNavigateStr);
+                        new DownloadTask(context, SettingConstant.DownloadUrl + model.getFileNameText(),checkNavigateStr);
                     }
 
                 }

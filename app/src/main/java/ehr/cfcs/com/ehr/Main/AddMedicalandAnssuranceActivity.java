@@ -427,8 +427,8 @@ public class AddMedicalandAnssuranceActivity extends AppCompatActivity {
 
                 if (checkPermissions()) {
 
-                    DownloadFromUrl();
-                   // new DownloadTask(AddMedicalandAnssuranceActivity.this, SettingConstant.DownloadUrl + fileStr,"MedialAnssurance");
+
+                    new DownloadTask(AddMedicalandAnssuranceActivity.this, SettingConstant.DownloadUrl + fileStr,"MedialAnssurance");
                 }
             }
         });

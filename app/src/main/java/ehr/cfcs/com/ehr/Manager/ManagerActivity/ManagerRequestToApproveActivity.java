@@ -41,7 +41,7 @@ public class ManagerRequestToApproveActivity extends AppCompatActivity {
     public TextView leaveCountTxt, leaveCancelCpuntTxt, shortLeaveCountTxt, shortLeaveCancelCountTxt,traningCountTxt;
     public ConnectionDetector conn;
     public String userId = "",authCode = "";
-    public LinearLayout thirdTilesLay, fourthTileLay, firstTileLat, secondTileLay;
+    public LinearLayout thirdTilesLay, fourthTileLay, firstTileLat, secondTileLay, fivthLay;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,6 +90,7 @@ public class ManagerRequestToApproveActivity extends AppCompatActivity {
         fourthTileLay = (LinearLayout) findViewById(R.id.fourthtile);
         firstTileLat = (LinearLayout) findViewById(R.id.firsttile);
         secondTileLay = (LinearLayout) findViewById(R.id.cancel_request);
+        fivthLay = (LinearLayout) findViewById(R.id.fivthlay);
 
 
         thirdTilesLay.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +126,15 @@ public class ManagerRequestToApproveActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent ik = new Intent(ManagerRequestToApproveActivity.this,RequestToApproveLeaveCancelActivity.class);
+                startActivity(ik);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+
+        fivthLay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ik = new Intent(ManagerRequestToApproveActivity.this,ManagerRequestTraningListActivity.class);
                 startActivity(ik);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }

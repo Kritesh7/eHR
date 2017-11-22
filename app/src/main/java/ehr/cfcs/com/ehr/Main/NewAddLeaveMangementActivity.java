@@ -109,7 +109,7 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Apply Leave");
+        titleTxt.setText("Apply For Leave");
 
         leaveTypeSpinner = (Spinner)findViewById(R.id.leavetypespinner);
         leaveYearSpinner = (Spinner)findViewById(R.id.leaveyearspinner);

@@ -8,10 +8,15 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,8 +47,10 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
                     lateArivalTxt, earlyLeavingTxt, statusTxt;
     public Button updateBtn;
     public String viewDetailsUrl = SettingConstant.BaseUrl + "AppEmployeeAttendanceDetail";
+    public String updateRequestUrl = SettingConstant.BaseUrl + "AppEmployeeAttendanceUpdateRequest";
     public ConnectionDetector conn;
-    public String authcode = "", isRequest = "", attendaceLogId= "";
+    public PopupWindow popupWindow;
+    public String authcode = "", isRequest = "", attendaceLogId= "",userId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +85,7 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
             }
         });
 
-        titleTxt.setText("Update Attendance Details");
+        titleTxt.setText("Attendance Details");
 
         Intent intent = getIntent();
         if (intent != null)
@@ -92,7 +99,7 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
 
         conn = new ConnectionDetector(ViewAttendanceDetailsActivity.this);
         authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewAttendanceDetailsActivity.this)));
-
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewAttendanceDetailsActivity.this)));
         //find widget
         updateBtn = (Button)findViewById(R.id.updatedetail);
         empNmaeTxt = (TextView)findViewById(R.id.empname);
@@ -110,19 +117,162 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
 
         if (conn.getConnectivityStatus()>0)
         {
-            viewDetails(authcode,attendaceLogId);
+            viewDetails(authcode,userId,attendaceLogId);
         }else
             {
                 conn.showNoInternetAlret();
             }
 
 
+        //click on button and update request
+        updateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (conn.getConnectivityStatus()>0) {
+
+                    setPopupWindow(authcode, userId, attendaceLogId);
+
+                }else
+                    {
+                        conn.showNoInternetAlret();
+                    }
+            }
+        });
+
 
 
     }
 
+    private void setPopupWindow(final String authCode, final String userId, final String leaveId) {
+
+
+
+        LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
+                .getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View popupView = layoutInflater.inflate(R.layout.popup_layout, null);
+        Button cancel , backBtn;
+        final EditText remarkTxt;
+        popupWindow = new PopupWindow(popupView,
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT,
+                true);
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(true);
+        popupWindow.setAnimationStyle(R.style.animationName);
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        //
+
+        cancel = (Button) popupView.findViewById(R.id.cancel_leaverequest);
+        remarkTxt = (EditText)popupView.findViewById(R.id.remarktxt);
+        backBtn = (Button)popupView.findViewById(R.id.backbtn);
+
+        cancel.setText("Update");
+      //  backBtn.setText("Update Request");
+
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (remarkTxt.getText().toString().equalsIgnoreCase(""))
+                {
+                    Toast.makeText(ViewAttendanceDetailsActivity.this, "Please fill Remark", Toast.LENGTH_SHORT).show();
+                }else {
+                    updateRequest(authCode, userId, leaveId, remarkTxt.getText().toString());
+                }
+
+
+            }
+        });
+
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                popupWindow.dismiss();
+
+            }
+        });
+
+    }
+
+    //update Request
+    public void updateRequest(final String AuthCode , final String AdminID,  final String LeaveApplicationID, final String Remark ) {
+
+
+        final ProgressDialog pDialog = new ProgressDialog(ViewAttendanceDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, updateRequestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+
+
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+
+                    if (jsonObject.has("status"))
+                    {
+                        String status = jsonObject.getString("status");
+
+                        if (status.equalsIgnoreCase("success"))
+                        {
+
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+
+                            Toast.makeText(ViewAttendanceDetailsActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
+                            popupWindow.dismiss();
+                        }
+                    }
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(ViewAttendanceDetailsActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+                params.put("AttendanceLogID",LeaveApplicationID);
+                params.put("Remark",Remark);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+
     //View Attendance Details
-    public void viewDetails(final String AuthCode , final String LeaveApplicationID ) {
+    public void viewDetails(final String AuthCode , final String AdminID,  final String LeaveApplicationID ) {
 
 
         final ProgressDialog pDialog = new ProgressDialog(ViewAttendanceDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
@@ -206,6 +356,7 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
 
                 params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
                 params.put("AttendanceLogID",LeaveApplicationID);
 
 

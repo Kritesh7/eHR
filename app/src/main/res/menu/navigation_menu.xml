@@ -14,7 +14,7 @@
 
         <item
             android:id="@+id/nav_log_attendance"
-            android:title="Attendance Basic Log"
+            android:title="Attendance Log List"
             android:icon="@drawable/attlist"
             />
 
@@ -24,11 +24,11 @@
             android:icon="@drawable/attendance_icon"
             />
 
-        <item
+       <!-- <item
             android:id="@+id/nav_Traning"
             android:title="Training"
             android:icon="@drawable/training"/>
-
+-->
         <item
             android:id="@+id/nav_Asset_details"
             android:title="Assets Detail"
@@ -187,10 +187,16 @@
 
 
         <item
-            android:title=""
+            android:title="My Account"
             >
 
             <menu>
+
+                <item
+                    android:id="@+id/nav_pro"
+                    android:icon="@drawable/pro"
+                    android:title="My Profile"
+                    />
                 <item
                     android:id="@+id/nav_change_password"
                     android:icon="@drawable/chngpass"

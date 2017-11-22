@@ -79,7 +79,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="4"
                 android:layout_height="wrap_content"
-                android:hint="start Date"/>
+                android:hint="Start Date"/>
 
             <ImageView
                 android:id="@+id/cal"
