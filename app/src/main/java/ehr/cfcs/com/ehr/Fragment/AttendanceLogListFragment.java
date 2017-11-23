@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -123,6 +124,11 @@ public class AttendanceLogListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_attendance_log_list, container, false);
+
+        String strtext = getArguments().getString("Count");
+        Log.e("checking count",strtext + " null");
+
+        mListener.onFragmentInteraction(strtext);
 
         attendanceLogRecy = (RecyclerView) rootView.findViewById(R.id.attendace_log_list_recycler);
         noRecordFoundTxt = (TextView) rootView.findViewById(R.id.norecordfound);
@@ -349,6 +355,17 @@ public class AttendanceLogListFragment extends Fragment {
         mListener = null;
     }*/
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
+        }
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -361,6 +378,6 @@ public class AttendanceLogListFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String count);
     }
 }

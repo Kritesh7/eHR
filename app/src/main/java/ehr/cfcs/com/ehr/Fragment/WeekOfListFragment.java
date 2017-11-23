@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -96,6 +97,12 @@ public class WeekOfListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_week_of_list, container, false);
+
+        String strtext = getArguments().getString("Count");
+        Log.e("checking count",strtext + " null");
+
+        mListener.onFragmentInteraction(strtext);
+
         weekOfTxt = (TextView) rootView.findViewById(R.id.weekoftxt);
 
         conn = new ConnectionDetector(getActivity());
@@ -213,6 +220,16 @@ public class WeekOfListFragment extends Fragment {
         mListener = null;
     }*/
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -225,6 +242,6 @@ public class WeekOfListFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String count);
     }
 }

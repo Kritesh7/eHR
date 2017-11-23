@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
@@ -105,6 +106,11 @@ public class MyProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_my_profile, container, false);
+
+        String strtext = getArguments().getString("Count");
+        Log.e("checking count",strtext + " null");
+
+        mListener.onFragmentInteraction(strtext);
 
         conn = new ConnectionDetector(getActivity());
         userid =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(getActivity())));
@@ -336,6 +342,17 @@ public class MyProfileFragment extends Fragment {
         mListener = null;
     }*/
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
+        }
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -348,6 +365,6 @@ public class MyProfileFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String count);
     }
 }

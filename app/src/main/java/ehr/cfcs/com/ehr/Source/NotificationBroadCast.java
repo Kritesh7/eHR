@@ -135,7 +135,7 @@ public class NotificationBroadCast extends BroadcastReceiver {
 
     private void generateNotification(Context context, String message) {
 
-        int icon = R.mipmap.logo;
+        int icon = R.drawable.logowhite;
         int id = (int) System.currentTimeMillis();
         long when = System.currentTimeMillis();
         String appname = context.getResources().getString(R.string.app_name);

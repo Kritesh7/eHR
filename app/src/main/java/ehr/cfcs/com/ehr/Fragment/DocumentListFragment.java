@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -74,6 +75,7 @@ public class DocumentListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
     public TextView noCust ;
+    public String strtext = "";
 
 
     public DocumentListFragment() {
@@ -112,6 +114,15 @@ public class DocumentListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_document_list, container, false);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            strtext = bundle.getString("Count");
+        }else {
+            strtext = getArguments().getString("Count");
+        }
+        Log.e("checking count",strtext + " null");
+        mListener.onFragmentInteraction(strtext);
 
         documentRecycler = (RecyclerView)rootView.findViewById(R.id.document_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
@@ -295,6 +306,16 @@ public class DocumentListFragment extends Fragment {
         mListener = null;
     }*/
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -307,6 +328,6 @@ public class DocumentListFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String count);
     }
 }

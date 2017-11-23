@@ -10,13 +10,14 @@
         android:id="@+id/badge_icon_button"/>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/badge_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/badge_icon_button"
         android:layout_alignRight="@id/badge_icon_button"
         android:layout_alignEnd="@id/badge_icon_button"
-        android:text="10"
+        android:text="0"
         android:paddingEnd="8dp"
         android:paddingRight="8dp"
         android:paddingLeft="8dp"

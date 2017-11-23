@@ -94,7 +94,21 @@ import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class HomeActivity extends AppCompatActivity implements DashBoardFragment.OnFragmentInteractionListener {
+public class HomeActivity extends AppCompatActivity implements DashBoardFragment.OnFragmentInteractionListenerForToolbar,
+        TaxiListFragment.OnFragmentInteractionListener, ManagerDashBoardFragment.OnFragmentInteractionListener,
+        MyProfileFragment.OnFragmentInteractionListener, WeekOfListFragment.OnFragmentInteractionListener,
+        HolidayListFragment.OnFragmentInteractionListener,ContactPhoneFragment.OnFragmentInteractionListener,
+        AttendanceLogListFragment.OnFragmentInteractionListener,ShortLeaveHistoryFragment.OnFragmentInteractionListener,
+        SkillsFragment.OnFragmentInteractionListener,LanguagesFragment.OnFragmentInteractionListener,
+        DependnetsFragment.OnFragmentInteractionListener,DocumentListFragment.OnFragmentInteractionListener,
+        AssestDetailsFragment.OnFragmentInteractionListener,AttendaceListFragment.OnFragmentInteractionListener,
+        LeaveSummarryFragment.OnFragmentInteractionListener,ChnagePasswordFragment.OnFragmentInteractionListener,
+        MedicalDetailsFragment.OnFragmentInteractionListener,ContactsDetailsFragment.OnFragmentInteractionListener,
+        PersonalDetailsFragment.OnFragmentInteractionListener,PreviousExprienceFragment.OnFragmentInteractionListener,
+        StationaryRequestFragment.OnFragmentInteractionListener, OfficeallyDetailsFragment.OnFragmentInteractionListener,
+        HotelBookingListFragment.OnFragmentInteractionListener,LeaveManagementFragment.OnFragmentInteractionListener,
+        EmergencyContactsFragment.OnFragmentInteractionListener, MedicalAndEnsuranceFragment.OnFragmentInteractionListener,
+        EducationDetailsFragment.OnFragmentInteractionListener {
 
     private Handler mHandeler;
     public NavigationView navigationView;
@@ -148,6 +162,8 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     public PendingIntent pendingIntent;
     public AlarmManager manager;
     public ConnectionDetector conn;
+    public  Bundle bundle;
+   // public String countinOne = "";
 
 
     @Override
@@ -180,6 +196,8 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
 
    //     headeLay = (RelativeLayout) navigationView.findViewById(R.id.view_container) ;
+
+        bundle = new Bundle();
 
 
         navHeader = navigationView.getHeaderView(0);
@@ -239,12 +257,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         });
 
 
-        setUpNavigationView();
-        if (savedInstanceState == null) {
-            navigationItemIndex = 0;
-            CURRENT_TAG = TAG_Dashboard;
-            loadHomeFragment();
-        }
+
 
         titleTxt.setText("Dashboard");
 
@@ -615,6 +628,8 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         // selecting appropriate nav menu item
         //   selectNavMenu();
 
+
+
         Log.e("check current tag",CURRENT_TAG+" null");
         if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
 
@@ -647,6 +662,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return dashboard;*/
 
                 newFragment = new DashBoardFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -666,6 +682,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
               /*  PayoutsListFragment payoutsListFragment = new PayoutsListFragment();*/
 
                 newFragment = new AttendaceListFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -677,6 +694,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 2:
 
                 newFragment = new LeaveManagementFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -706,6 +724,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 4:
 
                 newFragment = new AssestDetailsFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -717,6 +736,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 5:
 
                 newFragment = new ChnagePasswordFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -728,6 +748,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 6:
 
                 newFragment = new PersonalDetailsFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -739,6 +760,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 7:
 
                 newFragment = new MedicalDetailsFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -750,6 +772,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 8:
 
                 newFragment = new OfficeallyDetailsFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -761,6 +784,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 9:
 
                 newFragment = new ContactsDetailsFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -772,6 +796,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 10:
 
                 newFragment = new EmergencyContactsFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -783,6 +808,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 11:
 
                 newFragment = new DependnetsFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -794,6 +820,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 12:
 
                 newFragment = new MedicalAndEnsuranceFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -805,6 +832,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 13:
 
                 newFragment = new EducationDetailsFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -816,6 +844,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 14:
 
                 newFragment = new PreviousExprienceFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -827,6 +856,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 15:
 
                 newFragment = new LanguagesFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -838,6 +868,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 16:
 
                 newFragment = new SkillsFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -849,6 +880,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 17:
 
                 newFragment = new LeaveSummarryFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -860,6 +892,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 18:
 
                 newFragment = new StationaryRequestFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -871,6 +904,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 19:
 
                 newFragment = new DocumentListFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -882,6 +916,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 20:
 
                 newFragment = new TaxiListFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -893,6 +928,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 21:
 
                 newFragment = new HotelBookingListFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -904,6 +940,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 23:
 
                 newFragment = new ShortLeaveHistoryFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -915,6 +952,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 24:
 
                 newFragment = new WeekOfListFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -926,6 +964,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 25:
 
                 newFragment = new HolidayListFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -937,6 +976,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 26:
 
                 newFragment = new ContactPhoneFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -948,6 +988,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 27:
 
                 newFragment = new ManagerDashBoardFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -959,6 +1000,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 28:
 
                 newFragment = new AttendanceLogListFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -971,6 +1013,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
 
                 newFragment = new MyProfileFragment();
+                newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
                 transaction.setCustomAnimations(
                         R.anim.push_right_in,
@@ -981,7 +1024,16 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
 
             default:
-                return new DashBoardFragment();
+
+                newFragment = new DashBoardFragment();
+                newFragment.setArguments(bundle);
+                transaction.replace(R.id.home_navigation_framelayout, newFragment);
+                transaction.setCustomAnimations(
+                        R.anim.push_right_in,
+                        R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
+                transaction.addToBackStack(null);
+                transaction.commit();
+                return newFragment ;
         }
     }
 
@@ -999,10 +1051,26 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             // checking if user is on other navigation menu
             // rather than home
             if (navigationItemIndex != 0) {
-                navigationItemIndex = 0;
-                CURRENT_TAG = TAG_Dashboard;
-                loadHomeFragment();
+                getCount(authCode,userId);
                 titleTxt.setText("Dashboard");
+
+             //   Log.e("cheking the onbackpressed count", countinOne + " null");
+
+              /*  if (!countinOne.equalsIgnoreCase("" )) {
+                    int co = Integer.parseInt(countinOne);
+                    if (co > 0) {
+                        itemMessagesBadgeTextView.setVisibility(View.VISIBLE);
+                        itemMessagesBadgeTextView.setText(countinOne + "");
+                    } else {
+                        itemMessagesBadgeTextView.setVisibility(View.GONE);
+                    }
+
+                }*/
+
+
+            /*    Log.e("cheking the onbackpressed count", countinOne + " null");
+                bundle.putString("Count", countinOne);
+*/
                 return;
             }
         }
@@ -1080,16 +1148,20 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                                 Integer.parseInt(ShortCancelLeaveCount) +  Integer.parseInt(TrainingCount);
 
                         Log.e("count is ", count + "");
+                   //     countinOne = String.valueOf(count);
 
 
-                        if (count > 0)
-                        {
-                            itemMessagesBadgeTextView.setVisibility(View.VISIBLE);
-                            itemMessagesBadgeTextView.setText(count + "");
-                        }else
-                        {
-                            itemMessagesBadgeTextView.setVisibility(View.GONE);
-                        }
+                        //to save on bundel pass the count activity to fragment
+                        bundle.putString("Count", count+"");
+
+
+
+                        setUpNavigationView();
+
+                        navigationItemIndex = 0;
+                        CURRENT_TAG = TAG_Dashboard;
+                        loadHomeFragment();
+
 
 
                     }
@@ -1288,9 +1360,44 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
 
     @Override
-    public void onFragmentInteraction(int navigationCount, String Title) {
+    public void onFragmentInteractionForToolbarMethod(int navigationCount, String Title, String countstr) {
 
         navigationItemIndex = navigationCount;
         titleTxt.setText(Title);
+
+        Log.e("checking the back to dashboard then counting ",countstr + "null");
+
+        //check notification count
+       // if (!countstr.equalsIgnoreCase("" ) || !countstr.equalsIgnoreCase("null")) {
+            int co = Integer.parseInt(countstr);
+            if (co > 0) {
+                itemMessagesBadgeTextView.setVisibility(View.VISIBLE);
+                itemMessagesBadgeTextView.setText(countstr + "");
+            } else {
+                itemMessagesBadgeTextView.setVisibility(View.GONE);
+            }
+
+      //  }
+
+    }
+
+    @Override
+    public void onFragmentInteraction(String count) {
+
+      //  countinOne = count;
+
+        Log.e("checking the back to not dashboard then counting ",count + "null");
+
+        if (!count.equalsIgnoreCase("" ) || !count.equalsIgnoreCase("null")) {
+            int co = Integer.parseInt(count);
+            if (co > 0) {
+                itemMessagesBadgeTextView.setVisibility(View.VISIBLE);
+                itemMessagesBadgeTextView.setText(count + "");
+            } else {
+                itemMessagesBadgeTextView.setVisibility(View.GONE);
+            }
+
+        }
+
     }
 }

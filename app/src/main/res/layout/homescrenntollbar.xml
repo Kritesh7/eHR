@@ -18,7 +18,6 @@
 
 
         <TextView
-            android:layout_marginRight="25dp"
             android:id="@+id/titletxt"
             android:gravity="center"
             android:textSize="18sp"

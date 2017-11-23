@@ -52,5 +52,7 @@ dependencies {
     compile 'com.basgeekball:awesome-validation:2.0'
     compile 'com.github.chrisbanes.photoview:library:1.2.4'
     compile 'com.joanzapata.iconify:android-iconify-fontawesome:2.1.+'
+    compile 'com.github.mmoamenn:ProgressImage_Android:0.0.2'
+    compile 'com.tubitv.ui:tubi-loading-view:0.0.4@aar'
     testCompile 'junit:junit:4.12'
 }

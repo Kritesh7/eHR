@@ -1,5 +1,6 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -70,7 +71,7 @@ public class TaxiListFragment extends Fragment {
     public FloatingActionButton fab;
     public String cabListUrl = SettingConstant.BaseUrl + "AppEmployeeTaxiBookingRequestList";
     public ConnectionDetector conn;
-    public String userId = "",authCode = "";
+    public String userId = "",authCode = "", strtext = "";
     public TextView noCust;
 
 
@@ -113,6 +114,17 @@ public class TaxiListFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View rootView = inflater.inflate(R.layout.fragment_taxi_list, container, false);
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            strtext = bundle.getString("Count");
+        }else {
+            strtext = getArguments().getString("Count");
+        }
+        Log.e("checking count",strtext + " null");
+
+        mListener.onFragmentInteraction(strtext);
+
         cabrecycler = (RecyclerView)rootView.findViewById(R.id.cab_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
         noCust = (TextView) rootView.findViewById(R.id.no_record_txt);
@@ -276,6 +288,18 @@ public class TaxiListFragment extends Fragment {
         mListener = null;
     }*/
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
+        }
+    }
+
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -288,6 +312,6 @@ public class TaxiListFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String count);
     }
 }

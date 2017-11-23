@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,6 @@ import ehr.cfcs.com.ehr.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link DashBoardFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link DashBoardFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -35,7 +35,7 @@ public class DashBoardFragment extends Fragment {
     private String mParam2;
     public LinearLayout leaverequsLay, attendanceLay, stationaryLay,docsLay,cabLay,hotelLay,appreceationLay,warningLay;
 
-    public OnFragmentInteractionListener mListener;
+    public OnFragmentInteractionListenerForToolbar mListener;
 
     public DashBoardFragment() {
         // Required empty public constructor
@@ -74,6 +74,16 @@ public class DashBoardFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_dash_board, container, false);
 
+
+        String strtext = getArguments().getString("Count");
+        Log.e("checking count for dashboard fragment",strtext + " null");
+
+        //transfer data fragment to other Fragment
+        Bundle bundle = new Bundle();
+        bundle.putString("Count", strtext);
+
+        mListener.onFragmentInteractionForToolbarMethod(0,"DashBoard",strtext);
+
         leaverequsLay = (LinearLayout)rootView.findViewById(R.id.leavereq);
         attendanceLay = (LinearLayout)rootView.findViewById(R.id.attendance_lay);
         stationaryLay = (LinearLayout)rootView.findViewById(R.id.stationary_lay);
@@ -98,10 +108,11 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(18,"Stationary Request");
+                mListener.onFragmentInteractionForToolbarMethod(18,"Stationary Request",strtext);
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new StationaryRequestFragment();
+                frag.setArguments(bundle);
 
                 /*fragmentManager.setCustomAnimations(
                         R.anim.push_right_in,
@@ -120,10 +131,11 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(19 , "Document List");
+                mListener.onFragmentInteractionForToolbarMethod(19 , "Document List",strtext);
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new DocumentListFragment();
+                frag.setArguments(bundle);
 
                 /*fragmentManager.setCustomAnimations(
                         R.anim.push_right_in,
@@ -142,10 +154,11 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(20, "Cab List");
+                mListener.onFragmentInteractionForToolbarMethod(20, "Cab List",strtext);
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new TaxiListFragment();
+                frag.setArguments(bundle);
 
                 /*fragmentManager.setCustomAnimations(
                         R.anim.push_right_in,
@@ -164,10 +177,11 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(21,"Hotel Booking List");
+                mListener.onFragmentInteractionForToolbarMethod(21,"Hotel Booking List",strtext);
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new HotelBookingListFragment();
+                frag.setArguments(bundle);
 
                 /*fragmentManager.setCustomAnimations(
                         R.anim.push_right_in,
@@ -185,10 +199,11 @@ public class DashBoardFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                mListener.onFragmentInteraction(220,"Appreciation");
+                mListener.onFragmentInteractionForToolbarMethod(220,"Appreciation",strtext);
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new AppreceationFragment();
+                frag.setArguments(bundle);
 
                 /*fragmentManager.setCustomAnimations(
                         R.anim.push_right_in,
@@ -205,10 +220,11 @@ public class DashBoardFragment extends Fragment {
         warningLay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onFragmentInteraction(221,"Warning");
+                mListener.onFragmentInteractionForToolbarMethod(221,"Warning",strtext);
 
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment frag = new WarningFragment();
+                frag.setArguments(bundle);
 
                 /*fragmentManager.setCustomAnimations(
                         R.anim.push_right_in,
@@ -240,8 +256,8 @@ public class DashBoardFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListenerForToolbar) {
+            mListener = (OnFragmentInteractionListenerForToolbar) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -249,8 +265,8 @@ public class DashBoardFragment extends Fragment {
     }
 
 
-    public interface OnFragmentInteractionListener {
+    public interface OnFragmentInteractionListenerForToolbar {
         // TODO: Update argument type and name
-        void onFragmentInteraction(int navigationCount, String Titile);
+        void onFragmentInteractionForToolbarMethod(int navigationCount, String Titile, String count);
     }
 }

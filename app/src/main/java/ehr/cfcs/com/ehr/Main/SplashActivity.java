@@ -222,10 +222,10 @@ public class SplashActivity extends AppCompatActivity {
     //Status Check Count  API
     public void getLoginStatus(final String AuthCode , final String AdminID) {
 
-        final ProgressDialog pDialog = new ProgressDialog(SplashActivity.this,R.style.AppCompatAlertDialogStyle);
+       /* final ProgressDialog pDialog = new ProgressDialog(SplashActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
-
+*/
         StringRequest historyInquiry = new StringRequest(
                 Request.Method.POST, loginStatusUrl, new Response.Listener<String>() {
             @Override
@@ -284,7 +284,7 @@ public class SplashActivity extends AppCompatActivity {
                             }
 
                     }
-                    pDialog.dismiss();
+                //    pDialog.dismiss();
 
                 } catch (JSONException e) {
                     Log.e("checking json excption" , e.getMessage());
@@ -298,7 +298,7 @@ public class SplashActivity extends AppCompatActivity {
                 // Log.e("checking now ",error.getMessage());
 
                 Toast.makeText(SplashActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                pDialog.dismiss();
+               // pDialog.dismiss();
 
 
             }
@@ -346,9 +346,9 @@ public class SplashActivity extends AppCompatActivity {
     //Log Out API Work
     public void getLogout(final String AdminID, final String AuthCode, final DialogInterface dialog) {
 
-        final ProgressDialog pDialog = new ProgressDialog(SplashActivity.this,R.style.AppCompatAlertDialogStyle);
+      /*  final ProgressDialog pDialog = new ProgressDialog(SplashActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
-        pDialog.show();
+        pDialog.show();*/
 
         StringRequest historyInquiry = new StringRequest(
                 Request.Method.POST, logoutUrl, new Response.Listener<String>() {
@@ -443,7 +443,7 @@ public class SplashActivity extends AppCompatActivity {
 
                     }
 
-                    pDialog.dismiss();
+                 //   pDialog.dismiss();
 
                 } catch (JSONException e) {
                     Log.e("checking json excption" , e.getMessage());
@@ -457,7 +457,7 @@ public class SplashActivity extends AppCompatActivity {
                 // Log.e("checking now ",error.getMessage());
 
                 Toast.makeText(SplashActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                pDialog.dismiss();
+             //   pDialog.dismiss();
 
 
             }

@@ -1,6 +1,8 @@
 package ehr.cfcs.com.ehr.Fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -112,6 +114,11 @@ public class EducationDetailsFragment extends Fragment {
 
 
         View rootView = inflater.inflate(R.layout.fragment_edication_details, container, false);
+
+        String strtext = getArguments().getString("Count");
+        Log.e("checking count",strtext + " null");
+
+        mListener.onFragmentInteraction(strtext);
 
         educationRecycler = (RecyclerView)rootView.findViewById(R.id.education_recycler);
         fab = (FloatingActionButton)rootView.findViewById(R.id.fab);
@@ -322,6 +329,17 @@ public class EducationDetailsFragment extends Fragment {
         mListener = null;
     }
 */
+   @Override
+   public void onAttach(Activity activity) {
+       super.onAttach(activity);
+       try {
+           mListener = (OnFragmentInteractionListener) activity;
+       } catch (ClassCastException e) {
+           throw new ClassCastException(activity.toString() + " must implement onSomeEventListener");
+       }
+   }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -334,6 +352,6 @@ public class EducationDetailsFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(String count);
     }
 }
