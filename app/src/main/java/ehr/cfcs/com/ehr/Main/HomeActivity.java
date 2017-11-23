@@ -1,14 +1,22 @@
 package ehr.cfcs.com.ehr.Main;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,23 +24,39 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.joanzapata.iconify.widget.IconButton;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import ehr.cfcs.com.ehr.Fragment.AssestDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.AttendaceListFragment;
-import ehr.cfcs.com.ehr.Fragment.AttendanceFragment;
 import ehr.cfcs.com.ehr.Fragment.AttendanceLogListFragment;
 import ehr.cfcs.com.ehr.Fragment.ContactPhoneFragment;
 import ehr.cfcs.com.ehr.Fragment.ContactsDetailsFragment;
@@ -54,15 +78,17 @@ import ehr.cfcs.com.ehr.Fragment.MyProfileFragment;
 import ehr.cfcs.com.ehr.Fragment.OfficeallyDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.PersonalDetailsFragment;
 import ehr.cfcs.com.ehr.Fragment.PreviousExprienceFragment;
-import ehr.cfcs.com.ehr.Fragment.ResumeFragment;
 import ehr.cfcs.com.ehr.Fragment.ShortLeaveHistoryFragment;
 import ehr.cfcs.com.ehr.Fragment.SkillsFragment;
 import ehr.cfcs.com.ehr.Fragment.StationaryRequestFragment;
 import ehr.cfcs.com.ehr.Fragment.TaxiListFragment;
-import ehr.cfcs.com.ehr.Fragment.TrainingFragment;
 import ehr.cfcs.com.ehr.Fragment.WeekOfListFragment;
-import ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerDashboardActivity;
+import ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerEmergencyAddressActivity;
+import ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerRequestToApproveActivity;
 import ehr.cfcs.com.ehr.R;
+import ehr.cfcs.com.ehr.Source.AppController;
+import ehr.cfcs.com.ehr.Source.ConnectionDetector;
+import ehr.cfcs.com.ehr.Source.NotificationBroadCast;
 import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
@@ -114,6 +140,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     public TextView nameTxt, designationTxt, empIdTxt;
     public ImageView backImg;
     public PhotoViewAttacher mAttacher;
+    public String countUrl = SettingConstant.BaseUrl + "AppManagerRequestToApproveDashBoard";
+    public String logoutUrl = SettingConstant.BASEURL_FOR_LOGIN + "AppLoginLogOut";
+    public int count ;
+    public String userId = "", authCode = "";
+    public  TextView itemMessagesBadgeTextView;
+    public PendingIntent pendingIntent;
+    public AlarmManager manager;
+    public ConnectionDetector conn;
 
 
     @Override
@@ -127,6 +161,11 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(this.getResources().getColor(R.color.status_color));
         }
+
+        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(HomeActivity.this)));
+        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(HomeActivity.this)));
+        conn = new ConnectionDetector(HomeActivity.this);
+
 
         toolbar = (Toolbar) findViewById(R.id.hometollbar);
         setSupportActionBar(toolbar);
@@ -209,6 +248,50 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
         titleTxt.setText("Dashboard");
 
+
+
+        //Notification BroadCast Recicver
+        if (conn.getConnectivityStatus()>0) {
+
+            Intent alarm = new Intent(HomeActivity.this, NotificationBroadCast.class);
+            pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alarm, 0);
+            startalarmreciver(pendingIntent);
+
+        }else
+            {
+                conn.showNoInternetAlret();
+            }
+
+
+
+    }
+
+    //Start Notification
+    public void startalarmreciver(PendingIntent intent) {
+        manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        int interval = 1800000;
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, intent);
+        //Toast.makeText(this, "Alarm Set", Toast.LENGTH_SHORT).show();
+    }
+
+    //cancel Notification
+    public void cancelAlarm()
+    {
+        Intent intent = new Intent(this, NotificationBroadCast.class);
+        PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
+        AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(sender);
+        //Toast.makeText(this, "Cancelled alarm", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //count the notification
+        //call API
+        getCount(authCode,userId);
     }
 
     private void loadPhoto(ImageView imageView, int width, int height) {
@@ -489,42 +572,9 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                         case R.id.nav_logout:
 
-                        navigationItemIndex = 22;
-
-                        Intent ik = new Intent(getApplicationContext(),LoginActivity.class);
-                        startActivity(ik);
-                        overridePendingTransition(R.anim.push_left_in,
-                                R.anim.push_right_out);
-                        finish();
-
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setStatus(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAdminId(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmailId(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpId(HomeActivity.this,
-                                "")));
-
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpPhoto(HomeActivity.this,
-                                "")));
-
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setDesignation(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(HomeActivity.this,
-                                "")));
-
-
-
-
-                        CURRENT_TAG = TAG_Employ_Logout;
-                        titleTxt.setText("Log Out");
-
-                        break;
+                            //Logout API
+                            getLogout(userId,authCode);
+                            break;
 
 
 
@@ -959,6 +1009,283 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
         finish();
     }
+
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.count_menu, menu);
+
+        MenuItem itemMessages = menu.findItem(R.id.menu_messages);
+        MenuItemCompat.setActionView(itemMessages, R.layout.badge_layout);
+        View view = MenuItemCompat.getActionView(itemMessages);
+        itemMessagesBadgeTextView = (TextView) view.findViewById(R.id.badge_textView);
+
+
+
+
+
+
+
+        ImageView  iconButtonMessages = (ImageView) view.findViewById(R.id.badge_icon_button);
+        iconButtonMessages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                Intent intent = new Intent(HomeActivity.this, ManagerRequestToApproveActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+
+        //getMenuInflater().inflate(R.menu.count_menu, menu);
+
+       // MenuItem menuItem = menu.findItem(R.id.menu_messages);
+        //menuItem.setIcon(buildCounterDrawable(count, R.drawable.ic_menu_gallery));
+
+        //return true;
+    }
+
+    //show  count api
+    public void getCount(final String AuthCode , final String AdminID) {
+
+        final ProgressDialog pDialog = new ProgressDialog(HomeActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, countUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    for (int i=0 ; i<jsonArray.length();i++)
+                    {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                        String LeaveCount = jsonObject.getString("LeaveCount");
+                        String CancelLeaveCount = jsonObject.getString("CancelLeaveCount");
+                        String ShortLeaveCount = jsonObject.getString("ShortLeaveCount");
+                        String ShortCancelLeaveCount = jsonObject.getString("ShortCancelLeaveCount");
+                        String TrainingCount = jsonObject.getString("TrainingCount");
+
+
+                        count = Integer.parseInt(LeaveCount) + Integer.parseInt(CancelLeaveCount) + Integer.parseInt(ShortLeaveCount) +
+                                Integer.parseInt(ShortCancelLeaveCount) +  Integer.parseInt(TrainingCount);
+
+                        Log.e("count is ", count + "");
+
+
+                        if (count > 0)
+                        {
+                            itemMessagesBadgeTextView.setVisibility(View.VISIBLE);
+                            itemMessagesBadgeTextView.setText(count + "");
+                        }else
+                        {
+                            itemMessagesBadgeTextView.setVisibility(View.GONE);
+                        }
+
+
+                    }
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(HomeActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AuthCode",AuthCode);
+                params.put("AdminID",AdminID);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
+    //Log Out API Work
+    public void getLogout(final String AdminID, final String AuthCode) {
+
+        final ProgressDialog pDialog = new ProgressDialog(HomeActivity.this,R.style.AppCompatAlertDialogStyle);
+        pDialog.setMessage("Loading...");
+        pDialog.show();
+
+        StringRequest historyInquiry = new StringRequest(
+                Request.Method.POST, logoutUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    Log.e("Login", response);
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+
+                    for (int i=0 ; i<jsonArray.length(); i++){
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                        String status = jsonObject.getString("status");
+
+                        if (status.equalsIgnoreCase("success")) {
+
+                            navigationItemIndex = 22;
+
+                            Intent ik = new Intent(getApplicationContext(), LoginActivity.class);
+                            startActivity(ik);
+                            overridePendingTransition(R.anim.push_left_in,
+                                R.anim.push_right_out);
+                            finish();
+
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setStatus(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAdminId(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmailId(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpId(HomeActivity.this,
+                                "")));
+
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpPhoto(HomeActivity.this,
+                                "")));
+
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setDesignation(HomeActivity.this,
+                                "")));
+                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(HomeActivity.this,
+                                "")));
+
+                        //cancel background services
+                        cancelAlarm();
+
+
+
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.push_left_in,
+                                    R.anim.push_right_out);
+                            finish();
+
+                    }else
+                        {
+
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+                            Toast.makeText(HomeActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
+
+                            navigationItemIndex = 22;
+
+                            Intent ik = new Intent(getApplicationContext(), LoginActivity.class);
+                            startActivity(ik);
+                            overridePendingTransition(R.anim.push_left_in,
+                                    R.anim.push_right_out);
+                            finish();
+
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setStatus(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAdminId(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmailId(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpId(HomeActivity.this,
+                                    "")));
+
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpPhoto(HomeActivity.this,
+                                    "")));
+
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setDesignation(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(HomeActivity.this,
+                                    "")));
+
+                            //cancel background services
+                            cancelAlarm();
+
+
+
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                            startActivity(intent);
+                            overridePendingTransition(R.anim.push_left_in,
+                                    R.anim.push_right_out);
+                            finish();
+                        }
+
+
+                        CURRENT_TAG = TAG_Employ_Logout;
+                        titleTxt.setText("Log Out");
+
+                    }
+
+                    pDialog.dismiss();
+
+                } catch (JSONException e) {
+                    Log.e("checking json excption" , e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("Login", "Error: " + error.getMessage());
+                // Log.e("checking now ",error.getMessage());
+
+                Toast.makeText(HomeActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                pDialog.dismiss();
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("AdminID",AdminID);
+                params.put("AuthCode",AuthCode);
+
+
+                Log.e("Parms", params.toString());
+                return params;
+            }
+
+        };
+        historyInquiry.setRetryPolicy(new DefaultRetryPolicy(SettingConstant.Retry_Time,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
+
+    }
+
 
     @Override
     public void onFragmentInteraction(int navigationCount, String Title) {
