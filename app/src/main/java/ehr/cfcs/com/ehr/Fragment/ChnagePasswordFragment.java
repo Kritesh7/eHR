@@ -208,7 +208,7 @@ public class ChnagePasswordFragment extends Fragment {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("UserID", UserID);
+                params.put("AdminID", UserID);
                 params.put("OldPassword",OldPassword);
                 params.put("NewPassword",NewPassword);
                 params.put("AuthCode",AuthCode);

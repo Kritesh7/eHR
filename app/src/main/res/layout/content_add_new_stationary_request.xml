@@ -60,7 +60,7 @@
             android:background="@color/status_color"
             />
 
-        <ListView
+        <!--<ListView
             android:layout_marginTop="10dp"
             android:descendantFocusability="afterDescendants"
             android:focusable="false"
@@ -73,7 +73,13 @@
             android:layout_height="match_parent">
 
         </ListView>
+-->
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/stationory_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
 
 
     </LinearLayout>

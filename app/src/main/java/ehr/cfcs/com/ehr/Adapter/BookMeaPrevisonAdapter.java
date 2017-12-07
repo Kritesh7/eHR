@@ -81,6 +81,7 @@ public class BookMeaPrevisonAdapter extends BaseAdapter {
         holder = new ViewHolder();
         holder.mWatcher = new EditTextWatcher();
         view = inflater.inflate(R.layout.book_me_a_previoson_item_layout, null);
+
         holder.tvName = (CheckBox) view.findViewById(R.id.itemcheckbox);
         holder.quantityTxt = (EditText)view.findViewById(R.id.edit_quantity);
         holder.remarkTxt = (EditText)view.findViewById(R.id.remark);

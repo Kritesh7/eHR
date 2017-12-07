@@ -7,15 +7,15 @@ package ehr.cfcs.com.ehr.Source;
 public class SettingConstant {
 
 
+    //Local
+    /*public static final String BASEURL_FOR_LOGIN = "http://192.168.1.60:8086/WEBAPI/LoginHRMSService.ASMX/";
+      public static final String BaseUrl = "http://192.168.1.60:8086/WEBAPI/HRMSWebService.ASMX/";
+      public static final String DownloadUrl= "http://192.168.1.60:8086/";*/
+
     //Server
-       public static final String BASEURL_FOR_LOGIN = "http://192.168.1.60:8086/WEBAPI/LoginHRMSService.ASMX/";
-       public static final String BaseUrl = "http://192.168.1.60:8086/WEBAPI/HRMSWebService.ASMX/";
-       public static final String DownloadUrl= "http://192.168.1.60:8086/";
-
-      //Local
-      //public static final String BASEURL_FOR_LOGIN = "http://192.168.1.62:8086/WEBAPI/HRMSWebService.ASMX";
-      //public static final String ImageUrl= "http://192.168.1.62:9090/";
-
+    public static final String BASEURL_FOR_LOGIN = "http://hr.cfcsitservices.co.in/WEBAPI/LoginHRMSService.ASMX/";
+    public static final String BaseUrl = "http://hr.cfcsitservices.co.in/WEBAPI/HRMSWebService.ASMX/";
+    public static final String DownloadUrl= "http://hr.cfcsitservices.co.in/";
 
 
     public static final int Retry_Time = 15000;

@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -40,15 +43,22 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
+import ehr.cfcs.com.ehr.Adapter.AddStationoryRequestNewAdapter;
+import ehr.cfcs.com.ehr.Adapter.AppreceationAdapter;
 import ehr.cfcs.com.ehr.Adapter.BookMeaPrevisonAdapter;
 import ehr.cfcs.com.ehr.Interface.AddItemInterface;
+import ehr.cfcs.com.ehr.Model.AddNewStationoryRequestModel;
 import ehr.cfcs.com.ehr.Model.BookMeaPrevisionModel;
 import ehr.cfcs.com.ehr.Model.SendListModel;
 import ehr.cfcs.com.ehr.Model.SkillsModel;
 import ehr.cfcs.com.ehr.Model.StationaryRequestModel;
+import ehr.cfcs.com.ehr.Model.getQuantAndRemarkModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
 import ehr.cfcs.com.ehr.Source.ConnectionDetector;
@@ -59,9 +69,13 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 public class AddNewStationaryRequestActivity extends AppCompatActivity implements AddItemInterface  {
 
     public TextView titleTxt;
-    public BookMeaPrevisonAdapter adapter;
-    public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
-    public ListView listView;
+ //   public BookMeaPrevisonAdapter adapter;
+    public AddStationoryRequestNewAdapter adapter;
+  //  public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
+    public ArrayList<AddNewStationoryRequestModel> list = new ArrayList<>();
+    public ArrayList<getQuantAndRemarkModel> innerlist = new ArrayList<>();
+   // public ListView listView;
+    public RecyclerView addStaRecy;
     public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryItemDetail";
     public String addUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestInsUpdt";
     public ConnectionDetector conn;
@@ -126,7 +140,8 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
         authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddNewStationaryRequestActivity.this)));
         userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddNewStationaryRequestActivity.this)));
 
-        listView = (ListView)findViewById(R.id.listview);
+        //listView = (ListView)findViewById(R.id.listview);
+        addStaRecy = (RecyclerView) findViewById(R.id.stationory_recycler);
         addBtn = (Button)findViewById(R.id.newrequestbtn);
         closerDateBtn = (ImageView) findViewById(R.id.closerdatebtn);
         closerDateTxt = (EditText) findViewById(R.id.closerdatetxt);
@@ -176,7 +191,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
         });
 
         //listView.setItemsCanFocus(true);
-        if (modeString.equalsIgnoreCase("Edit"))
+       /* if (modeString.equalsIgnoreCase("Edit"))
         {
             closerDateTxt.setText(IdealClosureDateText);
             titleTxt.setText("Update Stationary Request");
@@ -186,7 +201,16 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             adapter = new BookMeaPrevisonAdapter(list, AddNewStationaryRequestActivity.this, this, modeString);
         }
         listView.setItemsCanFocus(true);
-        listView.setAdapter(adapter);
+        listView.setAdapter(adapter);*/
+
+        adapter = new AddStationoryRequestNewAdapter(AddNewStationaryRequestActivity.this,list);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(AddNewStationaryRequestActivity.this);
+        addStaRecy.setLayoutManager(mLayoutManager);
+        addStaRecy.setItemAnimator(new DefaultItemAnimator());
+        addStaRecy.setAdapter(adapter);
+
+        addStaRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
+
 
 
         if (conn.getConnectivityStatus()>0) {
@@ -204,40 +228,77 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             public void onClick(View view) {
 
 
-                //Making json format
+                Log.e("checking the my list"," checking list size is: " + adapter.getListData().size() );
+
+                if (innerlist.size()>0)
+                {
+                    innerlist.clear();
+                }
+
+                for (int i=0; i<list.size(); i++)
+                {
+
+                    adapter.getListData().get(i).getQuantity();
+
+                    if (!adapter.getListData().get(i).getQuantity().equalsIgnoreCase(""))
+                    {
+
+                        Log.e("checking the main list size",list.size() +"" );
+
+                        Log.e("checking the item id",adapter.getListData().get(i).getItemId());
+                        Log.e("checking the item name",adapter.getListData().get(i).getItemName() );
+                        Log.e("checking the remark",adapter.getListData().get(i).getRemark() );
+                        Log.e("checking the quantity",adapter.getListData().get(i).getQuantity() );
+
+                        innerlist.add(new getQuantAndRemarkModel(adapter.getListData().get(i).getItemName(),
+                                adapter.getListData().get(i).getQuantity(), adapter.getListData().get(i).getRemark(),
+                                adapter.getListData().get(i).getItemId()));
+
+                    }
+                }
+
+                Log.e("checking the inner list size","Inner Log......" + innerlist.size());
+
+                //old function
+               /* //Making json format
                 String splitString  = String.valueOf(adapter.getSelectedString());
                 String id = String.valueOf(adapter.getSelectedId());
                 String quanty = String.valueOf(adapter.getSelectedQuan());
-                String remark = String.valueOf(adapter.getSelectedRemark());
+                String remark = String.valueOf(adapter.getSelectedRemark());*/
 
-                //remove first and last character
+               /* //remove first and last character
                 String removeHip = splitString.substring(1, splitString.length() - 1);
                 String removeId = id.substring(1, id.length() - 1);
                 String removeQuant = quanty.substring(1, quanty.length() - 1);
                 String removeRemark = remark.substring(1, remark.length() - 1);
-
-               // str.replaceAll("\[|\]", "");
+*/
+             /*  // str.replaceAll("\[|\]", "");
                 String[] separated = removeHip.split(",");
                 String[] separatedId = removeId.split(",");
                 String[] separatedquant = removeQuant.split(",");
-                String[] separatedRemark = removeRemark.split(",");
+                String[] separatedRemark = removeRemark.split(",");*/
+
+             //prevent save duplicate data in array list
+               /* Set<AddNewStationoryRequestModel> hs = new LinkedHashSet<AddNewStationoryRequestModel>(innerlist);
+                innerlist.clear();
+
+                Log.e("checking the clear list size is", innerlist.size() + "");
+                innerlist.addAll(hs);*/
 
 
+                //Make json
                 JSONArray mainArray = new JSONArray();
                 JSONObject object = new JSONObject();
                 try {
 
-                    Log.e("Split  of string",quanty);
-                    Log.e("selected quantity",adapter.getSelectedQuan().size() + "");
-                    Log.e("checking first",separated[0]);
 
-                    for (int i =0; i<adapter.getSelectedString().size(); i++) {
+                    for (int i =0; i<innerlist.size(); i++) {
 
                         JSONObject filterJson = new JSONObject();
-                        filterJson.put("ItemID", separatedId[i]);
-                        filterJson.put("ItemName", separated[i]);
-                        filterJson.put("Qty", separatedquant[i]);
-                        filterJson.put("Remark", separatedRemark[i]);
+                        filterJson.put("ItemID", innerlist.get(i).getItemId());
+                        filterJson.put("ItemName", innerlist.get(i).getItemName());
+                        filterJson.put("Qty", innerlist.get(i).getItemQuantity());
+                        filterJson.put("Remark", innerlist.get(i).getItemRemark());
 
                         mainArray.put(filterJson);
                     }
@@ -249,15 +310,15 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                 }
 
 
-                Log.e("checking the json is",mainArray.toString());
+                //Log.e("checking the json is",mainArray.toString());
 
                 //Validation condtion and add data
                 if (closerDateTxt.getText().toString().equalsIgnoreCase(""))
                 {
                     closerDateTxt.setError("Please select closer date");
-                }else if (adapter.getSelectedString().size() == 0)
+                }else if (innerlist.size() == 0)
                 {
-                    Toast.makeText(AddNewStationaryRequestActivity.this, "please select more than one item", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddNewStationaryRequestActivity.this, "At least one item required", Toast.LENGTH_SHORT).show();
                 }else {
 
                     if (conn.getConnectivityStatus()>0) {
@@ -310,7 +371,9 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                         String ItemName = jsonObject.getString("ItemName");
                         String MaxQuantity = jsonObject.getString("MaxQuantity");
 
-                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,MaxQuantity,"","false","0"));
+                      //  list.add(new BookMeaPrevisionModel(ItemName,ItemID,MaxQuantity,"","false","0"));
+
+                        list.add(new AddNewStationoryRequestModel(ItemName,MaxQuantity,ItemID,"",""));
 
 
 
