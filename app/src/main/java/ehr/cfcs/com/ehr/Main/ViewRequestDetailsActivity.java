@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ehr.cfcs.com.ehr.Adapter.RequestedItemAdapter;
+import ehr.cfcs.com.ehr.Model.AddNewStationoryRequestModel;
 import ehr.cfcs.com.ehr.Model.BookMeaPrevisionModel;
 import ehr.cfcs.com.ehr.Model.RequestItemModel;
 import ehr.cfcs.com.ehr.R;
@@ -48,7 +49,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
     public ehr.cfcs.com.ehr.Source.MyListLayout requestItemList;
     public RequestedItemAdapter adapter;
     public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
-    public ArrayList<BookMeaPrevisionModel> itemBindList = new ArrayList<>();
+    public ArrayList<AddNewStationoryRequestModel> itemBindList = new ArrayList<>();
     public ConnectionDetector conn;
     public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDetail";
     public String authCode = "", rid="", userId = "", ridStr = "",IdealClosureDateText = "";
@@ -231,7 +232,7 @@ public class ViewRequestDetailsActivity extends AppCompatActivity {
                         String Remark = object.getString("Remark");
                         String chkValue = object.getString("chkValue");
 
-                        itemBindList.add(new BookMeaPrevisionModel(ItemName,ItemID,Quantity,Remark,chkValue,maxQuantity));
+                        itemBindList.add(new AddNewStationoryRequestModel(ItemName,maxQuantity,ItemID,Quantity,Remark));
                     }
 
                     Log.e("Inner List size in edit", itemBindList.size() + "");

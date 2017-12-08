@@ -1,10 +1,12 @@
 package ehr.cfcs.com.ehr.Model;
 
+import java.io.Serializable;
+
 /**
  * Created by Admin on 06-12-2017.
  */
 
-public class AddNewStationoryRequestModel
+public class AddNewStationoryRequestModel implements Serializable
 {
     public String itemName;
     public String setMaxQuantity;

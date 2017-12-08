@@ -125,18 +125,33 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Booking 1"
+                        android:textColor="@color/status_color"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:gravity="center"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
-                    <EditText
-                        android:id="@+id/cab_bokkint_time"
+                    <android.support.design.widget.TextInputLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
                         android:layout_weight=".8"
+                        android:layout_height="wrap_content"
+                        android:textColorHint="#0D47A1"
+                        app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+                        <EditText
+                            android:enabled="false"
+                        android:id="@+id/cab_bokkint_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:background="@drawable/linebelowedittext"
                         android:backgroundTint="@color/purple700"
                         android:hint="Booking Time"
@@ -148,10 +163,12 @@
                         android:textSize="16dp"
                         android:theme="@style/MyEditText" />
 
+                    </android.support.design.widget.TextInputLayout>
+
                     <ImageView
                         android:id="@+id/cab_time"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight=".2"
                         android:src="@drawable/stopwatch" />
 
@@ -229,18 +246,35 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Booking 2(Optional)"
+                        android:textColor="@color/status_color"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:gravity="center"/>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/cab_bokkint_time1"
+                        <android.support.design.widget.TextInputLayout
                             android:layout_width="0dp"
+                            android:layout_weight=".8"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="#0D47A1"
+                            app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+
+                        <EditText
+                            android:enabled="false"
+                            android:id="@+id/cab_bokkint_time1"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:layout_weight=".8"
                             android:background="@drawable/linebelowedittext"
                             android:backgroundTint="@color/purple700"
                             android:hint="Booking Time"
@@ -252,10 +286,12 @@
                             android:textSize="16dp"
                             android:theme="@style/MyEditText" />
 
+                        </android.support.design.widget.TextInputLayout>
+
                         <ImageView
                             android:id="@+id/cab_time1"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight=".2"
                             android:src="@drawable/stopwatch" />
 
@@ -333,18 +369,35 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Booking 3(Optional)"
+                        android:textColor="@color/status_color"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:gravity="center"/>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/cab_bokkint_time2"
+                        <android.support.design.widget.TextInputLayout
                             android:layout_width="0dp"
+                            android:layout_weight=".8"
+                            android:layout_height="wrap_content"
+                            android:textColorHint="#0D47A1"
+                            app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+
+                        <EditText
+                            android:enabled="false"
+                            android:id="@+id/cab_bokkint_time2"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
-                            android:layout_weight=".8"
                             android:background="@drawable/linebelowedittext"
                             android:backgroundTint="@color/purple700"
                             android:hint="Booking Time"
@@ -356,10 +409,12 @@
                             android:textSize="16dp"
                             android:theme="@style/MyEditText" />
 
+                        </android.support.design.widget.TextInputLayout>
+
                         <ImageView
                             android:id="@+id/cab_time2"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight=".2"
                             android:src="@drawable/stopwatch" />
 

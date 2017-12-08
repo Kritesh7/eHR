@@ -363,7 +363,7 @@ public class AddCabActivity extends AppCompatActivity {
                             sourceAddTxt.getText().toString(),destinationDDtXT.getText().toString()));
                 }else
                     {
-                        Toast.makeText(AddCabActivity.this, "Please enter all feild", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddCabActivity.this, "Please enter Booking Details", Toast.LENGTH_SHORT).show();
                     }
 
                 //data bind second Block
@@ -375,7 +375,7 @@ public class AddCabActivity extends AppCompatActivity {
                             sourceAddTxt1.getText().toString(),destinationDDtXT1.getText().toString()));
                 }else
                 {
-                    Toast.makeText(AddCabActivity.this, "Please enter all feild", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(AddCabActivity.this, "Please enter all feild", Toast.LENGTH_SHORT).show();
                 }
 
                 // data bind Third block
@@ -387,7 +387,7 @@ public class AddCabActivity extends AppCompatActivity {
                             sourceAddTxt2.getText().toString(),destinationDDtXT2.getText().toString()));
                 }else
                 {
-                    Toast.makeText(AddCabActivity.this, "Please enter all field", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(AddCabActivity.this, "Please enter all field", Toast.LENGTH_SHORT).show();
                 }
 
 

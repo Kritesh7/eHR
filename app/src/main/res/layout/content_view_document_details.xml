@@ -272,6 +272,7 @@
                     android:textSize="16sp"/>
 
                 <ehr.cfcs.com.ehr.Source.MyListLayout
+                    android:fadeScrollbars="false"
                     android:id="@+id/request_item_list"
                     android:layout_marginTop="10dp"
                     android:layout_width="match_parent"

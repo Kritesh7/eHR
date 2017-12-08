@@ -4,32 +4,27 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import ehr.cfcs.com.ehr.Model.AddNewStationoryRequestModel;
-import ehr.cfcs.com.ehr.Model.getQuantAndRemarkModel;
 import ehr.cfcs.com.ehr.R;
 
 /**
  * Created by Admin on 06-12-2017.
  */
 
-public class AddStationoryRequestNewAdapter extends RecyclerView.Adapter<AddStationoryRequestNewAdapter.ViewHolder>
+public class AddStationoryAndDocumentRequestNewAdapter extends RecyclerView.Adapter<AddStationoryAndDocumentRequestNewAdapter.ViewHolder>
 {
     public Context context;
     public ArrayList<AddNewStationoryRequestModel> list = new ArrayList<>();
 
-    public AddStationoryRequestNewAdapter(Context context, ArrayList<AddNewStationoryRequestModel> list) {
+    public AddStationoryAndDocumentRequestNewAdapter(Context context, ArrayList<AddNewStationoryRequestModel> list) {
         this.context = context;
         this.list = list;
     }
@@ -48,10 +43,18 @@ public class AddStationoryRequestNewAdapter extends RecyclerView.Adapter<AddStat
 
         AddNewStationoryRequestModel model = list.get(position);
 
-
         holder.nameTxt.setText(model.getItemName());
         holder.quantityTxt.setText(model.getQuantity());
         holder.remarkTxt.setText(model.getRemark());
+
+        int count = position+1;
+
+        holder.numberTxt.setText("("+ count +") ");
+
+        if (model.getQuantity().equalsIgnoreCase("0"))
+        {
+            holder.quantityTxt.setText("");
+        }
 
         holder.quantityTxt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -106,7 +109,7 @@ public class AddStationoryRequestNewAdapter extends RecyclerView.Adapter<AddStat
 
                     } else {
 
-                       // list.get(position).setRemark(model.getRemark());
+                        list.get(position).setRemark("");
                     }
 
                 }
@@ -124,9 +127,7 @@ public class AddStationoryRequestNewAdapter extends RecyclerView.Adapter<AddStat
     @Override
     public int getItemCount() {
 
-
         return list.size();
-
     }
 
     @Override
@@ -135,13 +136,14 @@ public class AddStationoryRequestNewAdapter extends RecyclerView.Adapter<AddStat
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView nameTxt;
+        public TextView nameTxt, numberTxt;
         public EditText quantityTxt, remarkTxt;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             nameTxt = (TextView)itemView.findViewById(R.id.itemname);
+            numberTxt = (TextView) itemView.findViewById(R.id.number);
             quantityTxt = (EditText)itemView.findViewById(R.id.edit_quantity);
             remarkTxt = (EditText)itemView.findViewById(R.id.remark);
 
@@ -152,6 +154,5 @@ public class AddStationoryRequestNewAdapter extends RecyclerView.Adapter<AddStat
     {
         return list;
     }
-
 
 }

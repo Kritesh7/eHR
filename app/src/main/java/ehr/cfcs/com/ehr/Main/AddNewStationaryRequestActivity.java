@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,13 +15,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,21 +39,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
-import ehr.cfcs.com.ehr.Adapter.AddStationoryRequestNewAdapter;
-import ehr.cfcs.com.ehr.Adapter.AppreceationAdapter;
-import ehr.cfcs.com.ehr.Adapter.BookMeaPrevisonAdapter;
+import ehr.cfcs.com.ehr.Adapter.AddStationoryAndDocumentRequestNewAdapter;
 import ehr.cfcs.com.ehr.Interface.AddItemInterface;
 import ehr.cfcs.com.ehr.Model.AddNewStationoryRequestModel;
-import ehr.cfcs.com.ehr.Model.BookMeaPrevisionModel;
 import ehr.cfcs.com.ehr.Model.SendListModel;
-import ehr.cfcs.com.ehr.Model.SkillsModel;
-import ehr.cfcs.com.ehr.Model.StationaryRequestModel;
 import ehr.cfcs.com.ehr.Model.getQuantAndRemarkModel;
 import ehr.cfcs.com.ehr.R;
 import ehr.cfcs.com.ehr.Source.AppController;
@@ -70,7 +58,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
     public TextView titleTxt;
  //   public BookMeaPrevisonAdapter adapter;
-    public AddStationoryRequestNewAdapter adapter;
+    public AddStationoryAndDocumentRequestNewAdapter adapter;
   //  public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
     public ArrayList<AddNewStationoryRequestModel> list = new ArrayList<>();
     public ArrayList<getQuantAndRemarkModel> innerlist = new ArrayList<>();
@@ -80,14 +68,14 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
     public String addUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestInsUpdt";
     public ConnectionDetector conn;
     public String authCode = "",modeString = "",editList = "",userId = "";
-    public ArrayList<BookMeaPrevisionModel> myList = new ArrayList<>();
+    public ArrayList<AddNewStationoryRequestModel> myList = new ArrayList<>();
     public Button addBtn;
     public ArrayList<SendListModel> sendListInner = new ArrayList<>();
     public ArrayList<SendListModel> emptyList = new ArrayList<>();
     public AddItemInterface itemInterface;
     ArrayList<String> secondQuant = new ArrayList<String>();
-    public ImageView closerDateBtn;
-    public EditText closerDateTxt;
+    public LinearLayout closerDateBtn;
+    public TextView closerDateTxt;
     private int yy, mm, dd;
     private int mYear, mMonth, mDay, mHour, mMinute;
     public String rIdStr = "", IdealClosureDateText = "";
@@ -132,7 +120,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             modeString = intent.getStringExtra("Mode");
             rIdStr = intent.getStringExtra("Rid");
             IdealClosureDateText = intent.getStringExtra("IdealClosureDateText");
-            myList = (ArrayList<BookMeaPrevisionModel>)getIntent().getSerializableExtra("mylist");
+            myList = (ArrayList<AddNewStationoryRequestModel>)getIntent().getSerializableExtra("mylist");
 
         }
 
@@ -143,8 +131,8 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
         //listView = (ListView)findViewById(R.id.listview);
         addStaRecy = (RecyclerView) findViewById(R.id.stationory_recycler);
         addBtn = (Button)findViewById(R.id.newrequestbtn);
-        closerDateBtn = (ImageView) findViewById(R.id.closerdatebtn);
-        closerDateTxt = (EditText) findViewById(R.id.closerdatetxt);
+        closerDateBtn = (LinearLayout) findViewById(R.id.closerdatebtn);
+        closerDateTxt = (TextView) findViewById(R.id.closerdatetxt);
 
         //closer Date Picker
         closerDateBtn.setOnClickListener(new View.OnClickListener() {
@@ -190,20 +178,67 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
             }
         });
 
-        //listView.setItemsCanFocus(true);
-       /* if (modeString.equalsIgnoreCase("Edit"))
+        closerDateTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                InputMethodManager inputManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddNewStationaryRequestActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                yy = year;
+                                mm = monthOfYear;
+                                dd = dayOfMonth;
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(Calendar.MONTH, monthOfYear);
+                                String sdf = new SimpleDateFormat("LLL", Locale.getDefault()).format(calendar.getTime());
+                                sdf = new DateFormatSymbols().getShortMonths()[monthOfYear];
+
+                                Log.e("checking,............", sdf + " null");
+                                closerDateTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+
+            }
+        });
+
+
+
+        //Edit Mode;
+        if (modeString.equalsIgnoreCase("Edit"))
         {
             closerDateTxt.setText(IdealClosureDateText);
             titleTxt.setText("Update Stationary Request");
             addBtn.setText("Update Stationary Request");
-            adapter = new BookMeaPrevisonAdapter(myList, AddNewStationaryRequestActivity.this, this, modeString);
-        }else {
-            adapter = new BookMeaPrevisonAdapter(list, AddNewStationaryRequestActivity.this, this, modeString);
-        }
-        listView.setItemsCanFocus(true);
-        listView.setAdapter(adapter);*/
 
-        adapter = new AddStationoryRequestNewAdapter(AddNewStationaryRequestActivity.this,list);
+            adapter = new AddStationoryAndDocumentRequestNewAdapter(AddNewStationaryRequestActivity.this,myList);
+
+        }else
+            {
+                adapter = new AddStationoryAndDocumentRequestNewAdapter(AddNewStationaryRequestActivity.this,list);
+            }
+
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(AddNewStationaryRequestActivity.this);
         addStaRecy.setLayoutManager(mLayoutManager);
         addStaRecy.setItemAnimator(new DefaultItemAnimator());
@@ -315,7 +350,8 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                 //Validation condtion and add data
                 if (closerDateTxt.getText().toString().equalsIgnoreCase(""))
                 {
-                    closerDateTxt.setError("Please select closer date");
+                   // closerDateTxt.setError("Please select closer date");
+                    Toast.makeText(AddNewStationaryRequestActivity.this, "Please select closer date", Toast.LENGTH_SHORT).show();
                 }else if (innerlist.size() == 0)
                 {
                     Toast.makeText(AddNewStationaryRequestActivity.this, "At least one item required", Toast.LENGTH_SHORT).show();
