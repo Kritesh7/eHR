@@ -125,6 +125,23 @@ public class LeaveMangementAdapter extends RecyclerView.Adapter<LeaveMangementAd
             }
         });
 
+        Log.e("chcking status id", model.getStatusId());
+        Log.e("checking cancelStatusId", model.getCancelStatus());
+        if (model.getStatusId().equalsIgnoreCase("3") || model.getStatusId().equalsIgnoreCase("4") ||
+                model.getStatusId().equalsIgnoreCase("5") || model.getStatusId().equalsIgnoreCase("8") ||
+                model.getStatusId().equalsIgnoreCase("9") || model.getCancelStatus().equalsIgnoreCase("3") ||
+                model.getCancelStatus().equalsIgnoreCase("4") || model.getCancelStatus().equalsIgnoreCase("5") ||
+                model.getCancelStatus().equalsIgnoreCase("8") || model.getCancelStatus().equalsIgnoreCase("9"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.red_color));
+        }else if (model.getStatusId().equalsIgnoreCase("0") || model.getCancelStatus().equalsIgnoreCase("0"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.orange_color));
+        }else
+            {
+                holder.statusTxt.setTextColor(context.getResources().getColor(R.color.green_color));
+            }
+
 
     }
 

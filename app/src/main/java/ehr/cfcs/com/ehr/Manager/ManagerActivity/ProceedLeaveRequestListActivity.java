@@ -151,10 +151,12 @@ public class ProceedLeaveRequestListActivity extends AppCompatActivity {
                         String LeaveApplication_Id = jsonObject.getString("LeaveApplication_Id");
                         String Noofdays = jsonObject.getString("Noofdays");
                         String UserName = jsonObject.getString("UserName");
+                        String CancelStatus = jsonObject.getString("CancelStatus");
+                        String Status = jsonObject.getString("Status");
 
-                        list.add(new LeaveManagementModel(UserName,LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,
-                                LeaveApplication_Id,Noofdays,"0"));
 
+                        list.add(new LeaveManagementModel(UserName, LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,
+                                LeaveApplication_Id,Noofdays,"0",CancelStatus,Status));
 
 
                     }

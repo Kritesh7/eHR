@@ -665,6 +665,21 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
               /*  DashBoardFragment dashboard = new DashBoardFragment();
                 return dashboard;*/
 
+             /*   ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer) {
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                        // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+                        super.onDrawerClosed(drawerView);
+                    }
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
+                        super.onDrawerOpened(drawerView);
+                    }
+                };
+                //Setting the actionbarToggle to drawer layout
+                drawerLayout.setDrawerListener(actionBarDrawerToggle);
+*/
                 newFragment = new DashBoardFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -685,6 +700,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 // movies fragment
               /*  PayoutsListFragment payoutsListFragment = new PayoutsListFragment();*/
 
+               /* getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);*/
+
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new AttendaceListFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -696,6 +728,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 2:
+
+              /*  if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new LeaveManagementFragment();
                 newFragment.setArguments(bundle);
@@ -727,6 +776,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 4:
 
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new AssestDetailsFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -738,6 +804,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 5:
+/*
+                if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new ChnagePasswordFragment();
                 newFragment.setArguments(bundle);
@@ -751,6 +834,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 6:
 
+              /*  if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new PersonalDetailsFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -762,6 +862,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 7:
+
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new MedicalDetailsFragment();
                 newFragment.setArguments(bundle);
@@ -775,6 +892,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 8:
 
+                /*if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new OfficeallyDetailsFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -786,6 +920,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 9:
+
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new ContactsDetailsFragment();
                 newFragment.setArguments(bundle);
@@ -799,6 +950,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 10:
 
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new EmergencyContactsFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -810,6 +978,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 11:
+
+              /*  if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new DependnetsFragment();
                 newFragment.setArguments(bundle);
@@ -823,6 +1008,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 12:
 
+              /*  if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new MedicalAndEnsuranceFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -834,6 +1036,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 13:
+
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new EducationDetailsFragment();
                 newFragment.setArguments(bundle);
@@ -847,6 +1066,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 14:
 
+              /*  if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new PreviousExprienceFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -859,6 +1095,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 15:
 
+             /*   if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new LanguagesFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -870,6 +1123,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 16:
+/*
+                if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new SkillsFragment();
                 newFragment.setArguments(bundle);
@@ -883,6 +1153,24 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 17:
 
+
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new LeaveSummarryFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -894,6 +1182,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 18:
+
+
+              /*  if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
 
                 newFragment = new StationaryRequestFragment();
                 newFragment.setArguments(bundle);
@@ -907,6 +1212,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 19:
 
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new DocumentListFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -918,6 +1240,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 20:
+
+              /*  if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new TaxiListFragment();
                 newFragment.setArguments(bundle);
@@ -931,6 +1270,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 21:
 
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new HotelBookingListFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -942,6 +1298,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 23:
+
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new ShortLeaveHistoryFragment();
                 newFragment.setArguments(bundle);
@@ -955,6 +1328,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 24:
 
+              /*  if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new WeekOfListFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -966,6 +1356,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 25:
+/*
+                if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new HolidayListFragment();
                 newFragment.setArguments(bundle);
@@ -979,6 +1386,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 26:
 
+                /*if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new ContactPhoneFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -990,6 +1414,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 27:
+
+                /*if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
                 newFragment = new ManagerDashBoardFragment();
                 newFragment.setArguments(bundle);
@@ -1003,6 +1444,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
             case 28:
 
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
+
                 newFragment = new AttendanceLogListFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -1014,6 +1472,23 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 return newFragment ;
 
             case 29:
+
+               /* if (getSupportActionBar() != null){
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setDisplayShowHomeEnabled(true);
+                }*/
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toolbar.setNavigationIcon(R.drawable.backimg);
+
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // onBackPressed();
+                        onBackPressed();
+
+                    }
+                });
+
 
 
                 newFragment = new MyProfileFragment();
@@ -1055,6 +1530,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             // checking if user is on other navigation menu
             // rather than home
             if (navigationItemIndex != 0) {
+
                 getCount(authCode,userId);
                 titleTxt.setText("Dashboard");
 
@@ -1369,7 +1845,20 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         navigationItemIndex = navigationCount;
         titleTxt.setText(Title);
 
-        Log.e("checking the back to dashboard then counting ",countstr + "null");
+        if (navigationItemIndex !=0)
+        {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            toolbar.setNavigationIcon(R.drawable.backimg);
+
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // onBackPressed();
+                    onBackPressed();
+
+                }
+            });
+        }
 
         //check notification count
        // if (!countstr.equalsIgnoreCase("" ) || !countstr.equalsIgnoreCase("null")) {
@@ -1390,7 +1879,6 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
       //  countinOne = count;
 
-        Log.e("checking the back to not dashboard then counting ",count + "null");
 
         if (!count.equalsIgnoreCase("" ) || !count.equalsIgnoreCase("null")) {
             int co = Integer.parseInt(count);

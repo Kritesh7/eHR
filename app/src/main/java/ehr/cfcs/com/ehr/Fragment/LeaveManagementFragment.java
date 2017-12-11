@@ -325,9 +325,12 @@ public class LeaveManagementFragment extends Fragment {
                         String Noofdays = jsonObject.getString("Noofdays");
                         String IsDeleteable = jsonObject.getString("IsDeleteable");
                         String UserName = jsonObject.getString("FullNameWithComp");
+                        String CancelStatus = jsonObject.getString("CancelStatus");
+                        String Status = jsonObject.getString("Status");
+
 
                         list.add(new LeaveManagementModel(UserName, LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,
-                                LeaveApplication_Id,Noofdays,IsDeleteable));
+                                LeaveApplication_Id,Noofdays,IsDeleteable,CancelStatus,Status));
 
 
 

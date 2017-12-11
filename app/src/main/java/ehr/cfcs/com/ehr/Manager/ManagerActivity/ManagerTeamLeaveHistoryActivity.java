@@ -276,10 +276,12 @@ public class ManagerTeamLeaveHistoryActivity extends AppCompatActivity {
                         String LeaveApplication_Id = jsonObject.getString("LeaveApplication_Id");
                         String Noofdays = jsonObject.getString("Noofdays");
                         String UserName = jsonObject.getString("FullNameWithComp");
+                        String CancelStatus = jsonObject.getString("CancelStatus");
+                        String Status = jsonObject.getString("Status");
+
 
                         list.add(new LeaveManagementModel(UserName, LeaveTypeName,StartDateText,EndDateText,AppliedDate,StatusText,
-                                LeaveApplication_Id,Noofdays,"0"));
-
+                                LeaveApplication_Id,Noofdays,"0",CancelStatus,Status));
 
 
                     }

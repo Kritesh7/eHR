@@ -30,7 +30,7 @@
 
             <TextView
                 android:id="@+id/itemname"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="#000000"
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
 
         <TextView
             android:id="@+id/quantity"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textColor="@color/status_color"
             android:layout_marginLeft="10dp"
             android:layout_width="wrap_content"

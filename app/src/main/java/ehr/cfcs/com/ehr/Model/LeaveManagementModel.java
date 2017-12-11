@@ -15,19 +15,30 @@ public class LeaveManagementModel
     public String LeaveApplication_Id;
     public String Noofdays;
     public String IsDeleteable;
+    public String CancelStatus;
+    public String StatusId;
 
-
-    public LeaveManagementModel(String UserName, String leaveType, String startDate, String endDate, String appliedOn, String status,
-                                String LeaveApplication_Id, String Noofdays, String IsDeleteable) {
-        this.UserName = UserName;
+    public LeaveManagementModel(String userName, String leaveType, String startDate, String endDate, String appliedOn, String status, String leaveApplication_Id,
+                                String noofdays, String isDeleteable, String cancelStatus, String StatusId) {
+        UserName = userName;
         this.leaveType = leaveType;
         this.startDate = startDate;
         this.endDate = endDate;
         this.appliedOn = appliedOn;
         this.status = status;
-        this.Noofdays = Noofdays;
-        this.LeaveApplication_Id = LeaveApplication_Id;
-        this.IsDeleteable = IsDeleteable;
+        LeaveApplication_Id = leaveApplication_Id;
+        Noofdays = noofdays;
+        IsDeleteable = isDeleteable;
+        CancelStatus = cancelStatus;
+        this.StatusId = StatusId;
+    }
+
+    public String getStatusId() {
+        return StatusId;
+    }
+
+    public String getCancelStatus() {
+        return CancelStatus;
     }
 
     public String getUserName() {
