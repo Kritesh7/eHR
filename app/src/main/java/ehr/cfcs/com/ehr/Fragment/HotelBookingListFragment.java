@@ -231,9 +231,10 @@ public class HotelBookingListFragment extends Fragment {
                             String Visibility = jsonObject.getString("Visibility");
                             String EmpRemark = jsonObject.getString("EmpRemark");
                             String HotelType = jsonObject.getString("HotelType");
+                            String AppStatus = jsonObject.getString("AppStatus");
 
                             list.add(new HotelBookingListModel(EmployeeName,CityName,requestDate,CheckInDateText
-                                    ,CheckInTime,CheckOutDateText,AppStatusText,followUpDate,BID,Visibility,EmpRemark,HotelType));
+                                    ,CheckInTime,CheckOutDateText,AppStatusText,followUpDate,BID,Visibility,EmpRemark,HotelType,AppStatus));
 
                         }
 

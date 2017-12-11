@@ -207,10 +207,11 @@ public class TaxiListFragment extends Fragment {
                         String AppStatusText = jsonObject.getString("AppStatusText");
                         String BID = jsonObject.getString("BID");
                         String Visibility = jsonObject.getString("Visibility");
+                       // String AppStatus = jsonObject.getString("AppStatus");
 
 
                         list.add(new CabListModel(EmployeeName,ZoneName,CityName,requestDate,BookDateText
-                                ,AppStatusText,followDate,BID,Visibility));
+                                ,AppStatusText,followDate,BID,Visibility,""));
 
 
 

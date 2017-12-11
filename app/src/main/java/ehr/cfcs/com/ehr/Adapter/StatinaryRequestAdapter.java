@@ -91,11 +91,24 @@ public class StatinaryRequestAdapter extends RecyclerView.Adapter<StatinaryReque
             holder.mainLay.setVisibility(View.VISIBLE);
             holder.viewSecond.setVisibility(View.VISIBLE);
 
+
         }else
         {
             holder.delBtn.setVisibility(View.GONE);
             holder.mainLay.setVisibility(View.GONE);
             holder.viewSecond.setVisibility(View.GONE);
+        }
+
+        if (model.getAppStatus().equalsIgnoreCase("1"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.orange_color));
+        }
+        else if (model.getAppStatus().equalsIgnoreCase("2"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.green_color));
+        }else if (model.getAppStatus().equalsIgnoreCase("3"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.red_color));
         }
 
         holder.mainLay.setOnClickListener(new View.OnClickListener() {

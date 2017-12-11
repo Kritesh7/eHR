@@ -3,6 +3,7 @@ package ehr.cfcs.com.ehr.Adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,11 @@ public class AttendanceListAdapter extends RecyclerView.Adapter<AttendanceListAd
         holder.earlyLeavingTxt.setText(model.getEarlyLeaving());
         holder.statusTxt.setText(model.getStatus());
         holder.nameTxt.setText(model.getName());
+
+        if (model.getStatus().equalsIgnoreCase("absent"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.red_color));
+        }
 
         holder.mainLay.setOnClickListener(new View.OnClickListener() {
             @Override

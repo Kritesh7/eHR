@@ -15,9 +15,10 @@ public class CabListModel
     public String followUpDate;
     public String BID;
     public String Visibility;
+    public String AppStatus;
 
     public CabListModel(String employName, String zoneName, String cityName, String requestDate,
-                        String bookingDate, String status, String followUpDate,String BID,String Visibility) {
+                        String bookingDate, String status, String followUpDate,String BID,String Visibility, String AppStatus) {
         this.employName = employName;
         this.zoneName = zoneName;
         this.cityName = cityName;
@@ -27,6 +28,11 @@ public class CabListModel
         this.followUpDate = followUpDate;
         this.BID = BID;
         this.Visibility = Visibility;
+        this.AppStatus = AppStatus;
+    }
+
+    public String getAppStatus() {
+        return AppStatus;
     }
 
     public String getVisibility() {

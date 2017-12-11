@@ -224,9 +224,10 @@ public class DocumentListFragment extends Fragment {
                         String AppStatusText = jsonObject.getString("AppStatusText");
                         String RID = jsonObject.getString("RID");
                         String ItemCatID = jsonObject.getString("ItemCatID");
+                        String AppStatus = jsonObject.getString("AppStatus");
 
                         list.add(new DocumentListModel(EmployeeName,ZoneName,Quantity,requestDate,IdealClosureDateText
-                                ,followDate,AppStatusText,RID,ItemCatID));
+                                ,followDate,AppStatusText,RID,ItemCatID,AppStatus));
 
 
 

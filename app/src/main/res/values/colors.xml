@@ -10,9 +10,13 @@
     <color name="navitmes">#616161</color>
     <color name="dahboard_textcolor">#424242</color>
     <color name="disbale_color">#999999</color>
-
+    <color name="orange_color">#FFA500</color>
+    <color name="red_color">#F44336</color>
+    <color name="green_color">#00C853</color>
     <color name="col1">#E3F2FD</color>
     <color name="col2">#B3E5FC</color>
+
+
 
 
 </resources>

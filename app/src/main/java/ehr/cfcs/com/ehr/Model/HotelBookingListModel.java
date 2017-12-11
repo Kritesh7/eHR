@@ -18,10 +18,11 @@ public class HotelBookingListModel
     public String Visibility;
     public String EmpRemark;
     public String HotelTypeId;
+    public String AppStatus;
 
     public HotelBookingListModel(String empName, String cityName, String requestDate, String checkInDate,
                                  String checkInTime, String checkOutDate, String staus, String followUpDate, String BID,
-                                 String Visibility, String EmpRemark, String HotelTypeId) {
+                                 String Visibility, String EmpRemark, String HotelTypeId, String AppStatus) {
         this.empName = empName;
         this.cityName = cityName;
         this.requestDate = requestDate;
@@ -34,6 +35,11 @@ public class HotelBookingListModel
         this.Visibility= Visibility;
         this.EmpRemark = EmpRemark;
         this.HotelTypeId = HotelTypeId;
+        this.AppStatus =AppStatus;
+    }
+
+    public String getAppStatus() {
+        return AppStatus;
     }
 
     public String getHotelTypeId() {

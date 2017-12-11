@@ -276,6 +276,10 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             }
 
 
+        //count the notification
+        //call API
+        getCount(authCode,userId);
+
 
     }
 
@@ -298,14 +302,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         //Toast.makeText(this, "Cancelled alarm", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
+   /* @Override
     protected void onResume() {
         super.onResume();
 
         //count the notification
         //call API
         getCount(authCode,userId);
-    }
+    }*/
 
     private void loadPhoto(ImageView imageView, int width, int height) {
 

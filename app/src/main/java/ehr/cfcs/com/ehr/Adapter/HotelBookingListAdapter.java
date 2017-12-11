@@ -144,6 +144,17 @@ public class HotelBookingListAdapter extends RecyclerView.Adapter<HotelBookingLi
                 activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
         });
+
+        if (model.getAppStatus().equalsIgnoreCase("1"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.orange_color));
+        }else if (model.getAppStatus().equalsIgnoreCase("2"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.green_color));
+        }else if (model.getAppStatus().equalsIgnoreCase("3"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.red_color));
+        }
     }
 
     @Override

@@ -271,6 +271,7 @@
                 android:text=":"/>
 
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/cab_status"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"

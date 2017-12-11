@@ -43,6 +43,7 @@
                 android:text=":"/>
 
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/summrry_leave_type"
                 android:textColor="@color/dahboard_textcolor"
                 android:layout_width="0dp"
@@ -105,7 +106,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="CarryOver"/>
+                android:text="Carry-Over"/>
 
             <TextView
                 android:textColor="@color/status_color"
@@ -219,7 +220,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Total Balance"/>
+                android:text="Total"/>
 
             <TextView
                 android:textColor="@color/status_color"
@@ -297,7 +298,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="4.5"
                 android:layout_height="wrap_content"
-                android:text="Available Balance"/>
+                android:text="Available"/>
 
             <TextView
                 android:textColor="@color/status_color"

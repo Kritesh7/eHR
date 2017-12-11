@@ -103,6 +103,17 @@ public class DocumentListAdapter extends  RecyclerView.Adapter<DocumentListAdapt
                 showSettingsAlert(position,authCode,model.getRID(),userId);
             }
         });
+
+        if (model.getAppStatus().equalsIgnoreCase("1"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.orange_color));
+        }else if (model.getAppStatus().equalsIgnoreCase("2"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.green_color));
+        }else if (model.getAppStatus().equalsIgnoreCase("3"))
+        {
+            holder.statusTxt.setTextColor(context.getResources().getColor(R.color.red_color));
+        }
     }
 
     @Override

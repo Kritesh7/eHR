@@ -88,9 +88,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (userNameTxt.getText().toString().equalsIgnoreCase(""))
                 {
                     userNameTxt.setError("Please enter valid user name");
+                    userNameTxt.requestFocus();
+
                 }else if (passwordTxt.getText().toString().equalsIgnoreCase(""))
                 {
                     passwordTxt.setError("Please enter valid password");
+                    passwordTxt.requestFocus();
+
                 }else {
 
                     if (conn.getConnectivityStatus()>0) {

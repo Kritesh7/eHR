@@ -166,7 +166,7 @@ public class DashBoardFragment extends Fragment {
                 // update the main content by replacing fragments
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, frag)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                       // .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .addToBackStack(null)
                         .commit();
 

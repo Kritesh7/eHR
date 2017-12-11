@@ -35,7 +35,8 @@
         <activity
             android:name=".Main.LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".Main.HomeActivity"
             android:label="@string/title_activity_home"
@@ -80,7 +81,7 @@
             android:name=".Main.NewAddLeaveMangementActivity"
             android:label="@string/title_activity_new_add_leave_mangement"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".Main.ViewLeavemangementActivity"
             android:label="@string/title_activity_view_leavemangement"
@@ -93,12 +94,12 @@
             android:name=".Main.AddNewStationaryRequestActivity"
             android:label="@string/title_activity_add_new_stationary_request"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".Main.AddDocumentActivity"
             android:label="@string/title_activity_add_document"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".Main.AddCabActivity"
             android:label="@string/title_activity_add_cab"
@@ -143,7 +144,8 @@
         <activity
             android:name=".Main.ForGotPasswordActivity"
             android:label="@string/title_activity_for_got_password"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity
             android:name=".Main.ViewShortLeaveHistoryActivity"
             android:label="@string/title_activity_view_short_leave_history"
@@ -151,7 +153,8 @@
         <activity
             android:name=".Main.ApplyShortLeaveActivity"
             android:label="@string/title_activity_apply_short_leave"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity
             android:name=".Main.ViewAttendanceDetailsActivity"
             android:label="@string/title_activity_view_attendance_details"

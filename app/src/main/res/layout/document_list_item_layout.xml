@@ -264,6 +264,7 @@
                 android:text=":"/>
 
             <TextView
+                android:textStyle="bold"
                 android:id="@+id/document_statinarystatus"
                 android:textColor="@color/purple700"
                 android:layout_width="0dp"

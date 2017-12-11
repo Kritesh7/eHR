@@ -46,19 +46,18 @@
             android:orientation="horizontal">
 
             <EditText
+                android:enabled="false"
+                android:textColor="@drawable/disable_edit_feild"
                 android:id="@+id/datefromtxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_weight=".8"
                 android:background="@drawable/linebelowedittext"
-                android:backgroundTint="@color/purple700"
                 android:hint="Enter Time "
                 android:inputType="textPersonName"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:textColor="@color/purple500"
-                android:textColorHint="@color/purple700"
                 android:textSize="16dp"
                 android:theme="@style/MyEditText" />
 
@@ -66,7 +65,7 @@
                 android:id="@+id/datefrom"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".2"
+                android:layout_weight=".1"
                 android:src="@drawable/stopwatch" />
 
         </LinearLayout>
@@ -87,19 +86,18 @@
             android:orientation="horizontal">
 
             <EditText
+                android:textColor="@drawable/disable_edit_feild"
+                android:enabled="false"
                 android:id="@+id/datetotxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_weight=".8"
                 android:background="@drawable/linebelowedittext"
-                android:backgroundTint="@color/purple700"
                 android:hint="Enter Time "
                 android:inputType="textPersonName"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:textColor="@color/purple500"
-                android:textColorHint="@color/purple700"
                 android:textSize="16dp"
                 android:theme="@style/MyEditText" />
 
@@ -107,7 +105,7 @@
                 android:id="@+id/dateto"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".2"
+                android:layout_weight=".1"
                 android:src="@drawable/stopwatch" />
 
         </LinearLayout>
@@ -128,19 +126,18 @@
             android:orientation="horizontal">
 
             <EditText
+                android:textColor="@drawable/disable_edit_feild"
+                android:enabled="false"
                 android:id="@+id/dateleavetxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_weight=".8"
                 android:background="@drawable/linebelowedittext"
-                android:backgroundTint="@color/purple700"
                 android:hint="Enter Date "
                 android:inputType="textPersonName"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:textColor="@color/purple500"
-                android:textColorHint="@color/purple700"
                 android:textSize="16dp"
                 android:theme="@style/MyEditText" />
 
@@ -148,7 +145,7 @@
                 android:id="@+id/dateleave"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".2"
+                android:layout_weight=".1"
                 android:src="@drawable/cal" />
 
         </LinearLayout>

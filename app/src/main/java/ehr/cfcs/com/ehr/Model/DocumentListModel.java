@@ -16,10 +16,11 @@ public class DocumentListModel
     public String status;
     public String RID;
     public String ItemCatID;
+    public String AppStatus;
 
 
     public DocumentListModel(String employName, String zoneName, String quantity, String requestDate,
-                             String idleClousersDate, String followUpDate, String status, String RID, String itemCatID) {
+                             String idleClousersDate, String followUpDate, String status, String RID, String itemCatID, String AppStatus) {
         this.employName = employName;
         this.zoneName = zoneName;
         this.quantity = quantity;
@@ -29,6 +30,11 @@ public class DocumentListModel
         this.status = status;
         this.RID = RID;
         ItemCatID = itemCatID;
+        this.AppStatus = AppStatus;
+    }
+
+    public String getAppStatus() {
+        return AppStatus;
     }
 
     public String getEmployName() {

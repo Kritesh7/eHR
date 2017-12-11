@@ -233,6 +233,7 @@ public class StationaryRequestFragment extends Fragment {
                         String ItemCatID = jsonObject.getString("ItemCatID");
                         String AppStatus = jsonObject.getString("AppStatus");
 
+
                         list.add(new StationaryRequestModel(EmployeeName,ZoneName,Quantity,requestDate,IdealClosureDateText
                                 ,followDate,AppStatusText,RID,ItemCatID,AppStatus));
 

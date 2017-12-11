@@ -125,6 +125,17 @@ public class CabListAdapter extends RecyclerView.Adapter<CabListAdapter.ViewHold
                 activity.overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
         });
+
+      if (model.getStatus().equalsIgnoreCase("In Process"))
+      {
+          holder.statusTxt.setTextColor(context.getResources().getColor(R.color.orange_color));
+      }else if (model.getStatus().equalsIgnoreCase("Approved"))
+      {
+          holder.statusTxt.setTextColor(context.getResources().getColor(R.color.green_color));
+      }else if (model.getStatus().equalsIgnoreCase("Rejected"))
+      {
+          holder.statusTxt.setTextColor(context.getResources().getColor(R.color.red_color));
+      }
     }
 
     @Override

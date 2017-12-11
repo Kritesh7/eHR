@@ -825,9 +825,14 @@ public class AddCabActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        super.onBackPressed();
-        overridePendingTransition(R.anim.push_left_in,
-                R.anim.push_right_out);
+        if(getFragmentManager().getBackStackEntryCount() == 0) {
+            super.onBackPressed();
+            overridePendingTransition(R.anim.push_left_in,
+                    R.anim.push_right_out);
+        }
+        else {
+            getFragmentManager().popBackStack();
+        }
 
     }
 

@@ -32,6 +32,7 @@
           >
 
         <LinearLayout
+            android:focusable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -109,28 +110,34 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/hotel_checkindatetxt"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_weight=".8"
+                android:layout_height="wrap_content"
+                android:textColorHint="#0D47A1"
+                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+                <EditText
+                android:enabled="false"
+                    android:textColor="@drawable/disable_edit_feild"
+                android:id="@+id/hotel_checkindatetxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@drawable/linebelowedittext"
-                android:backgroundTint="@color/purple700"
                 android:hint="Check In Date"
                 android:inputType="textPersonName"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:textColor="@color/purple500"
-                android:textColorHint="@color/purple700"
-                android:textSize="16dp"
+                android:textSize="14dp"
                 android:theme="@style/MyEditText" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <ImageView
                 android:id="@+id/hotel_checkindateBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".2"
+                android:layout_weight=".1"
                 android:src="@drawable/cal" />
 
         </LinearLayout>
@@ -140,28 +147,35 @@
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/hotel_checkintimetxt"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_weight=".8"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#0D47A1"
+                    app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+
+                <EditText
+                    android:textColor="@drawable/disable_edit_feild"
+                    android:enabled="false"
+                    android:id="@+id/hotel_checkintimetxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/linebelowedittext"
-                    android:backgroundTint="@color/purple700"
                     android:hint="Check In Time"
                     android:inputType="textPersonName"
                     android:paddingBottom="10dp"
                     android:paddingTop="10dp"
-                    android:textColor="@color/purple500"
-                    android:textColorHint="@color/purple700"
-                    android:textSize="16dp"
+                    android:textSize="14dp"
                     android:theme="@style/MyEditText" />
+
+                </android.support.design.widget.TextInputLayout>
 
                 <ImageView
                     android:id="@+id/hotel_checkinTimeBtn"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight=".2"
+                    android:layout_weight=".1"
                     android:src="@drawable/stopwatch" />
 
             </LinearLayout>
@@ -173,28 +187,35 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/hotel_checkoutdatetxt"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_weight=".8"
+                android:layout_height="wrap_content"
+                android:textColorHint="#0D47A1"
+                app:hintTextAppearance="@style/TextAppearenceWith.App.TextInputLayout">
+
+
+            <EditText
+                android:textColor="@drawable/disable_edit_feild"
+                android:enabled="false"
+                android:id="@+id/hotel_checkoutdatetxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@drawable/linebelowedittext"
-                android:backgroundTint="@color/purple700"
                 android:hint="Check Out Date"
                 android:inputType="textPersonName"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:textColor="@color/purple500"
-                android:textColorHint="@color/purple700"
-                android:textSize="16dp"
+                android:textSize="14dp"
                 android:theme="@style/MyEditText" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <ImageView
                 android:id="@+id/hotel_checkoutdateBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight=".2"
+                android:layout_weight=".1"
                 android:src="@drawable/cal" />
 
         </LinearLayout>
@@ -214,14 +235,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/linebelowedittext"
-                android:backgroundTint="@color/purple700"
                 android:hint="Remark"
                 android:inputType="textMultiLine"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:textColor="@color/purple500"
-                android:textColorHint="@color/purple700"
-                android:textSize="16dp"
+                android:textSize="14dp"
                 android:theme="@style/MyEditText" />
         </android.support.design.widget.TextInputLayout>
 
