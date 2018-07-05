@@ -60,7 +60,7 @@ public class AddDependentActivity extends AppCompatActivity {
     public TextView titleTxt;
     public Spinner relationshipSpinner;
     public ArrayList<RelationShipeTypeModel> relationshipList = new ArrayList<>();
-    public  ArrayAdapter<RelationShipeTypeModel> relationShipAdapter ;
+    public ArrayAdapter<RelationShipeTypeModel> relationShipAdapter;
     public String personalDdlDetailsUrl = SettingConstant.BaseUrl + "AppddlEmployeePersonalData";
     public String addUrl = SettingConstant.BaseUrl + "AppEmployeeDependentInsUpdt";
     public ConnectionDetector conn;
@@ -71,8 +71,7 @@ public class AddDependentActivity extends AppCompatActivity {
     private int yy, mm, dd;
     private int mYear, mMonth, mDay, mHour, mMinute;
     public Button addBtn;
-    public String authcode = "", userId = "", genderIdString = "", relationshipidStr = "", actionMode = "", firstNameStr = ""
-            , lastNameStr = "", genderNameStr = "", relationshipNameStr = "", dobStr = "", recordIdStr = "";
+    public String authcode = "", userId = "", genderIdString = "", relationshipidStr = "", actionMode = "", firstNameStr = "", lastNameStr = "", genderNameStr = "", relationshipNameStr = "", dobStr = "", recordIdStr = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,11 +88,11 @@ public class AddDependentActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.adddependenttollbar);
         setSupportActionBar(toolbar);
 
-        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
+        titleTxt = (TextView) toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -109,8 +108,7 @@ public class AddDependentActivity extends AppCompatActivity {
         titleTxt.setText("Add New Dependent");
 
         Intent intent = getIntent();
-        if (intent != null)
-        {
+        if (intent != null) {
             recordIdStr = intent.getStringExtra("RecordId");
             actionMode = intent.getStringExtra("Mode");
             firstNameStr = intent.getStringExtra("FirstName");
@@ -121,11 +119,11 @@ public class AddDependentActivity extends AppCompatActivity {
         }
 
         conn = new ConnectionDetector(AddDependentActivity.this);
-        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddDependentActivity.this)));
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddDependentActivity.this)));
+        authcode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddDependentActivity.this)));
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddDependentActivity.this)));
 
 
-        relationshipSpinner = (Spinner)findViewById(R.id.relationshipespinner);
+        relationshipSpinner = (Spinner) findViewById(R.id.relationshipespinner);
         dobBtn = (ImageView) findViewById(R.id.dobbtn);
         dobTxt = (EditText) findViewById(R.id.dobtxt);
         firstNameTxt = (EditText) findViewById(R.id.firstnametxt);
@@ -137,8 +135,7 @@ public class AddDependentActivity extends AppCompatActivity {
 
 
         //check action
-        if (actionMode.equalsIgnoreCase("EditMode"))
-        {
+        if (actionMode.equalsIgnoreCase("EditMode")) {
             addBtn.setText("Update Dependent");
             titleTxt.setText("Update Dependent");
 
@@ -147,15 +144,13 @@ public class AddDependentActivity extends AppCompatActivity {
             dobTxt.setText(dobStr);
 
 
-            if (genderNameStr.equalsIgnoreCase(maleBtn.getText().toString()))
-            {
+            if (genderNameStr.equalsIgnoreCase(maleBtn.getText().toString())) {
                 maleBtn.setChecked(true);
                 genderIdString = "1";
-            }else
-                {
-                    femailBtn.setChecked(true);
-                    genderIdString = "2";
-                }
+            } else {
+                femailBtn.setChecked(true);
+                genderIdString = "2";
+            }
         }
 
         //Relationship Type Spinner
@@ -216,15 +211,13 @@ public class AddDependentActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
-                if (R.id.malebtn == i)
-                {
+                if (R.id.malebtn == i) {
                     genderIdString = "1";
 
-                }else
-                    {
-                        genderIdString = "2";
+                } else {
+                    genderIdString = "2";
 
-                    }
+                }
             }
         });
 
@@ -248,50 +241,42 @@ public class AddDependentActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (firstNameTxt.getText().toString().equalsIgnoreCase(""))
-                {
+                if (firstNameTxt.getText().toString().equalsIgnoreCase("")) {
                     firstNameTxt.setError("Please enter first name");
-                }else if (lastNameTxt.getText().toString().equalsIgnoreCase(""))
-                {
+                } else if (lastNameTxt.getText().toString().equalsIgnoreCase("")) {
                     lastNameTxt.setError("Please enter last name");
-                }else if (dobTxt.getText().toString().equalsIgnoreCase(""))
-                {
+                } else if (dobTxt.getText().toString().equalsIgnoreCase("")) {
                     dobTxt.setError("Please enter dob");
-                }else if (genderIdString.equalsIgnoreCase(""))
-                {
+                } else if (genderIdString.equalsIgnoreCase("")) {
                     Toast.makeText(AddDependentActivity.this, "Please select gender", Toast.LENGTH_SHORT).show();
-                }else if (relationshipidStr.equalsIgnoreCase(""))
-                {
+                } else if (relationshipidStr.equalsIgnoreCase("")) {
                     Toast.makeText(AddDependentActivity.this, "Please select relationship", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
 
-                    if (conn.getConnectivityStatus()>0) {
+                    if (conn.getConnectivityStatus() > 0) {
 
                         addDepenedntData(userId, recordIdStr, firstNameTxt.getText().toString(), lastNameTxt.getText().toString(), authcode,
                                 dobTxt.getText().toString(), genderIdString, relationshipidStr);
-                    }else
-                        {
-                            conn.showNoInternetAlret();
-                        }
+                    } else {
+                        conn.showNoInternetAlret();
+                    }
                 }
             }
         });
         // bind spinner data
-        if (conn.getConnectivityStatus()>0)
-        {
+        if (conn.getConnectivityStatus() > 0) {
             personalDdlDetails();
-        }else
-        {
+        } else {
             conn.showNoInternetAlret();
         }
 
     }
 
     // add new Depenednt
-    public void addDepenedntData(final String AdminID  ,final String RecordID, final String FirstName, final String LastName,
-                                         final String AuthCode, final String DOB, final String GenderID, final String RelationshipID)  {
+    public void addDepenedntData(final String AdminID, final String RecordID, final String FirstName, final String LastName,
+                                 final String AuthCode, final String DOB, final String GenderID, final String RelationshipID) {
 
-        final ProgressDialog pDialog = new ProgressDialog(AddDependentActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(AddDependentActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -302,20 +287,17 @@ public class AddDependentActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1));
 
-                    if (jsonObject.has("status"))
-                    {
+                    if (jsonObject.has("status")) {
                         String status = jsonObject.getString("status");
 
-                        if (status.equalsIgnoreCase("success"))
-                        {
+                        if (status.equalsIgnoreCase("success")) {
                             onBackPressed();
                         }
                     }
 
-                    if (jsonObject.has("MsgNotification"))
-                    {
+                    if (jsonObject.has("MsgNotification")) {
                         String MsgNotification = jsonObject.getString("MsgNotification");
                         Toast.makeText(AddDependentActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
                     }
@@ -324,7 +306,7 @@ public class AddDependentActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -339,19 +321,18 @@ public class AddDependentActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AdminID",AdminID);
-                params.put("AuthCode",AuthCode);
-                params.put("RecordID",RecordID);
-                params.put("FirstName",FirstName);
-                params.put("LastName",LastName);
-                params.put("DOB",DOB);
-                params.put("GenderID",GenderID);
-                params.put("RelationshipID",RelationshipID);
-
+                params.put("AdminID", AdminID);
+                params.put("AuthCode", AuthCode);
+                params.put("RecordID", RecordID);
+                params.put("FirstName", FirstName);
+                params.put("LastName", LastName);
+                params.put("DOB", DOB);
+                params.put("GenderID", GenderID);
+                params.put("RelationshipID", RelationshipID);
 
 
                 Log.e("Parms", params.toString());
@@ -371,7 +352,7 @@ public class AddDependentActivity extends AppCompatActivity {
     public void personalDdlDetails() {
 
 
-        final ProgressDialog pDialog = new ProgressDialog(AddDependentActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(AddDependentActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -382,33 +363,28 @@ public class AddDependentActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1));
 
                     //bind material List
-                    if (relationshipList.size()>0)
-                    {
+                    if (relationshipList.size() > 0) {
                         relationshipList.clear();
                     }
-                    relationshipList.add(new RelationShipeTypeModel("Please Select Relationship",""));
+                    relationshipList.add(new RelationShipeTypeModel("Please Select Relationship", ""));
 
                     JSONArray relationshipObj = jsonObject.getJSONArray("RelationshipMaster");
-                    for (int i =0; i<relationshipObj.length(); i++)
-                    {
+                    for (int i = 0; i < relationshipObj.length(); i++) {
                         JSONObject object = relationshipObj.getJSONObject(i);
 
                         String RelationshipID = object.getString("RelationshipID");
                         String RelationshipName = object.getString("RelationshipName");
 
-                        relationshipList.add(new RelationShipeTypeModel(RelationshipName,RelationshipID));
+                        relationshipList.add(new RelationShipeTypeModel(RelationshipName, RelationshipID));
 
                     }
 
-                    for (int k =0; k<relationshipList.size(); k++)
-                    {
-                        if (actionMode.equalsIgnoreCase("EditMode"))
-                        {
-                            if (relationshipList.get(k).getRelationshipName().equalsIgnoreCase(relationshipNameStr))
-                            {
+                    for (int k = 0; k < relationshipList.size(); k++) {
+                        if (actionMode.equalsIgnoreCase("EditMode")) {
+                            if (relationshipList.get(k).getRelationshipName().equalsIgnoreCase(relationshipNameStr)) {
                                 relationshipidStr = relationshipList.get(k).getRelationshipId();
                                 relationshipSpinner.setSelection(k);
                             }
@@ -420,7 +396,7 @@ public class AddDependentActivity extends AppCompatActivity {
 
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }

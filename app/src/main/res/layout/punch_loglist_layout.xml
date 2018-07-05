@@ -201,6 +201,161 @@
         </LinearLayout>
 
         <View
+            android:id="@+id/remarkview"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
+
+        <LinearLayout
+            android:id="@+id/reameklay"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Remark"/>
+
+
+            <TextView
+                android:padding="5dp"
+                android:id="@+id/remark"
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Leave Type"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/approvalstatusview"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
+
+        <LinearLayout
+            android:id="@+id/approvalstatuslay"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="match_parent"
+                android:text="Status"/>
+
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text=":"/>
+
+            <TextView
+                android:id="@+id/approvalstatus"
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:text="Status"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/approvaldateview"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
+
+        <LinearLayout
+            android:id="@+id/approvaldatelay"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="match_parent"
+                android:text="Approval Date"/>
+
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text=":"/>
+
+            <TextView
+                android:id="@+id/approvaldate"
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:text="Approval Date"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/approvalbyview"
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:elevation=".5dp"/>
+
+        <LinearLayout
+            android:id="@+id/approvalbylay"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="match_parent"
+                android:text="Approval By"/>
+
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/status_color"
+                android:textStyle="bold"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text=":"/>
+
+            <TextView
+                android:id="@+id/approvalby"
+                android:textColor="@color/dahboard_textcolor"
+                android:layout_width="0dp"
+                android:layout_weight="4.5"
+                android:layout_height="wrap_content"
+                android:text="Approval By"/>
+        </LinearLayout>
+
+        <View
             android:id="@+id/locationview"
             android:layout_marginTop="5dp"
             android:layout_width="match_parent"
@@ -240,46 +395,6 @@
                 android:layout_height="wrap_content"
                 android:text="Leave Type"/>
         </LinearLayout>
-
-
-
-        <View
-            android:id="@+id/remarkview"
-            android:layout_marginTop="5dp"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#e0e0e0"
-            android:elevation=".5dp"/>
-
-        <LinearLayout
-            android:id="@+id/reameklay"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:textColor="@color/status_color"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Remark"/>
-
-
-            <TextView
-                android:padding="5dp"
-                android:id="@+id/remark"
-                android:textColor="@color/dahboard_textcolor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Leave Type"/>
-        </LinearLayout>
-
-
-
-
-
-
 
     </LinearLayout>
 

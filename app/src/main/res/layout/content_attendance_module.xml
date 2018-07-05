@@ -32,7 +32,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
                     android:background="@drawable/border_layout"
                     android:orientation="vertical"
@@ -156,10 +156,52 @@
                         android:padding="5dp"
                         android:src="@drawable/gps" />
 
+
+
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                   <RadioGroup
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:orientation="horizontal"
+                       android:checkedButton="@+id/rd_in">
+                       <RadioButton
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="IN"
+                           android:id="@+id/rd_in"/>
+
+                       <RadioButton
+                           android:layout_width="wrap_content"
+                           android:layout_height="wrap_content"
+                           android:text="OUT"
+                           android:id="@+id/rd_out"
+                           android:layout_marginLeft="20dp"/>
+
+                   </RadioGroup>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp">
+
+                    <!--GoogleMap fragment-->
+                    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:name="com.google.android.gms.maps.MapFragment"
+                        android:id="@+id/map"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                </LinearLayout>
 
             </LinearLayout>
+
+
 
         </ScrollView>
 

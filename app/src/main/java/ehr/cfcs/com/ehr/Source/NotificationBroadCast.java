@@ -42,14 +42,19 @@ public class NotificationBroadCast extends BroadcastReceiver {
     public String userId = "",authcode = "";
     public PendingIntent contentIntent;
     public int count ;
+    public ConnectionDetector conn;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        conn = new ConnectionDetector(context);
         userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(context)));
         authcode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(context)));
 
-        getCount(authcode,userId, context);
+        if (conn.getConnectivityStatus() > 0){
+
+            getCount(authcode,userId, context);
+        }
     }
 
     public void getCount(final String AuthCode , final String AdminID, final Context context) {
@@ -107,8 +112,8 @@ public class NotificationBroadCast extends BroadcastReceiver {
                 VolleyLog.d("Login", "Error: " + error.getMessage());
                 // Log.e("checking now ",error.getMessage());
 
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-              //
+              //  Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+
                 //  pDialog.dismiss();
 
 

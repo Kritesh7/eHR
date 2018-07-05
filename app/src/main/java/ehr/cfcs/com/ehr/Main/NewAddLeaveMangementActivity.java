@@ -63,14 +63,14 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
     public ArrayList<LeaveTypeModel> leaveTypeList = new ArrayList<>();
     public ArrayList<LeaveYearTypeModel> leaveYearList = new ArrayList<>();
     public ImageView startCal, endCal;
-    public int month,year,day;
-    public EditText startTxt,endTxt;
+    public int month, year, day;
+    public EditText startTxt, endTxt;
     public TextView titleTxt;
     public String leaveYearUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveYearList";
     public String leaveTypeUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveTypeList";
-    public ArrayAdapter<LeaveYearTypeModel>  leaveYearAdapter;
+    public ArrayAdapter<LeaveYearTypeModel> leaveYearAdapter;
     public ArrayAdapter<LeaveTypeModel> leaveTypeAdapter;
-    public String userId = "", authcode = "",mgrId = "",leaveId = "",firstHalfString = "false",secondHalfString = "false",
+    public String userId = "", authcode = "", mgrId = "", leaveId = "", firstHalfString = "false", secondHalfString = "false",
             yearString = "", userName = "", compId = "", leaveTypeStr = "";
     public ConnectionDetector conn;
     public String applyUrl = SettingConstant.BaseUrl + "AppEmployeeLeaveApply";
@@ -92,11 +92,11 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.newaddtollbar);
         setSupportActionBar(toolbar);
-        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
+        titleTxt = (TextView) toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -111,20 +111,20 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
         titleTxt.setText("Apply For Leave");
 
-        leaveTypeSpinner = (Spinner)findViewById(R.id.leavetypespinner);
-        leaveYearSpinner = (Spinner)findViewById(R.id.leaveyearspinner);
+        leaveTypeSpinner = (Spinner) findViewById(R.id.leavetypespinner);
+        leaveYearSpinner = (Spinner) findViewById(R.id.leaveyearspinner);
 
-        startCal = (ImageView)findViewById(R.id.cal);
-        endCal = (ImageView)findViewById(R.id.end_cal);
-        startTxt = (EditText)findViewById(R.id.startdate);
+        startCal = (ImageView) findViewById(R.id.cal);
+        endCal = (ImageView) findViewById(R.id.end_cal);
+        startTxt = (EditText) findViewById(R.id.startdate);
         endTxt = (EditText) findViewById(R.id.enddate);
         applyBtn = (Button) findViewById(R.id.applyleave);
         firstHalfCheck = (CheckBox) findViewById(R.id.firsthalfcheck);
         secondHalfCheck = (CheckBox) findViewById(R.id.secondhalfcheck);
         commentTxt = (EditText) findViewById(R.id.leave_comment);
 
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(NewAddLeaveMangementActivity.this)));
-        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(NewAddLeaveMangementActivity.this)));
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(NewAddLeaveMangementActivity.this)));
+        authcode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(NewAddLeaveMangementActivity.this)));
         mgrId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getMgrDir(NewAddLeaveMangementActivity.this)));
         userName = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getUserName(NewAddLeaveMangementActivity.this)));
         compId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getCompanyId(NewAddLeaveMangementActivity.this)));
@@ -135,7 +135,7 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(new View(NewAddLeaveMangementActivity.this).getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
@@ -162,7 +162,7 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                                 startTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
 
                             }
-                        },year , month, day);
+                        }, year, month, day);
                 datePickerDialog.show();
             }
         });
@@ -171,7 +171,7 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(new View(NewAddLeaveMangementActivity.this).getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
 
@@ -196,11 +196,10 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                                 endTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
 
                             }
-                        },year , month, day);
+                        }, year, month, day);
                 datePickerDialog.show();
             }
         });
-
 
 
         //Leave Type Spinner Work
@@ -221,17 +220,14 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
         leaveYearSpinner.setAdapter(leaveYearAdapter);
 
 
-
-
         //get leave year type Data
-        if (conn.getConnectivityStatus()>0) {
+        if (conn.getConnectivityStatus() > 0) {
 
             getLeaveYearType(authcode, userId);
 
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
+        } else {
+            conn.showNoInternetAlret();
+        }
 
 
         //selectbale Year Type Spinner
@@ -239,17 +235,17 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-           //     String year = ;
+                //     String year = ;
 
                 yearString = leaveYearList.get(i).getLeaveYear();
 
                 try {
 
-                    getLeaveType(authcode,userId,leaveYearList.get(i+1).getLeaveYear());
+                    getLeaveType(authcode, userId, leaveYearList.get(i + 1).getLeaveYear());
 
                 } catch (IndexOutOfBoundsException e) {
 
-                    getLeaveType(authcode,userId,leaveYearList.get(i).getLeaveYear());
+                    getLeaveType(authcode, userId, leaveYearList.get(i).getLeaveYear());
 
                 }
 
@@ -267,8 +263,8 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
-               leaveId =  leaveTypeList.get(i).getLeaveID();
-               leaveTypeStr = leaveTypeList.get(i).getLeaveTypeName();
+                leaveId = leaveTypeList.get(i).getLeaveID();
+                leaveTypeStr = leaveTypeList.get(i).getLeaveTypeName();
             }
 
             @Override
@@ -282,13 +278,11 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
-                if (b)
-                {
+                if (b) {
                     firstHalfString = "true";
-                }else
-                    {
-                        firstHalfString = "false";
-                    }
+                } else {
+                    firstHalfString = "false";
+                }
             }
         });
 
@@ -296,13 +290,11 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
-                if (b)
-                {
+                if (b) {
                     secondHalfString = "true";
-                }else
-                    {
-                        secondHalfString = "false";
-                    }
+                } else {
+                    secondHalfString = "false";
+                }
             }
         });
 
@@ -311,28 +303,23 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (yearString.equalsIgnoreCase(""))
-                {
+                if (yearString.equalsIgnoreCase("")) {
                     Toast.makeText(NewAddLeaveMangementActivity.this, "Please Select Year", Toast.LENGTH_SHORT).show();
-                }else if (leaveId.equalsIgnoreCase(""))
-                {
+                } else if (leaveId.equalsIgnoreCase("")) {
                     Toast.makeText(NewAddLeaveMangementActivity.this, "Please Select Leave Type", Toast.LENGTH_SHORT).show();
-                }else if (startTxt.getText().toString().equalsIgnoreCase(""))
-                {
+                } else if (startTxt.getText().toString().equalsIgnoreCase("")) {
                     startTxt.setError("Please Enter valid Start date");
-                }else if (endTxt.getText().toString().equalsIgnoreCase(""))
-                {
+                } else if (endTxt.getText().toString().equalsIgnoreCase("")) {
                     endTxt.setError("Please Enter valid End date");
-                }else {
-                    if (conn.getConnectivityStatus()>0) {
+                } else {
+                    if (conn.getConnectivityStatus() > 0) {
 
                         applyLeave(userId, mgrId, leaveId, startTxt.getText().toString(), firstHalfString, endTxt.getText().toString(),
-                                secondHalfString, commentTxt.getText().toString(), yearString, authcode, compId,userName,
+                                secondHalfString, commentTxt.getText().toString(), yearString, authcode, compId, userName,
                                 leaveTypeStr);
-                    }else
-                        {
-                            conn.showNoInternetAlret();
-                        }
+                    } else {
+                        conn.showNoInternetAlret();
+                    }
                 }
 
             }
@@ -351,10 +338,10 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
 
     //leave Year spinner bind Data
-    public void getLeaveYearType(final String AuthCode ,final String AdminID) {
+    public void getLeaveYearType(final String AuthCode, final String AdminID) {
 
 
-        final ProgressDialog pDialog = new ProgressDialog(NewAddLeaveMangementActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(NewAddLeaveMangementActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -365,23 +352,21 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    if (leaveYearList.size()>0)
-                    {
+                    if (leaveYearList.size() > 0) {
                         leaveYearList.clear();
                     }
 
-                    leaveYearList.add(new LeaveYearTypeModel("","Please Select Leave Year"));
+                    leaveYearList.add(new LeaveYearTypeModel("", "Please Select Leave Year"));
 
-                    for (int i=0 ; i<jsonArray.length();i++)
-                    {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                         String LeaveYear = jsonObject.getString("LeaveYear");
                         String LeaveYearText = jsonObject.getString("LeaveYearText");
 
-                        leaveYearList.add(new LeaveYearTypeModel(LeaveYear,LeaveYearText));
+                        leaveYearList.add(new LeaveYearTypeModel(LeaveYear, LeaveYearText));
 
 
                     }
@@ -392,7 +377,7 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -407,12 +392,12 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("AuthCode", AuthCode);
+                params.put("AdminID", AdminID);
 
 
                 Log.e("Parms", params.toString());
@@ -428,10 +413,10 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
     }
 
     //Leave Type Spinner bind
-    public void getLeaveType(final String AuthCode ,final String AdminID, final String Year) {
+    public void getLeaveType(final String AuthCode, final String AdminID, final String Year) {
 
 
-        final ProgressDialog pDialog = new ProgressDialog(NewAddLeaveMangementActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(NewAddLeaveMangementActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -442,23 +427,21 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    if (leaveTypeList.size()>0)
-                    {
+                    if (leaveTypeList.size() > 0) {
                         leaveTypeList.clear();
                     }
 
-                    leaveTypeList.add(new LeaveTypeModel("","Please Select Leave Type"));
+                    leaveTypeList.add(new LeaveTypeModel("", "Please Select Leave Type"));
 
-                    for (int i=0 ; i<jsonArray.length();i++)
-                    {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                         String LeaveID = jsonObject.getString("LeaveID");
                         String LeaveTypeName = jsonObject.getString("LeaveTypeName");
 
-                        leaveTypeList.add(new LeaveTypeModel(LeaveID,LeaveTypeName));
+                        leaveTypeList.add(new LeaveTypeModel(LeaveID, LeaveTypeName));
 
 
                     }
@@ -467,7 +450,7 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -482,13 +465,13 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
-                params.put("Year",Year);
+                params.put("AuthCode", AuthCode);
+                params.put("AdminID", AdminID);
+                params.put("Year", Year);
 
 
                 Log.e("Parms", params.toString());
@@ -504,12 +487,12 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
     }
 
     //Apply  Leave
-    public void applyLeave(final String AdminID , final String MgrID , final String LeaveID, final String FromDate,
-                                final String FirstHalf, final String ToDate, final String SecondHalf,
-                                final String Comments,final String Year , final String AuthCode, final String compaId,
-                                final String username, final String leavetype ) {
+    public void applyLeave(final String AdminID, final String MgrID, final String LeaveID, final String FromDate,
+                           final String FirstHalf, final String ToDate, final String SecondHalf,
+                           final String Comments, final String Year, final String AuthCode, final String compaId,
+                           final String username, final String leavetype) {
 
-        final ProgressDialog pDialog = new ProgressDialog(NewAddLeaveMangementActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(NewAddLeaveMangementActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -520,25 +503,21 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Apply Short Leave", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    for (int i=0 ; i<jsonArray.length();i++)
-                    {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-                        if (jsonObject.has("MsgNotification"))
-                        {
+                        if (jsonObject.has("MsgNotification")) {
                             String MsgNotification = jsonObject.getString("MsgNotification");
                             Toast.makeText(NewAddLeaveMangementActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
 
                         }
 
-                        if (jsonObject.has("status"))
-                        {
+                        if (jsonObject.has("status")) {
                             String status = jsonObject.getString("status");
 
-                            if (status.equalsIgnoreCase("success"))
-                            {
+                            if (status.equalsIgnoreCase("success")) {
                                 onBackPressed();
 
                             }
@@ -550,7 +529,7 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -565,23 +544,23 @@ public class NewAddLeaveMangementActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("AdminID", AdminID);
-                params.put("MgrID",MgrID);
-                params.put("LeaveID",LeaveID);
-                params.put("FromDate",FromDate);
-                params.put("FirstHalf",FirstHalf);
-                params.put("ToDate",ToDate);
-                params.put("SecondHalf",SecondHalf);
-                params.put("Comments",Comments);
-                params.put("Year",Year);
-                params.put("AuthCode",AuthCode);
-                params.put("UserName",username);
-                params.put("CompID",compaId);
-                params.put("LeaveType",leavetype);
+                params.put("MgrID", MgrID);
+                params.put("LeaveID", LeaveID);
+                params.put("FromDate", FromDate);
+                params.put("FirstHalf", FirstHalf);
+                params.put("ToDate", ToDate);
+                params.put("SecondHalf", SecondHalf);
+                params.put("Comments", Comments);
+                params.put("Year", Year);
+                params.put("AuthCode", AuthCode);
+                params.put("UserName", username);
+                params.put("CompID", compaId);
+                params.put("LeaveType", leavetype);
 
                 Log.e("Parms", params.toString());
                 return params;

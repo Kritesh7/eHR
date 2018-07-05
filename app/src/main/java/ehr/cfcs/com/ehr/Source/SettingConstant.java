@@ -13,10 +13,15 @@ public class SettingConstant {
       public static final String DownloadUrl= "http://192.168.1.60:8086/";*/
 
     //Server
+//    public static final String BASEURL_FOR_LOGIN = "http://182.18.157.187/WEBAPI/LoginHRMSService.ASMX/";
+//    public static final String BaseUrl = "http://182.18.157.187/WEBAPI/HRMSWebService.ASMX/";
+//    public static final String DownloadUrl= "http://182.18.157.187/";
+//    public static final String BaseGeoUrl = "http://182.18.157.187/WEBAPI/MapWebService.asmx/";
+
     public static final String BASEURL_FOR_LOGIN = "http://hr.cfcsitservices.co.in/WEBAPI/LoginHRMSService.ASMX/";
     public static final String BaseUrl = "http://hr.cfcsitservices.co.in/WEBAPI/HRMSWebService.ASMX/";
     public static final String DownloadUrl= "http://hr.cfcsitservices.co.in/";
-
+    public static final String BaseGeoUrl = "http://hr.cfcsitservices.co.in/WEBAPI/MapWebService.asmx/";
 
     public static final int Retry_Time = 15000;
     protected static final String SP_NAME = "myPref";
@@ -35,6 +40,7 @@ public class SettingConstant {
     protected static final String EmpPhoto = "EmpPhoto";
     protected static final String Designation = "Designation";
     protected static final String CompanLogo = "CompanLogo";
-
+    protected static final String CurrentLat = "CurrentLat";
+    protected  static  final String CurrentLang ="CurrentLang";
 
 }

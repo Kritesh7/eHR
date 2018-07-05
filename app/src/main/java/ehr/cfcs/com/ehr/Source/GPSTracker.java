@@ -7,6 +7,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,12 +20,15 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import java.util.List;
+
 /**
  * Created by Admin on 22-05-2017.
  */
 
 public class GPSTracker extends Service {
 
+    private static final String TAG = "Fake";
     private Context mContext;
 
     // Flag for GPS status
@@ -66,6 +71,7 @@ public class GPSTracker extends Service {
 
             locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
 
+
             // Getting GPS status
             isGPSEnabled = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -103,6 +109,7 @@ public class GPSTracker extends Service {
                         ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 50);
 
                     } else {
+
                         locationManager.requestLocationUpdates(
                                 LocationManager.GPS_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
@@ -235,4 +242,5 @@ public class GPSTracker extends Service {
     public IBinder onBind(Intent arg0) {
         return null;
     }
+
 }

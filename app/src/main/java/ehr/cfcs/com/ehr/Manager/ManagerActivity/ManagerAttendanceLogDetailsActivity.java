@@ -82,11 +82,11 @@ public class ManagerAttendanceLogDetailsActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.mgrtoolbar);
         setSupportActionBar(toolbar);
-        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
+        titleTxt = (TextView) toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -100,25 +100,24 @@ public class ManagerAttendanceLogDetailsActivity extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        if (intent != null)
-        {
+        if (intent != null) {
             empId = intent.getStringExtra("empId");
         }
 
         titleTxt.setText("Attendance Basic Log");
 
         attendanceLogRecy = (RecyclerView) findViewById(R.id.attendace_log_list_recycler);
-        noRecordFoundTxt = (TextView)findViewById(R.id.norecordfound);
+        noRecordFoundTxt = (TextView) findViewById(R.id.norecordfound);
         calBtn = (ImageView) findViewById(R.id.calBtn);
         calTxt = (TextView) findViewById(R.id.caldatetxt);
 
 
         conn = new ConnectionDetector(ManagerAttendanceLogDetailsActivity.this);
 
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ManagerAttendanceLogDetailsActivity.this)));
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ManagerAttendanceLogDetailsActivity.this)));
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ManagerAttendanceLogDetailsActivity.this)));
+        authCode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ManagerAttendanceLogDetailsActivity.this)));
 
-        adapter = new AttendanceLogListAdapter(ManagerAttendanceLogDetailsActivity.this,list, ManagerAttendanceLogDetailsActivity.this);
+        adapter = new AttendanceLogListAdapter(ManagerAttendanceLogDetailsActivity.this, list, ManagerAttendanceLogDetailsActivity.this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ManagerAttendanceLogDetailsActivity.this);
         attendanceLogRecy.setLayoutManager(mLayoutManager);
         attendanceLogRecy.setItemAnimator(new DefaultItemAnimator());
@@ -163,7 +162,7 @@ public class ManagerAttendanceLogDetailsActivity extends AppCompatActivity {
                                 Log.e("checking,............", sdf + " null");
                                 calTxt.setText(dayOfMonth + "-" + sdf + "-" + year);
 
-                                attendaceList(authCode,userId,empId,dayOfMonth + "-" + sdf + "-" + year);
+                                attendaceList(authCode, userId, empId, dayOfMonth + "-" + sdf + "-" + year);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -174,17 +173,11 @@ public class ManagerAttendanceLogDetailsActivity extends AppCompatActivity {
 
 
         //List Bind
-        if (conn.getConnectivityStatus()>0)
-        {
-            attendaceList(authCode,userId,empId,getCurrentTime());
-        }else
-        {
+        if (conn.getConnectivityStatus() > 0) {
+            attendaceList(authCode, userId, empId, getCurrentTime());
+        } else {
             conn.showNoInternetAlret();
         }
-
-
-
-
 
 
     }
@@ -202,9 +195,9 @@ public class ManagerAttendanceLogDetailsActivity extends AppCompatActivity {
     }
 
     //Attendace List
-    public void attendaceList(final String AuthCode , final String AdminID, final String EmployeeID,  final String LogDate) {
+    public void attendaceList(final String AuthCode, final String AdminID, final String EmployeeID, final String LogDate) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ManagerAttendanceLogDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(ManagerAttendanceLogDetailsActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -215,14 +208,12 @@ public class ManagerAttendanceLogDetailsActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    if (list.size()>0)
-                    {
+                    if (list.size() > 0) {
                         list.clear();
                     }
-                    for (int i=0 ; i<jsonArray.length();i++)
-                    {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                         String UserName = jsonObject.getString("UserName");
@@ -235,21 +226,21 @@ public class ManagerAttendanceLogDetailsActivity extends AppCompatActivity {
                         String LocationPhoto = jsonObject.getString("FileNameText");
                         String Remark = jsonObject.getString("Remark");
                         String LogTypeText = jsonObject.getString("LogTypeText");
+                        String ApprovalStatusText = jsonObject.getString("ApprovalStatusText");
+                        String ApprovalDateText = jsonObject.getString("ApprovalDateText");
+                        String ApprovedBy = jsonObject.getString("ApprovedBy");
 
 
-                        list.add(new AttendanceLogDetailsModel(UserName,EmpID,DesignationName,LogTime,LogDateText,LogTypeText
-                                ,LocationAddress,Remark,LocationPhoto,ZoneName));
-
+                        list.add(new AttendanceLogDetailsModel(UserName, EmpID, DesignationName, LogTime, LogDateText, LogTypeText
+                                , LocationAddress, Remark, LocationPhoto, ZoneName, ApprovalStatusText, ApprovalDateText, ApprovedBy));
 
 
                     }
 
-                    if (list.size() == 0)
-                    {
+                    if (list.size() == 0) {
                         noRecordFoundTxt.setVisibility(View.VISIBLE);
                         attendanceLogRecy.setVisibility(View.GONE);
-                    }else
-                    {
+                    } else {
                         noRecordFoundTxt.setVisibility(View.GONE);
                         attendanceLogRecy.setVisibility(View.VISIBLE);
                     }
@@ -258,7 +249,7 @@ public class ManagerAttendanceLogDetailsActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -273,16 +264,14 @@ public class ManagerAttendanceLogDetailsActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("LoginAdminID",AdminID);
-                params.put("EmployeeID",EmployeeID);
-                params.put("LogDate",LogDate);
-
-
+                params.put("AuthCode", AuthCode);
+                params.put("LoginAdminID", AdminID);
+                params.put("EmployeeID", EmployeeID);
+                params.put("LogDate", LogDate);
 
 
                 Log.e("Parms", params.toString());

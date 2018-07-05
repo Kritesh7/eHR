@@ -27,7 +27,7 @@ public class ShoweRouteLocation extends FragmentActivity implements OnMapReadyCa
     private GoogleMap mMap;
     public double lat, log;
     public GPSTracker gpsTracker;
-    public Context context ;
+    public Context context;
     public LinearLayout toolBar;
     public ImageView backImg;
     private ArrayList<LatLng> points = new ArrayList<>();
@@ -53,7 +53,7 @@ public class ShoweRouteLocation extends FragmentActivity implements OnMapReadyCa
             }
         });
 
-        gpsTracker = new GPSTracker(context,ShoweRouteLocation.this);
+        gpsTracker = new GPSTracker(context, ShoweRouteLocation.this);
         mapFragment.getMapAsync(this);
     }
 
@@ -79,7 +79,6 @@ public class ShoweRouteLocation extends FragmentActivity implements OnMapReadyCa
         LatLng sydney = new LatLng(lat, log);
 
 
-
         //googleMap.clear();  //clears all Markers and Polylines
 
 
@@ -103,13 +102,12 @@ public class ShoweRouteLocation extends FragmentActivity implements OnMapReadyCa
         line = mMap.addPolyline(options); //add Polyline
 
         mMap.addMarker(new MarkerOptions().position(points.get(0)).title("Marker in Sydney"));
-        mMap.addMarker(new MarkerOptions().position(points.get(points.size()-1)).title("Marker in Sydney"));
+        mMap.addMarker(new MarkerOptions().position(points.get(points.size() - 1)).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(points.get(0)));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f));
     }
 
-    private void redrawLine(){
-
+    private void redrawLine() {
 
     }
 

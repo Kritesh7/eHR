@@ -233,4 +233,32 @@ public class SharedPrefs
         return editor.commit();
     }
 
+    //Current Lat and Lang
+    public static String getCurrentLat(Context context)
+    {
+        SharedPreferences sp = getSetting(context);
+        return  sp.getString(SettingConstant.CurrentLat, null);
+    }
+    public static boolean setCurrentLat(Context context, String authKey)
+    {
+        SharedPreferences sp = getSetting(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(SettingConstant.CurrentLat, authKey);
+        return editor.commit();
+    }
+
+    public static String getCurrentLang(Context context)
+    {
+        SharedPreferences sp = getSetting(context);
+        return  sp.getString(SettingConstant.CurrentLang, null);
+    }
+    public static boolean setCurrentLang(Context context, String authKey)
+    {
+        SharedPreferences sp = getSetting(context);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(SettingConstant.CurrentLang, authKey);
+        return editor.commit();
+    }
+
+
 }

@@ -92,8 +92,6 @@ public class ForGotPasswordActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
     //forgot password

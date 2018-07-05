@@ -46,15 +46,16 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 public class ViewDocumentDetailsActivity extends AppCompatActivity {
 
-    public TextView titleTxt,requestByTxt, requestDateTxt,empNameTxt,statusTxt,hrCommentTxt ,closerDateTxt, hrTxt;
+    public TextView titleTxt, requestByTxt, requestDateTxt, empNameTxt, statusTxt, hrCommentTxt, closerDateTxt, hrTxt;
     public ehr.cfcs.com.ehr.Source.MyListLayout requestItemList;
     public RequestedItemAdapter adapter;
     public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
     public ArrayList<AddNewStationoryRequestModel> itemBindList = new ArrayList<>();
     public ConnectionDetector conn;
-    public String authCode = "", rid="",ridStr = "",IdealClosureDateText = "",userId = "";
+    public String authCode = "", rid = "", ridStr = "", IdealClosureDateText = "", userId = "";
     public Button updateDetails;
     public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestDetail";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,11 +71,11 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.viewleavtoolbar);
         setSupportActionBar(toolbar);
 
-        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
+        titleTxt = (TextView) toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -90,34 +91,31 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
         titleTxt.setText("Document Details");
 
         Intent intent = getIntent();
-        if (intent != null)
-        {
+        if (intent != null) {
             rid = intent.getStringExtra("Rid");
         }
 
         conn = new ConnectionDetector(ViewDocumentDetailsActivity.this);
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewDocumentDetailsActivity.this)));
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewDocumentDetailsActivity.this)));
+        authCode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewDocumentDetailsActivity.this)));
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewDocumentDetailsActivity.this)));
 
         requestItemList = (ehr.cfcs.com.ehr.Source.MyListLayout) findViewById(R.id.request_item_list);
         requestByTxt = (TextView) findViewById(R.id.staionory_request);
         requestDateTxt = (TextView) findViewById(R.id.staionory_request_date);
-        empNameTxt = (TextView)findViewById(R.id.staionory_empname);
-        statusTxt = (TextView)findViewById(R.id.stationory_current_status);
-        hrCommentTxt = (TextView)findViewById(R.id.statonory_hr_comment);
-        closerDateTxt = (TextView)findViewById(R.id.staionory_closer_date);
-        hrTxt = (TextView)findViewById(R.id.hrcommenttxt);
-        updateDetails = (Button)findViewById(R.id.editstaionry);
+        empNameTxt = (TextView) findViewById(R.id.staionory_empname);
+        statusTxt = (TextView) findViewById(R.id.stationory_current_status);
+        hrCommentTxt = (TextView) findViewById(R.id.statonory_hr_comment);
+        closerDateTxt = (TextView) findViewById(R.id.staionory_closer_date);
+        hrTxt = (TextView) findViewById(R.id.hrcommenttxt);
+        updateDetails = (Button) findViewById(R.id.editstaionry);
         //deleteBtn = (Button) findViewById(R.id.deleteBtn);
-        adapter = new RequestedItemAdapter(list,ViewDocumentDetailsActivity.this);
+        adapter = new RequestedItemAdapter(list, ViewDocumentDetailsActivity.this);
 
         requestItemList.setAdapter(adapter);
 
-        if (conn.getConnectivityStatus()>0)
-        {
-            viewStationryDetails(authCode,rid,"2",userId);
-        }else
-        {
+        if (conn.getConnectivityStatus() > 0) {
+            viewStationryDetails(authCode, rid, "2", userId);
+        } else {
             conn.showNoInternetAlret();
         }
 
@@ -128,8 +126,8 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                 Intent i = new Intent(ViewDocumentDetailsActivity.this, AddDocumentActivity.class);
                 i.putExtra("Mode", "Edit");
                 i.putExtra("mylist", itemBindList);
-                i.putExtra("Rid",ridStr);
-                i.putExtra("IdealClosureDateText",IdealClosureDateText);
+                i.putExtra("Rid", ridStr);
+                i.putExtra("IdealClosureDateText", IdealClosureDateText);
                 startActivity(i);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
             }
@@ -139,19 +137,17 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (conn.getConnectivityStatus()>0)
-        {
-            viewStationryDetails(authCode,rid,"2", userId);
-        }else
-        {
+        if (conn.getConnectivityStatus() > 0) {
+            viewStationryDetails(authCode, rid, "2", userId);
+        } else {
             conn.showNoInternetAlret();
         }
     }
 
     //View Stationry Details
-    public void viewStationryDetails(final String AuthCode ,final String RID, final String ItemCatID, final String userId) {
+    public void viewStationryDetails(final String AuthCode, final String RID, final String ItemCatID, final String userId) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ViewDocumentDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(ViewDocumentDetailsActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -162,11 +158,10 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1));
 
                     JSONArray requestDetailsArray = jsonObject.getJSONArray("RequestDetail");
-                    for (int i = 0; i<requestDetailsArray.length(); i++)
-                    {
+                    for (int i = 0; i < requestDetailsArray.length(); i++) {
                         JSONObject object = requestDetailsArray.getJSONObject(i);
 
                         String EmpName = object.getString("EmpName");
@@ -186,8 +181,7 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                         statusTxt.setText(AppStatusText);
 
 
-                        if (HrComment.equalsIgnoreCase(""))
-                        {
+                        if (HrComment.equalsIgnoreCase("")) {
                             hrTxt.setVisibility(View.GONE);
                             hrCommentTxt.setVisibility(View.GONE);
                         }
@@ -196,12 +190,10 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                     }
 
                     JSONArray itemdetaislArray = jsonObject.getJSONArray("ItemsDetail");
-                    if (list.size()>0)
-                    {
+                    if (list.size() > 0) {
                         list.clear();
                     }
-                    for (int j=0 ; j<itemdetaislArray.length();j++)
-                    {
+                    for (int j = 0; j < itemdetaislArray.length(); j++) {
                         JSONObject object = itemdetaislArray.getJSONObject(j);
 
                         String ItemName = object.getString("ItemName");
@@ -212,20 +204,17 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                         String chkValue = object.getString("chkValue");
 
 
-                        list.add(new BookMeaPrevisionModel(ItemName,ItemID,NoOfItem,Remark,chkValue,"0"));
-
+                        list.add(new BookMeaPrevisionModel(ItemName, ItemID, NoOfItem, Remark, chkValue, "0"));
 
 
                     }
 
                     JSONArray itemsBindDataArray = jsonObject.getJSONArray("ItemsBindData");
 
-                    if (itemBindList.size()>0)
-                    {
+                    if (itemBindList.size() > 0) {
                         itemBindList.clear();
                     }
-                    for (int k=0 ; k<itemsBindDataArray.length(); k++)
-                    {
+                    for (int k = 0; k < itemsBindDataArray.length(); k++) {
                         JSONObject object = itemsBindDataArray.getJSONObject(k);
                         String ItemID = object.getString("ItemID");
                         String ItemName = object.getString("ItemName");
@@ -234,7 +223,7 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                         String Remark = object.getString("Remark");
                         String chkValue = object.getString("chkValue");
 
-                        itemBindList.add(new AddNewStationoryRequestModel(ItemName,maxQuantity,ItemID,Quantity,Remark ));
+                        itemBindList.add(new AddNewStationoryRequestModel(ItemName, maxQuantity, ItemID, Quantity, Remark));
                     }
 
                     Log.e("Inner List size in edit", itemBindList.size() + "");
@@ -242,7 +231,7 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -257,14 +246,14 @@ public class ViewDocumentDetailsActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("RID",RID);
-                params.put("ItemCatID",ItemCatID);
-                params.put("AdminID",userId);
+                params.put("AuthCode", AuthCode);
+                params.put("RID", RID);
+                params.put("ItemCatID", ItemCatID);
+                params.put("AdminID", userId);
 
                 Log.e("Parms", params.toString());
                 return params;

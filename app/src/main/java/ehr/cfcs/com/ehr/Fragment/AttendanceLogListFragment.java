@@ -269,10 +269,12 @@ public class AttendanceLogListFragment extends Fragment {
                         String LocationPhoto = jsonObject.getString("FileNameText");
                         String Remark = jsonObject.getString("Remark");
                         String LogTypeText = jsonObject.getString("LogTypeText");
-
+                        String ApprovalStatusText = jsonObject.getString("ApprovalStatusText");
+                        String ApprovalDateText = jsonObject.getString("ApprovalDateText");
+                        String ApprovedBy = jsonObject.getString("ApprovedBy");
 
                         list.add(new AttendanceLogDetailsModel(UserName,EmpID,DesignationName,LogTime,LogDateText,LogTypeText
-                                ,LocationAddress,Remark,LocationPhoto,ZoneName));
+                                ,LocationAddress,Remark,LocationPhoto,ZoneName,ApprovalStatusText,ApprovalDateText,ApprovedBy));
 
 
 

@@ -74,18 +74,16 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         conn = new ConnectionDetector(SplashActivity.this);
-        userid =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(SplashActivity.this)));
-        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(SplashActivity.this)));
-        gps = new GPSTracker(SplashActivity.this,SplashActivity.this);
-        loginStatus =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getStatus(SplashActivity.this)));
+        userid = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(SplashActivity.this)));
+        authcode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(SplashActivity.this)));
+        gps = new GPSTracker(SplashActivity.this, SplashActivity.this);
+        loginStatus = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getStatus(SplashActivity.this)));
 
-        if (authcode.equalsIgnoreCase("null"))
-        {
+        if (authcode.equalsIgnoreCase("null")) {
             authcode = "";
         }
 
-        if (userid.equalsIgnoreCase("null"))
-        {
+        if (userid.equalsIgnoreCase("null")) {
             userid = "";
         }
 
@@ -104,15 +102,13 @@ public class SplashActivity extends AppCompatActivity {
                 "Loading application View, please wait...", false, false);*/
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION,
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_NETWORK_STATE
             }, REQUEST_WRITE_PERMISSION);
-        }else
-        {
+        } else {
 
             checkGPS();
         }
-
 
 
     }
@@ -162,13 +158,12 @@ public class SplashActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void  checkGPS(){
+    public void checkGPS() {
 
         if (conn.getConnectivityStatus() > 0) {
             if (gps.canGetLocation()) {
 
-                if (userid.equalsIgnoreCase("") && authcode.equalsIgnoreCase(""))
-                {
+                if (userid.equalsIgnoreCase("") && authcode.equalsIgnoreCase("")) {
 
                     new Handler().postDelayed(new Runnable() {
 
@@ -183,12 +178,10 @@ public class SplashActivity extends AppCompatActivity {
                     }, SPLASH_TIME_OUT);
 
 
-
-                }else {
+                } else {
 
                     getLoginStatus(authcode, userid);
                 }
-
 
 
             } else {
@@ -198,8 +191,7 @@ public class SplashActivity extends AppCompatActivity {
                 gps.showSettingsAlert();
 
             }
-        }else
-        {
+        } else {
             conn.showNoInternetAlret();
         }
     }
@@ -214,13 +206,11 @@ public class SplashActivity extends AppCompatActivity {
                 checkGPS();
         }
 
-
-
     }
 
 
     //Status Check Count  API
-    public void getLoginStatus(final String AuthCode , final String AdminID) {
+    public void getLoginStatus(final String AuthCode, final String AdminID) {
 
        /* final ProgressDialog pDialog = new ProgressDialog(SplashActivity.this,R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
@@ -233,17 +223,16 @@ public class SplashActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    for (int i=0 ; i<jsonArray.length();i++)
-                    {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                         String LoginCount = jsonObject.getString("LoginCount");
 
-                        if (LoginCount.equalsIgnoreCase("1") || LoginCount.equalsIgnoreCase("-1") ) {
+                        if (LoginCount.equalsIgnoreCase("1") || LoginCount.equalsIgnoreCase("-1")) {
 
-                            if (loginStatus.equalsIgnoreCase("1") ) {
+                            if (loginStatus.equalsIgnoreCase("1")) {
 
                                 new Handler().postDelayed(new Runnable() {
 
@@ -256,8 +245,6 @@ public class SplashActivity extends AppCompatActivity {
                                         finish();
                                     }
                                 }, SPLASH_TIME_OUT);
-
-
 
 
                             } else {
@@ -278,16 +265,15 @@ public class SplashActivity extends AppCompatActivity {
 
                             }
 
-                        }else
-                            {
-                                singleButton(SplashActivity.this,AdminID ,authcode);
-                            }
+                        } else {
+                            singleButton(SplashActivity.this, AdminID, authcode);
+                        }
 
                     }
-                //    pDialog.dismiss();
+                    //    pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -298,16 +284,16 @@ public class SplashActivity extends AppCompatActivity {
                 // Log.e("checking now ",error.getMessage());
 
                 Toast.makeText(SplashActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-               // pDialog.dismiss();
+                // pDialog.dismiss();
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("AuthCode", AuthCode);
+                params.put("AdminID", AdminID);
 
 
                 Log.e("Parms", params.toString());
@@ -323,7 +309,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     //alert dialoge signle Button
-    public AlertDialog singleButton(Context context, String userid, String authcode){
+    public AlertDialog singleButton(Context context, String userid, String authcode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context,
                 AlertDialog.THEME_HOLO_DARK);
         builder.setTitle("Alert")
@@ -334,7 +320,7 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int arg1) {
 
-                        getLogout(userid,authcode, dialog);
+                        getLogout(userid, authcode, dialog);
 
                     }
                 });
@@ -357,56 +343,16 @@ public class SplashActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    for (int i=0 ; i<jsonArray.length(); i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                         String status = jsonObject.getString("status");
 
                         if (status.equalsIgnoreCase("success")) {
-                        // navigationItemIndex = 22;
-
-                        Intent ik = new Intent(getApplicationContext(), LoginActivity.class);
-                        startActivity(ik);
-                        overridePendingTransition(R.anim.push_left_in,
-                                R.anim.push_right_out);
-                        finish();
-
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setStatus(SplashActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAdminId(SplashActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(SplashActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmailId(SplashActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(SplashActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpId(SplashActivity.this,
-                                "")));
-
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpPhoto(SplashActivity.this,
-                                "")));
-
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setDesignation(SplashActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(SplashActivity.this,
-                                "")));
-
-                        //cancel background services
-                        cancelAlarm();
-
-                        dialog.dismiss();
-
-
-                    }else
-                        {
-
-                            String MsgNotification = jsonObject.getString("MsgNotification");
-                            Toast.makeText(SplashActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
-
+                            // navigationItemIndex = 22;
 
                             Intent ik = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(ik);
@@ -438,15 +384,51 @@ public class SplashActivity extends AppCompatActivity {
                             //cancel background services
                             cancelAlarm();
 
-                        }
+                            dialog.dismiss();
 
+
+                        } else {
+
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+                            Toast.makeText(SplashActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
+
+
+                            Intent ik = new Intent(getApplicationContext(), LoginActivity.class);
+                            startActivity(ik);
+                            overridePendingTransition(R.anim.push_left_in,
+                                    R.anim.push_right_out);
+                            finish();
+
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setStatus(SplashActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAdminId(SplashActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(SplashActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmailId(SplashActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(SplashActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpId(SplashActivity.this,
+                                    "")));
+
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpPhoto(SplashActivity.this,
+                                    "")));
+
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setDesignation(SplashActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(SplashActivity.this,
+                                    "")));
+                            //cancel background services
+                            cancelAlarm();
+                        }
 
                     }
 
-                 //   pDialog.dismiss();
+                    //   pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -457,16 +439,14 @@ public class SplashActivity extends AppCompatActivity {
                 // Log.e("checking now ",error.getMessage());
 
                 Toast.makeText(SplashActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-             //   pDialog.dismiss();
-
-
+                //   pDialog.dismiss();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AdminID",AdminID);
-                params.put("AuthCode",AuthCode);
+                params.put("AdminID", AdminID);
+                params.put("AuthCode", AuthCode);
 
 
                 Log.e("Parms", params.toString());
@@ -482,8 +462,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     //cancel Notification
-    public void cancelAlarm()
-    {
+    public void cancelAlarm() {
         Intent intent = new Intent(this, NotificationBroadCast.class);
         PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);

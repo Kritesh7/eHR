@@ -44,13 +44,13 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 public class ViewAttendanceDetailsActivity extends AppCompatActivity {
 
     public TextView titleTxt, empNmaeTxt, inTimeDateTxt, empIdTxt, inTimeTxt, outTimeTxt, durationTxt, halfDayTxt,
-                    lateArivalTxt, earlyLeavingTxt, statusTxt;
+            lateArivalTxt, earlyLeavingTxt, statusTxt;
     public Button updateBtn;
     public String viewDetailsUrl = SettingConstant.BaseUrl + "AppEmployeeAttendanceDetail";
     public String updateRequestUrl = SettingConstant.BaseUrl + "AppEmployeeAttendanceUpdateRequest";
     public ConnectionDetector conn;
     public PopupWindow popupWindow;
-    public String authcode = "", isRequest = "", attendaceLogId= "",userId = "";
+    public String authcode = "", isRequest = "", attendaceLogId = "", userId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +68,11 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.viewleavtoolbar);
         setSupportActionBar(toolbar);
 
-        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
+        titleTxt = (TextView) toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -88,40 +88,37 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
         titleTxt.setText("Attendance Details");
 
         Intent intent = getIntent();
-        if (intent != null)
-        {
+        if (intent != null) {
 
             attendaceLogId = intent.getStringExtra("AttendnaceLogId");
-           // isRequest = intent.getStringExtra("Visibile");
+            // isRequest = intent.getStringExtra("Visibile");
 
 
         }
 
         conn = new ConnectionDetector(ViewAttendanceDetailsActivity.this);
-        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewAttendanceDetailsActivity.this)));
+        authcode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewAttendanceDetailsActivity.this)));
         userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewAttendanceDetailsActivity.this)));
         //find widget
-        updateBtn = (Button)findViewById(R.id.updatedetail);
-        empNmaeTxt = (TextView)findViewById(R.id.empname);
-        inTimeDateTxt = (TextView)findViewById(R.id.intimedate);
-       // outTimeEditTxt = (TextView)findViewById(R.id.outtimedate);
-        inTimeTxt = (TextView)findViewById(R.id.intime);
-        outTimeTxt = (TextView)findViewById(R.id.outtime);
-        durationTxt = (TextView)findViewById(R.id.duration);
-        halfDayTxt = (TextView)findViewById(R.id.halfday);
-        lateArivalTxt = (TextView)findViewById(R.id.latearival);
-        earlyLeavingTxt = (TextView)findViewById(R.id.earlylearning);
-        statusTxt = (TextView)findViewById(R.id.status);
-        empIdTxt = (TextView)findViewById(R.id.empid);
+        updateBtn = (Button) findViewById(R.id.updatedetail);
+        empNmaeTxt = (TextView) findViewById(R.id.empname);
+        inTimeDateTxt = (TextView) findViewById(R.id.intimedate);
+        // outTimeEditTxt = (TextView)findViewById(R.id.outtimedate);
+        inTimeTxt = (TextView) findViewById(R.id.intime);
+        outTimeTxt = (TextView) findViewById(R.id.outtime);
+        durationTxt = (TextView) findViewById(R.id.duration);
+        halfDayTxt = (TextView) findViewById(R.id.halfday);
+        lateArivalTxt = (TextView) findViewById(R.id.latearival);
+        earlyLeavingTxt = (TextView) findViewById(R.id.earlylearning);
+        statusTxt = (TextView) findViewById(R.id.status);
+        empIdTxt = (TextView) findViewById(R.id.empid);
 
 
-        if (conn.getConnectivityStatus()>0)
-        {
-            viewDetails(authcode,userId,attendaceLogId);
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
+        if (conn.getConnectivityStatus() > 0) {
+            viewDetails(authcode, userId, attendaceLogId);
+        } else {
+            conn.showNoInternetAlret();
+        }
 
 
         //click on button and update request
@@ -129,17 +126,15 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (conn.getConnectivityStatus()>0) {
+                if (conn.getConnectivityStatus() > 0) {
 
                     setPopupWindow(authcode, userId, attendaceLogId);
 
-                }else
-                    {
-                        conn.showNoInternetAlret();
-                    }
+                } else {
+                    conn.showNoInternetAlret();
+                }
             }
         });
-
 
 
     }
@@ -147,11 +142,10 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
     private void setPopupWindow(final String authCode, final String userId, final String leaveId) {
 
 
-
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext()
                 .getSystemService(LAYOUT_INFLATER_SERVICE);
         final View popupView = layoutInflater.inflate(R.layout.popup_layout, null);
-        Button cancel , backBtn;
+        Button cancel, backBtn;
         final EditText remarkTxt;
         popupWindow = new PopupWindow(popupView,
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT,
@@ -164,21 +158,20 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
         //
 
         cancel = (Button) popupView.findViewById(R.id.cancel_leaverequest);
-        remarkTxt = (EditText)popupView.findViewById(R.id.remarktxt);
-        backBtn = (Button)popupView.findViewById(R.id.backbtn);
+        remarkTxt = (EditText) popupView.findViewById(R.id.remarktxt);
+        backBtn = (Button) popupView.findViewById(R.id.backbtn);
 
         cancel.setText("Update");
-      //  backBtn.setText("Update Request");
+        //  backBtn.setText("Update Request");
 
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (remarkTxt.getText().toString().equalsIgnoreCase(""))
-                {
+                if (remarkTxt.getText().toString().equalsIgnoreCase("")) {
                     Toast.makeText(ViewAttendanceDetailsActivity.this, "Please fill Remark", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     updateRequest(authCode, userId, leaveId, remarkTxt.getText().toString());
                 }
 
@@ -198,10 +191,10 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
     }
 
     //update Request
-    public void updateRequest(final String AuthCode , final String AdminID,  final String LeaveApplicationID, final String Remark ) {
+    public void updateRequest(final String AuthCode, final String AdminID, final String LeaveApplicationID, final String Remark) {
 
 
-        final ProgressDialog pDialog = new ProgressDialog(ViewAttendanceDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(ViewAttendanceDetailsActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -214,14 +207,12 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
                     Log.e("Login", response);
 
 
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1));
 
-                    if (jsonObject.has("status"))
-                    {
+                    if (jsonObject.has("status")) {
                         String status = jsonObject.getString("status");
 
-                        if (status.equalsIgnoreCase("success"))
-                        {
+                        if (status.equalsIgnoreCase("success")) {
 
                             String MsgNotification = jsonObject.getString("MsgNotification");
 
@@ -232,7 +223,7 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -247,15 +238,15 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
 
-                params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
-                params.put("AttendanceLogID",LeaveApplicationID);
-                params.put("Remark",Remark);
+                params.put("AuthCode", AuthCode);
+                params.put("AdminID", AdminID);
+                params.put("AttendanceLogID", LeaveApplicationID);
+                params.put("Remark", Remark);
 
 
                 Log.e("Parms", params.toString());
@@ -272,10 +263,10 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
 
 
     //View Attendance Details
-    public void viewDetails(final String AuthCode , final String AdminID,  final String LeaveApplicationID ) {
+    public void viewDetails(final String AuthCode, final String AdminID, final String LeaveApplicationID) {
 
 
-        final ProgressDialog pDialog = new ProgressDialog(ViewAttendanceDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(ViewAttendanceDetailsActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -286,14 +277,12 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    for (int i=0 ; i<jsonArray.length();i++)
-                    {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         // String status = jsonObject.getString("status");
-                        if (jsonObject.has("MsgNotification"))
-                        {
+                        if (jsonObject.has("MsgNotification")) {
                             String MsgNotification = jsonObject.getString("MsgNotification");
                             Toast.makeText(ViewAttendanceDetailsActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
 
@@ -324,8 +313,7 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
                         empIdTxt.setText(EmpID);
 
                         //hide button
-                        if (isRequest.equalsIgnoreCase("0"))
-                        {
+                        if (isRequest.equalsIgnoreCase("0")) {
                             updateBtn.setVisibility(View.GONE);
                         }
 
@@ -335,7 +323,7 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -350,14 +338,14 @@ public class ViewAttendanceDetailsActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
 
-                params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
-                params.put("AttendanceLogID",LeaveApplicationID);
+                params.put("AuthCode", AuthCode);
+                params.put("AdminID", AdminID);
+                params.put("AttendanceLogID", LeaveApplicationID);
 
 
                 Log.e("Parms", params.toString());

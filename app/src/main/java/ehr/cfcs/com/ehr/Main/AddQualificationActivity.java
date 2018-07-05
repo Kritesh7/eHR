@@ -537,7 +537,6 @@ public class AddQualificationActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-
                 params.put("AdminID",AdminID);
                 params.put("AuthCode",AuthCode);
                 params.put("RecordID",RecordID);
@@ -547,7 +546,6 @@ public class AddQualificationActivity extends AppCompatActivity {
                 params.put("DisciplineID",DisciplineID);
                 params.put("QualificationID",QualificationID);
                 params.put("HighestDegree",HighestDegree);
-
 
                 Log.e("Parms", params.toString());
                 return params;
@@ -560,7 +558,6 @@ public class AddQualificationActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
-
 
     @Override
     public void onBackPressed() {

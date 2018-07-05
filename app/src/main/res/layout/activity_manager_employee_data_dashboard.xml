@@ -16,7 +16,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_manager_employee_data_dashboard" />
+    <include layout="@layout/content_manager_employee_data_dashboard"/>
 
    <!-- <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

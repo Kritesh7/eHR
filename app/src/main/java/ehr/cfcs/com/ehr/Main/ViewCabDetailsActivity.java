@@ -44,17 +44,16 @@ import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
 public class ViewCabDetailsActivity extends AppCompatActivity {
 
-    public TextView titleTxt,empNameTxt,requestDateTxt,approvedByTxt,bookDateTxt,cityNameTxt,statusTxt,empcommTxt,hrcommTxt,
-                     followDateTxt,hrcommentFontTxt;
+    public TextView titleTxt, empNameTxt, requestDateTxt, approvedByTxt, bookDateTxt, cityNameTxt, statusTxt, empcommTxt, hrcommTxt,
+            followDateTxt, hrcommentFontTxt;
     public String cabDetailsUrl = SettingConstant.BaseUrl + "AppEmployeeTaxiBookingRequestDetail";
     public ConnectionDetector conn;
-    public String bidString = "",authCode = "", userId = "";
+    public String bidString = "", authCode = "", userId = "";
     public ehr.cfcs.com.ehr.Source.MyListLayout cabItemList;
     public CabItemsAdapter adapter;
     public ArrayList<CabItemModel> list = new ArrayList<>();
     public Button editBtn;
-    public String BookDateText = "", CityName = "", BookTime = "", SourceAdd = "", DestinationAdd = "",EmpComment = ""
-            ,BIDStr = "";
+    public String BookDateText = "", CityName = "", BookTime = "", SourceAdd = "", DestinationAdd = "", EmpComment = "", BIDStr = "";
 
 
     @Override
@@ -72,11 +71,11 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.viewcabtoolbar);
         setSupportActionBar(toolbar);
 
-        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
+        titleTxt = (TextView) toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -92,29 +91,28 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
         titleTxt.setText("Cab Details");
 
         Intent intent = getIntent();
-        if (intent != null)
-        {
+        if (intent != null) {
             bidString = intent.getStringExtra("Bid");
         }
 
         conn = new ConnectionDetector(ViewCabDetailsActivity.this);
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewCabDetailsActivity.this)));
+        authCode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(ViewCabDetailsActivity.this)));
         userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(ViewCabDetailsActivity.this)));
 
-        empNameTxt = (TextView)findViewById(R.id.cab_empname);
-        requestDateTxt = (TextView)findViewById(R.id.cab_request_date);
-        approvedByTxt = (TextView)findViewById(R.id.cab_request);
-        bookDateTxt = (TextView)findViewById(R.id.cab_bookdate);
-        cityNameTxt = (TextView)findViewById(R.id.cab_cityname);
-        statusTxt = (TextView)findViewById(R.id.cab_status);
-        empcommTxt = (TextView)findViewById(R.id.cab_employcomment);
-        hrcommTxt = (TextView)findViewById(R.id.cab_hr_comment);
-        followDateTxt = (TextView)findViewById(R.id.followdatetxt);
-        hrcommentFontTxt = (TextView)findViewById(R.id.hrcommenttxt);
-        cabItemList = (ehr.cfcs.com.ehr.Source.MyListLayout ) findViewById(R.id.cab_item_list);
+        empNameTxt = (TextView) findViewById(R.id.cab_empname);
+        requestDateTxt = (TextView) findViewById(R.id.cab_request_date);
+        approvedByTxt = (TextView) findViewById(R.id.cab_request);
+        bookDateTxt = (TextView) findViewById(R.id.cab_bookdate);
+        cityNameTxt = (TextView) findViewById(R.id.cab_cityname);
+        statusTxt = (TextView) findViewById(R.id.cab_status);
+        empcommTxt = (TextView) findViewById(R.id.cab_employcomment);
+        hrcommTxt = (TextView) findViewById(R.id.cab_hr_comment);
+        followDateTxt = (TextView) findViewById(R.id.followdatetxt);
+        hrcommentFontTxt = (TextView) findViewById(R.id.hrcommenttxt);
+        cabItemList = (ehr.cfcs.com.ehr.Source.MyListLayout) findViewById(R.id.cab_item_list);
         editBtn = (Button) findViewById(R.id.editcab);
 
-        adapter = new CabItemsAdapter(ViewCabDetailsActivity.this,list);
+        adapter = new CabItemsAdapter(ViewCabDetailsActivity.this, list);
 
         cabItemList.setAdapter(adapter);
 
@@ -125,13 +123,13 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
 
                 Intent i = new Intent(ViewCabDetailsActivity.this, AddCabActivity.class);
                 i.putExtra("Mode", "Edit");
-                i.putExtra("Booking Date",BookDateText);
-                i.putExtra("Booking City",CityName);
-                i.putExtra("Booking Time",BookTime);
-                i.putExtra("Source Address",SourceAdd);
-                i.putExtra("Destination Address",DestinationAdd);
-                i.putExtra("Booking Remark",EmpComment);
-                i.putExtra("BID",BIDStr);
+                i.putExtra("Booking Date", BookDateText);
+                i.putExtra("Booking City", CityName);
+                i.putExtra("Booking Time", BookTime);
+                i.putExtra("Source Address", SourceAdd);
+                i.putExtra("Destination Address", DestinationAdd);
+                i.putExtra("Booking Remark", EmpComment);
+                i.putExtra("BID", BIDStr);
 
                 startActivity(i);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
@@ -143,20 +141,18 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (conn.getConnectivityStatus()>0)
-        {
-            viewCabDetails(authCode,bidString, userId);
+        if (conn.getConnectivityStatus() > 0) {
+            viewCabDetails(authCode, bidString, userId);
 
-        }else
-        {
+        } else {
             conn.showNoInternetAlret();
         }
     }
 
     //view cab details
-    public void viewCabDetails(final String AuthCode ,final String BID, final String userId) {
+    public void viewCabDetails(final String AuthCode, final String BID, final String userId) {
 
-        final ProgressDialog pDialog = new ProgressDialog(ViewCabDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(ViewCabDetailsActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -167,11 +163,10 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1));
 
                     JSONArray requestDetailsArray = jsonObject.getJSONArray("TaxiBookingMaster");
-                    for (int i = 0; i<requestDetailsArray.length(); i++)
-                    {
+                    for (int i = 0; i < requestDetailsArray.length(); i++) {
                         JSONObject object = requestDetailsArray.getJSONObject(i);
 
                         String EmpName = object.getString("EmpName");
@@ -195,13 +190,11 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
                         bookDateTxt.setText(BookDateText);
 
 
-                        if (HrComment.equalsIgnoreCase("") ||  HrComment.equalsIgnoreCase("null") )
-                        {
+                        if (HrComment.equalsIgnoreCase("") || HrComment.equalsIgnoreCase("null")) {
                             hrcommTxt.setVisibility(View.GONE);
                             hrcommentFontTxt.setVisibility(View.GONE);
 
-                        }else if (approvedBy.equalsIgnoreCase("") || approvedBy.equalsIgnoreCase("null"))
-                        {
+                        } else if (approvedBy.equalsIgnoreCase("") || approvedBy.equalsIgnoreCase("null")) {
                             approvedByTxt.setVisibility(View.GONE);
                             followDateTxt.setVisibility(View.GONE);
                         }
@@ -210,12 +203,10 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
                     }
 
                     JSONArray itemdetaislArray = jsonObject.getJSONArray("TaxiBookingDetail");
-                    if (list.size()>0)
-                    {
+                    if (list.size() > 0) {
                         list.clear();
                     }
-                    for (int j=0 ; j<itemdetaislArray.length();j++)
-                    {
+                    for (int j = 0; j < itemdetaislArray.length(); j++) {
                         JSONObject object = itemdetaislArray.getJSONObject(j);
 
                         BookTime = object.getString("BookTime");
@@ -223,8 +214,7 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
                         DestinationAdd = object.getString("DestinationAdd");
 
 
-                        list.add(new CabItemModel(BookTime,SourceAdd,DestinationAdd));
-
+                        list.add(new CabItemModel(BookTime, SourceAdd, DestinationAdd));
 
 
                     }
@@ -234,7 +224,7 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -249,13 +239,13 @@ public class ViewCabDetailsActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("BID",BID);
-                params.put("AdminID",userId);
+                params.put("AuthCode", AuthCode);
+                params.put("BID", BID);
+                params.put("AdminID", userId);
 
 
                 Log.e("Parms", params.toString());

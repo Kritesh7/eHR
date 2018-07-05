@@ -61,10 +61,10 @@ public class LoginActivity extends AppCompatActivity {
             window.setStatusBarColor(this.getResources().getColor(R.color.status_color));
         }
 
-        loginBtn = (Button)findViewById(R.id.loginbtn);
-        userNameTxt = (EditText)findViewById(R.id.usernmaetxt);
-        passwordTxt = (EditText)findViewById(R.id.passwordtxt);
-        forgotBtn = (TextView)findViewById(R.id.forgetpass);
+        loginBtn = (Button) findViewById(R.id.loginbtn);
+        userNameTxt = (EditText) findViewById(R.id.usernmaetxt);
+        passwordTxt = (EditText) findViewById(R.id.passwordtxt);
+        forgotBtn = (TextView) findViewById(R.id.forgetpass);
         mContext = LoginActivity.this;
         conn = new ConnectionDetector(LoginActivity.this);
 
@@ -85,29 +85,27 @@ public class LoginActivity extends AppCompatActivity {
                 AuthCode = String.valueOf(randomNumber);
 
 
-                if (userNameTxt.getText().toString().equalsIgnoreCase(""))
-                {
+                if (userNameTxt.getText().toString().equalsIgnoreCase("")) {
                     userNameTxt.setError("Please enter valid user name");
                     userNameTxt.requestFocus();
 
-                }else if (passwordTxt.getText().toString().equalsIgnoreCase(""))
-                {
+                } else if (passwordTxt.getText().toString().equalsIgnoreCase("")) {
+
                     passwordTxt.setError("Please enter valid password");
                     passwordTxt.requestFocus();
 
-                }else {
+                } else {
 
-                    if (conn.getConnectivityStatus()>0) {
+                    if (conn.getConnectivityStatus() > 0) {
 
-                        Login_Api(userNameTxt.getText().toString(),passwordTxt.getText().toString(),AuthCode,PhoneModel,AndroidVersion);
+                        Login_Api(userNameTxt.getText().toString(), passwordTxt.getText().toString(), AuthCode, PhoneModel, AndroidVersion);
 
-                    }else
-                        {
-                            conn.showNoInternetAlret();
-                        }
+                    } else {
+                        conn.showNoInternetAlret();
+                    }
                 }
 
-               // checkGPS();
+                // checkGPS();
             }
         });
 
@@ -115,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent ik = new Intent(getApplicationContext(),ForGotPasswordActivity.class);
+                Intent ik = new Intent(getApplicationContext(), ForGotPasswordActivity.class);
                 startActivity(ik);
                 overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
 
@@ -126,17 +124,14 @@ public class LoginActivity extends AppCompatActivity {
         /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);*/
 
-
     }
 
 
+    public void Login_Api(final String emailId, final String Password, final String AuthCode,
+                          final String ClientName, final String ClientVersion) {
 
 
-    public void Login_Api(final String emailId  , final String Password, final String AuthCode ,
-                          final String ClientName , final String ClientVersion) {
-
-
-        final ProgressDialog pDialog = new ProgressDialog(LoginActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(LoginActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -147,19 +142,16 @@ public class LoginActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    for (int i=0 ; i<jsonArray.length();i++)
-                    {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         // String status = jsonObject.getString("status");
-                        if (jsonObject.has("MsgNotification"))
-                        {
+                        if (jsonObject.has("MsgNotification")) {
                             String MsgNotification = jsonObject.getString("MsgNotification");
                             Toast.makeText(LoginActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
 
-                        }else
-                        {
+                        } else {
 
                             String AdminID = jsonObject.getString("AdminID");
                             String UserName = jsonObject.getString("UserName");
@@ -172,10 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                             String CompanyLogo = jsonObject.getString("CompanyLogo");
 
 
-
-
-
-                            Intent ik = new Intent(getApplicationContext(),HomeActivity.class);
+                            Intent ik = new Intent(getApplicationContext(), HomeActivity.class);
                             startActivity(ik);
                             overridePendingTransition(R.anim.push_right_in, R.anim.push_left_out);
                             finish();
@@ -205,10 +194,6 @@ public class LoginActivity extends AppCompatActivity {
                                     DesignationName)));
                             UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(LoginActivity.this,
                                     CompanyLogo)));
-
-
-
-
                         }
 
 
@@ -217,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -225,22 +210,22 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("Login", "Error: " + error.getMessage());
+
                 // Log.e("checking now ",error.getMessage());
 
                 Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
 
-
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("UserName", emailId);
-                params.put("Password",Password);
-                params.put("AuthCode",AuthCode);
-                params.put("BrandName",ClientName);
-                params.put("ClientVersion",ClientVersion);
+                params.put("Password", Password);
+                params.put("AuthCode", AuthCode);
+                params.put("BrandName", ClientName);
+                params.put("ClientVersion", ClientVersion);
 
                 Log.e("Parms", params.toString());
                 return params;

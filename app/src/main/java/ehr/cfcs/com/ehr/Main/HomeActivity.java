@@ -83,6 +83,7 @@ import ehr.cfcs.com.ehr.Fragment.SkillsFragment;
 import ehr.cfcs.com.ehr.Fragment.StationaryRequestFragment;
 import ehr.cfcs.com.ehr.Fragment.TaxiListFragment;
 import ehr.cfcs.com.ehr.Fragment.WeekOfListFragment;
+import ehr.cfcs.com.ehr.Interface.LocationUpdateService;
 import ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerEmergencyAddressActivity;
 import ehr.cfcs.com.ehr.Manager.ManagerActivity.ManagerRequestToApproveActivity;
 import ehr.cfcs.com.ehr.R;
@@ -97,16 +98,16 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class HomeActivity extends AppCompatActivity implements DashBoardFragment.OnFragmentInteractionListenerForToolbar,
         TaxiListFragment.OnFragmentInteractionListener, ManagerDashBoardFragment.OnFragmentInteractionListener,
         MyProfileFragment.OnFragmentInteractionListener, WeekOfListFragment.OnFragmentInteractionListener,
-        HolidayListFragment.OnFragmentInteractionListener,ContactPhoneFragment.OnFragmentInteractionListener,
-        AttendanceLogListFragment.OnFragmentInteractionListener,ShortLeaveHistoryFragment.OnFragmentInteractionListener,
-        SkillsFragment.OnFragmentInteractionListener,LanguagesFragment.OnFragmentInteractionListener,
-        DependnetsFragment.OnFragmentInteractionListener,DocumentListFragment.OnFragmentInteractionListener,
-        AssestDetailsFragment.OnFragmentInteractionListener,AttendaceListFragment.OnFragmentInteractionListener,
-        LeaveSummarryFragment.OnFragmentInteractionListener,ChnagePasswordFragment.OnFragmentInteractionListener,
-        MedicalDetailsFragment.OnFragmentInteractionListener,ContactsDetailsFragment.OnFragmentInteractionListener,
-        PersonalDetailsFragment.OnFragmentInteractionListener,PreviousExprienceFragment.OnFragmentInteractionListener,
+        HolidayListFragment.OnFragmentInteractionListener, ContactPhoneFragment.OnFragmentInteractionListener,
+        AttendanceLogListFragment.OnFragmentInteractionListener, ShortLeaveHistoryFragment.OnFragmentInteractionListener,
+        SkillsFragment.OnFragmentInteractionListener, LanguagesFragment.OnFragmentInteractionListener,
+        DependnetsFragment.OnFragmentInteractionListener, DocumentListFragment.OnFragmentInteractionListener,
+        AssestDetailsFragment.OnFragmentInteractionListener, AttendaceListFragment.OnFragmentInteractionListener,
+        LeaveSummarryFragment.OnFragmentInteractionListener, ChnagePasswordFragment.OnFragmentInteractionListener,
+        MedicalDetailsFragment.OnFragmentInteractionListener, ContactsDetailsFragment.OnFragmentInteractionListener,
+        PersonalDetailsFragment.OnFragmentInteractionListener, PreviousExprienceFragment.OnFragmentInteractionListener,
         StationaryRequestFragment.OnFragmentInteractionListener, OfficeallyDetailsFragment.OnFragmentInteractionListener,
-        HotelBookingListFragment.OnFragmentInteractionListener,LeaveManagementFragment.OnFragmentInteractionListener,
+        HotelBookingListFragment.OnFragmentInteractionListener, LeaveManagementFragment.OnFragmentInteractionListener,
         EmergencyContactsFragment.OnFragmentInteractionListener, MedicalAndEnsuranceFragment.OnFragmentInteractionListener,
         EducationDetailsFragment.OnFragmentInteractionListener {
 
@@ -121,7 +122,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     private static final String TAG_Traning = "Traning";
     private static final String TAG_Asset_Details = "AssestDeatils";
     private static final String TAG_Employ_UpdateProfile = "UpdateProfile";
-    private static final String TAG_Employ_PersonalDetails= "PersonalDetails";
+    private static final String TAG_Employ_PersonalDetails = "PersonalDetails";
     private static final String TAG_Employ_MedicalDetails = "MedicalDetails";
     private static final String TAG_Employ_OfficeallyDetails = "OfficeallyDetails";
     private static final String TAG_Employ_ContactsDetails = "ContactsDetails";
@@ -144,7 +145,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     private static final String TAG_Contact_Phone = "Contact Phone";
     private static final String TAG_AttendanceLogList = "AttendanceLogList";
     private static final String TAG_MYProfile = "MY PROFILE";
-    public String userNameStr = "", photoStr = "", empIdStr = "", designationStr = "",companLogoStr = "";
+    public String userNameStr = "", photoStr = "", empIdStr = "", designationStr = "", companLogoStr = "";
     public static int navigationItemIndex = 0;
     public Toolbar toolbar;
     public static String CURRENT_TAG = TAG_Dashboard;
@@ -156,14 +157,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     public PhotoViewAttacher mAttacher;
     public String countUrl = SettingConstant.BaseUrl + "AppManagerRequestToApproveDashBoard";
     public String logoutUrl = SettingConstant.BASEURL_FOR_LOGIN + "AppLoginLogOut";
-    public int count ;
+    public int count;
     public String userId = "", authCode = "";
-    public  TextView itemMessagesBadgeTextView;
+    public TextView itemMessagesBadgeTextView;
     public PendingIntent pendingIntent;
     public AlarmManager manager;
     public ConnectionDetector conn;
-    public  Bundle bundle;
-   // public String countinOne = "";
+    public Bundle bundle;
+    // public String countinOne = "";
 
 
     @Override
@@ -178,14 +179,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             window.setStatusBarColor(this.getResources().getColor(R.color.status_color));
         }
 
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(HomeActivity.this)));
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(HomeActivity.this)));
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(HomeActivity.this)));
+        authCode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(HomeActivity.this)));
         conn = new ConnectionDetector(HomeActivity.this);
 
 
         toolbar = (Toolbar) findViewById(R.id.hometollbar);
         setSupportActionBar(toolbar);
-        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
+        titleTxt = (TextView) toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -195,7 +196,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         navigationView = (NavigationView) findViewById(R.id.home_navigation);
 
 
-   //     headeLay = (RelativeLayout) navigationView.findViewById(R.id.view_container) ;
+        //     headeLay = (RelativeLayout) navigationView.findViewById(R.id.view_container) ;
 
         bundle = new Bundle();
 
@@ -252,33 +253,29 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 Display display = getWindowManager().getDefaultDisplay();
                 int width = display.getWidth();
                 int height = display.getHeight();
-                loadPhoto(proImg,width,height);
+                loadPhoto(proImg, width, height);
             }
         });
-
-
 
 
         titleTxt.setText("Dashboard");
 
 
-
         //Notification BroadCast Recicver
-        if (conn.getConnectivityStatus()>0) {
+        if (conn.getConnectivityStatus() > 0) {
 
             Intent alarm = new Intent(HomeActivity.this, NotificationBroadCast.class);
             pendingIntent = PendingIntent.getBroadcast(HomeActivity.this, 0, alarm, 0);
             startalarmreciver(pendingIntent);
 
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
+        } else {
+            conn.showNoInternetAlret();
+        }
 
 
         //count the notification
         //call API
-        getCount(authCode,userId);
+        getCount(authCode, userId);
 
 
     }
@@ -293,8 +290,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     }
 
     //cancel Notification
-    public void cancelAlarm()
-    {
+    public void cancelAlarm() {
         Intent intent = new Intent(this, NotificationBroadCast.class);
         PendingIntent sender = PendingIntent.getBroadcast(this, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
@@ -319,7 +315,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         //dialog.setContentView(R.layout.custom_fullimage_dialog);
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.custom_fullimage_dialoge,
-                (ViewGroup)findViewById(R.id.layout_root));
+                (ViewGroup) findViewById(R.id.layout_root));
         ImageView image = (ImageView) layout.findViewById(R.id.fullimage);
         ImageView croosImg = (ImageView) layout.findViewById(R.id.imgClose);
 
@@ -352,9 +348,9 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                     //Replacing the main content with ContentFragment Which is our Inbox View;
                     case R.id.nav_dashboard:
 
-                            navigationItemIndex = 0;
-                            CURRENT_TAG = TAG_Dashboard;
-                            titleTxt.setText("Dashboard");
+                        navigationItemIndex = 0;
+                        CURRENT_TAG = TAG_Dashboard;
+                        titleTxt.setText("Dashboard");
 
 
                         break;
@@ -587,13 +583,11 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         titleTxt.setText("My Profile");
                         break;
 
-                        case R.id.nav_logout:
+                    case R.id.nav_logout:
 
-                            //Logout API
-                            getLogout(userId,authCode);
-                            break;
-
-
+                        //Logout API
+                        getLogout(userId, authCode);
+                        break;
 
 
                     default:
@@ -616,6 +610,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
                 super.onDrawerClosed(drawerView);
             }
+
             @Override
             public void onDrawerOpened(View drawerView) {
                 // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
@@ -633,8 +628,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         //   selectNavMenu();
 
 
-
-        Log.e("check current tag",CURRENT_TAG+" null");
+        Log.e("check current tag", CURRENT_TAG + " null");
         if (getSupportFragmentManager().findFragmentByTag(CURRENT_TAG) != null) {
 
 
@@ -651,14 +645,16 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
         getHomeFragment();
     }
+
     private void selectNavMenu() {
         navigationView.getMenu().getItem(navigationItemIndex).setChecked(true);
     }
+
     private Fragment getHomeFragment() {
 
         Fragment newFragment;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Log.e("checked postion",navigationItemIndex+" null");
+        Log.e("checked postion", navigationItemIndex + " null");
         switch (navigationItemIndex) {
             case 0:
                 // home
@@ -688,7 +684,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
 
 
@@ -698,7 +694,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             case 1:
                 //drawer.closeDrawers();
                 // movies fragment
-              /*  PayoutsListFragment payoutsListFragment = new PayoutsListFragment();*/
+                /*  PayoutsListFragment payoutsListFragment = new PayoutsListFragment();*/
 
                /* getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getSupportActionBar().setDisplayShowHomeEnabled(true);*/
@@ -725,7 +721,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 2:
 
@@ -754,7 +750,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
                /* FollowUpFragment followUpFragment = new FollowUpFragment();
                 return followUpFragment;*/
@@ -801,7 +797,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 5:
 /*
@@ -830,7 +826,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 6:
 
@@ -859,7 +855,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 7:
 
@@ -888,7 +884,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 8:
 
@@ -917,7 +913,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 9:
 
@@ -946,7 +942,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 10:
 
@@ -975,7 +971,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 11:
 
@@ -1004,7 +1000,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 12:
 
@@ -1033,7 +1029,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 13:
 
@@ -1062,7 +1058,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 14:
 
@@ -1091,7 +1087,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 15:
 
@@ -1120,7 +1116,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 16:
 /*
@@ -1149,7 +1145,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 17:
 
@@ -1179,7 +1175,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 18:
 
@@ -1208,7 +1204,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 19:
 
@@ -1237,7 +1233,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 20:
 
@@ -1266,7 +1262,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 21:
 
@@ -1295,7 +1291,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 23:
 
@@ -1324,7 +1320,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 24:
 
@@ -1353,7 +1349,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 25:
 /*
@@ -1382,7 +1378,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 26:
 
@@ -1411,7 +1407,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 27:
 
@@ -1440,7 +1436,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 28:
 
@@ -1469,7 +1465,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
             case 29:
 
@@ -1490,7 +1486,6 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                 });
 
 
-
                 newFragment = new MyProfileFragment();
                 newFragment.setArguments(bundle);
                 transaction.replace(R.id.home_navigation_framelayout, newFragment);
@@ -1499,7 +1494,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
 
 
             default:
@@ -1512,7 +1507,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         R.anim.push_left_out, R.anim.push_left_in, R.anim.push_right_out);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                return newFragment ;
+                return newFragment;
         }
     }
 
@@ -1531,10 +1526,10 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
             // rather than home
             if (navigationItemIndex != 0) {
 
-                getCount(authCode,userId);
+                getCount(authCode, userId);
                 titleTxt.setText("Dashboard");
 
-             //   Log.e("cheking the onbackpressed count", countinOne + " null");
+                //   Log.e("cheking the onbackpressed count", countinOne + " null");
 
               /*  if (!countinOne.equalsIgnoreCase("" )) {
                     int co = Integer.parseInt(countinOne);
@@ -1559,8 +1554,6 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     }
 
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.count_menu, menu);
@@ -1571,12 +1564,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         itemMessagesBadgeTextView = (TextView) view.findViewById(R.id.badge_textView);
 
 
-
-
-
-
-
-        ImageView  iconButtonMessages = (ImageView) view.findViewById(R.id.badge_icon_button);
+        ImageView iconButtonMessages = (ImageView) view.findViewById(R.id.badge_icon_button);
         iconButtonMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1591,16 +1579,16 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
         //getMenuInflater().inflate(R.menu.count_menu, menu);
 
-       // MenuItem menuItem = menu.findItem(R.id.menu_messages);
+        // MenuItem menuItem = menu.findItem(R.id.menu_messages);
         //menuItem.setIcon(buildCounterDrawable(count, R.drawable.ic_menu_gallery));
 
         //return true;
     }
 
     //show  count api
-    public void getCount(final String AuthCode , final String AdminID) {
+    public void getCount(final String AuthCode, final String AdminID) {
 
-        final ProgressDialog pDialog = new ProgressDialog(HomeActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(HomeActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -1611,10 +1599,9 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    for (int i=0 ; i<jsonArray.length();i++)
-                    {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
                         String LeaveCount = jsonObject.getString("LeaveCount");
@@ -1625,15 +1612,14 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
 
                         count = Integer.parseInt(LeaveCount) + Integer.parseInt(CancelLeaveCount) + Integer.parseInt(ShortLeaveCount) +
-                                Integer.parseInt(ShortCancelLeaveCount) +  Integer.parseInt(TrainingCount);
+                                Integer.parseInt(ShortCancelLeaveCount) + Integer.parseInt(TrainingCount);
 
                         Log.e("count is ", count + "");
-                   //     countinOne = String.valueOf(count);
+                        //     countinOne = String.valueOf(count);
 
 
                         //to save on bundel pass the count activity to fragment
-                        bundle.putString("Count", count+"");
-
+                        bundle.putString("Count", count + "");
 
 
                         setUpNavigationView();
@@ -1643,12 +1629,11 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                         loadHomeFragment();
 
 
-
                     }
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -1663,12 +1648,12 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("AdminID",AdminID);
+                params.put("AuthCode", AuthCode);
+                params.put("AdminID", AdminID);
 
 
                 Log.e("Parms", params.toString());
@@ -1686,7 +1671,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
     //Log Out API Work
     public void getLogout(final String AdminID, final String AuthCode) {
 
-        final ProgressDialog pDialog = new ProgressDialog(HomeActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(HomeActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -1697,9 +1682,9 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    for (int i=0 ; i<jsonArray.length(); i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
 
@@ -1712,34 +1697,34 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                             Intent ik = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(ik);
                             overridePendingTransition(R.anim.push_left_in,
-                                R.anim.push_right_out);
+                                    R.anim.push_right_out);
                             finish();
 
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setStatus(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAdminId(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmailId(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpId(HomeActivity.this,
-                                "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setStatus(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAdminId(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setAuthCode(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmailId(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setUserName(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpId(HomeActivity.this,
+                                    "")));
 
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpPhoto(HomeActivity.this,
-                                "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setEmpPhoto(HomeActivity.this,
+                                    "")));
 
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setDesignation(HomeActivity.this,
-                                "")));
-                        UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(HomeActivity.this,
-                                "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setDesignation(HomeActivity.this,
+                                    "")));
+                            UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.setCompanyLogo(HomeActivity.this,
+                                    "")));
 
-                        //cancel background services
-                        cancelAlarm();
+                            //cancel background services
+                            cancelAlarm();
 
-
+                            getBaseContext().stopService(new Intent(HomeActivity.this, LocationUpdateService.class));
 
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
@@ -1747,8 +1732,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                                     R.anim.push_right_out);
                             finish();
 
-                    }else
-                        {
+                        } else {
 
                             String MsgNotification = jsonObject.getString("MsgNotification");
                             Toast.makeText(HomeActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
@@ -1786,7 +1770,6 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                             cancelAlarm();
 
 
-
                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                             startActivity(intent);
                             overridePendingTransition(R.anim.push_left_in,
@@ -1803,7 +1786,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -1818,12 +1801,12 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AdminID",AdminID);
-                params.put("AuthCode",AuthCode);
+                params.put("AdminID", AdminID);
+                params.put("AuthCode", AuthCode);
 
 
                 Log.e("Parms", params.toString());
@@ -1845,8 +1828,7 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         navigationItemIndex = navigationCount;
         titleTxt.setText(Title);
 
-        if (navigationItemIndex !=0)
-        {
+        if (navigationItemIndex != 0) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             toolbar.setNavigationIcon(R.drawable.backimg);
 
@@ -1861,26 +1843,26 @@ public class HomeActivity extends AppCompatActivity implements DashBoardFragment
         }
 
         //check notification count
-       // if (!countstr.equalsIgnoreCase("" ) || !countstr.equalsIgnoreCase("null")) {
-            int co = Integer.parseInt(countstr);
-            if (co > 0) {
-                itemMessagesBadgeTextView.setVisibility(View.VISIBLE);
-                itemMessagesBadgeTextView.setText(countstr + "");
-            } else {
-                itemMessagesBadgeTextView.setVisibility(View.GONE);
-            }
+        // if (!countstr.equalsIgnoreCase("" ) || !countstr.equalsIgnoreCase("null")) {
+        int co = Integer.parseInt(countstr);
+        if (co > 0) {
+            itemMessagesBadgeTextView.setVisibility(View.VISIBLE);
+            itemMessagesBadgeTextView.setText(countstr + "");
+        } else {
+            itemMessagesBadgeTextView.setVisibility(View.GONE);
+        }
 
-      //  }
+        //  }
 
     }
 
     @Override
     public void onFragmentInteraction(String count) {
 
-      //  countinOne = count;
+        //  countinOne = count;
 
 
-        if (!count.equalsIgnoreCase("" ) || !count.equalsIgnoreCase("null")) {
+        if (!count.equalsIgnoreCase("") || !count.equalsIgnoreCase("null")) {
             int co = Integer.parseInt(count);
             if (co > 0) {
                 itemMessagesBadgeTextView.setVisibility(View.VISIBLE);

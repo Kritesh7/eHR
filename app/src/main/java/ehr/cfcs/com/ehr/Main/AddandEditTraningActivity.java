@@ -88,7 +88,6 @@ public class AddandEditTraningActivity extends AppCompatActivity {
         DomainAdapter.setDropDownViewResource(R.layout.customizespinner);
         domainSpinner.setAdapter(DomainAdapter);
 
-
         // course Spinner
         if (courseList.size()>0)
         {
@@ -136,7 +135,6 @@ public class AddandEditTraningActivity extends AppCompatActivity {
         }
         priorityList.add("Please Select Priority");
         priorityList.add("Higher");
-
 
 
         //change spinner arrow color

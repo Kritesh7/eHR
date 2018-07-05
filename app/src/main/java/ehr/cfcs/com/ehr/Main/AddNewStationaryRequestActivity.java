@@ -54,20 +54,20 @@ import ehr.cfcs.com.ehr.Source.SettingConstant;
 import ehr.cfcs.com.ehr.Source.SharedPrefs;
 import ehr.cfcs.com.ehr.Source.UtilsMethods;
 
-public class AddNewStationaryRequestActivity extends AppCompatActivity implements AddItemInterface  {
+public class AddNewStationaryRequestActivity extends AppCompatActivity implements AddItemInterface {
 
     public TextView titleTxt;
- //   public BookMeaPrevisonAdapter adapter;
+    //   public BookMeaPrevisonAdapter adapter;
     public AddStationoryAndDocumentRequestNewAdapter adapter;
-  //  public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
+    //  public ArrayList<BookMeaPrevisionModel> list = new ArrayList<>();
     public ArrayList<AddNewStationoryRequestModel> list = new ArrayList<>();
     public ArrayList<getQuantAndRemarkModel> innerlist = new ArrayList<>();
-   // public ListView listView;
+    // public ListView listView;
     public RecyclerView addStaRecy;
     public String stationoryUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryItemDetail";
     public String addUrl = SettingConstant.BaseUrl + "AppEmployeeStationaryRequestInsUpdt";
     public ConnectionDetector conn;
-    public String authCode = "",modeString = "",editList = "",userId = "";
+    public String authCode = "", modeString = "", editList = "", userId = "";
     public ArrayList<AddNewStationoryRequestModel> myList = new ArrayList<>();
     public Button addBtn;
     public ArrayList<SendListModel> sendListInner = new ArrayList<>();
@@ -95,11 +95,11 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
         Toolbar toolbar = (Toolbar) findViewById(R.id.staionaory_tollbar);
         setSupportActionBar(toolbar);
 
-        titleTxt = (TextView)toolbar.findViewById(R.id.titletxt);
+        titleTxt = (TextView) toolbar.findViewById(R.id.titletxt);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
@@ -115,22 +115,21 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
         titleTxt.setText("Add New Stationary Request");
 
         Intent intent = getIntent();
-        if (intent != null)
-        {
+        if (intent != null) {
             modeString = intent.getStringExtra("Mode");
             rIdStr = intent.getStringExtra("Rid");
             IdealClosureDateText = intent.getStringExtra("IdealClosureDateText");
-            myList = (ArrayList<AddNewStationoryRequestModel>)getIntent().getSerializableExtra("mylist");
+            myList = (ArrayList<AddNewStationoryRequestModel>) getIntent().getSerializableExtra("mylist");
 
         }
 
         conn = new ConnectionDetector(AddNewStationaryRequestActivity.this);
-        authCode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddNewStationaryRequestActivity.this)));
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddNewStationaryRequestActivity.this)));
+        authCode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddNewStationaryRequestActivity.this)));
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddNewStationaryRequestActivity.this)));
 
         //listView = (ListView)findViewById(R.id.listview);
         addStaRecy = (RecyclerView) findViewById(R.id.stationory_recycler);
-        addBtn = (Button)findViewById(R.id.newrequestbtn);
+        addBtn = (Button) findViewById(R.id.newrequestbtn);
         closerDateBtn = (LinearLayout) findViewById(R.id.closerdatebtn);
         closerDateTxt = (TextView) findViewById(R.id.closerdatetxt);
 
@@ -223,20 +222,17 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
         });
 
 
-
         //Edit Mode;
-        if (modeString.equalsIgnoreCase("Edit"))
-        {
+        if (modeString.equalsIgnoreCase("Edit")) {
             closerDateTxt.setText(IdealClosureDateText);
             titleTxt.setText("Update Stationary Request");
             addBtn.setText("Update Stationary Request");
 
-            adapter = new AddStationoryAndDocumentRequestNewAdapter(AddNewStationaryRequestActivity.this,myList);
+            adapter = new AddStationoryAndDocumentRequestNewAdapter(AddNewStationaryRequestActivity.this, myList);
 
-        }else
-            {
-                adapter = new AddStationoryAndDocumentRequestNewAdapter(AddNewStationaryRequestActivity.this,list);
-            }
+        } else {
+            adapter = new AddStationoryAndDocumentRequestNewAdapter(AddNewStationaryRequestActivity.this, list);
+        }
 
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(AddNewStationaryRequestActivity.this);
@@ -247,43 +243,38 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
         addStaRecy.getRecycledViewPool().setMaxRecycledViews(0, 0);
 
 
+        if (conn.getConnectivityStatus() > 0) {
 
-        if (conn.getConnectivityStatus()>0) {
+            stationryData(authCode, "1", userId);
 
-            stationryData(authCode,"1", userId);
+        } else {
+            conn.showNoInternetAlret();
+        }
 
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
-
-            //add new data
+        //add new data
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
 
-                Log.e("checking the my list"," checking list size is: " + adapter.getListData().size() );
+                Log.e("checking the my list", " checking list size is: " + adapter.getListData().size());
 
-                if (innerlist.size()>0)
-                {
+                if (innerlist.size() > 0) {
                     innerlist.clear();
                 }
 
-                for (int i=0; i<list.size(); i++)
-                {
+                for (int i = 0; i < list.size(); i++) {
 
                     adapter.getListData().get(i).getQuantity();
 
-                    if (!adapter.getListData().get(i).getQuantity().equalsIgnoreCase(""))
-                    {
+                    if (!adapter.getListData().get(i).getQuantity().equalsIgnoreCase("")) {
 
-                        Log.e("checking the main list size",list.size() +"" );
+                        Log.e("checking the main list size", list.size() + "");
 
-                        Log.e("checking the item id",adapter.getListData().get(i).getItemId());
-                        Log.e("checking the item name",adapter.getListData().get(i).getItemName() );
-                        Log.e("checking the remark",adapter.getListData().get(i).getRemark() );
-                        Log.e("checking the quantity",adapter.getListData().get(i).getQuantity() );
+                        Log.e("checking the item id", adapter.getListData().get(i).getItemId());
+                        Log.e("checking the item name", adapter.getListData().get(i).getItemName());
+                        Log.e("checking the remark", adapter.getListData().get(i).getRemark());
+                        Log.e("checking the quantity", adapter.getListData().get(i).getQuantity());
 
                         innerlist.add(new getQuantAndRemarkModel(adapter.getListData().get(i).getItemName(),
                                 adapter.getListData().get(i).getQuantity(), adapter.getListData().get(i).getRemark(),
@@ -292,7 +283,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                     }
                 }
 
-                Log.e("checking the inner list size","Inner Log......" + innerlist.size());
+                Log.e("checking the inner list size", "Inner Log......" + innerlist.size());
 
                 //old function
                /* //Making json format
@@ -313,7 +304,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                 String[] separatedquant = removeQuant.split(",");
                 String[] separatedRemark = removeRemark.split(",");*/
 
-             //prevent save duplicate data in array list
+                //prevent save duplicate data in array list
                /* Set<AddNewStationoryRequestModel> hs = new LinkedHashSet<AddNewStationoryRequestModel>(innerlist);
                 innerlist.clear();
 
@@ -327,7 +318,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                 try {
 
 
-                    for (int i =0; i<innerlist.size(); i++) {
+                    for (int i = 0; i < innerlist.size(); i++) {
 
                         JSONObject filterJson = new JSONObject();
                         filterJson.put("ItemID", innerlist.get(i).getItemId());
@@ -338,7 +329,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                         mainArray.put(filterJson);
                     }
 
-                    object.put("members",mainArray);
+                    object.put("members", mainArray);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -348,29 +339,25 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                 //Log.e("checking the json is",mainArray.toString());
 
                 //Validation condtion and add data
-                if (closerDateTxt.getText().toString().equalsIgnoreCase(""))
-                {
-                   // closerDateTxt.setError("Please select closer date");
+                if (closerDateTxt.getText().toString().equalsIgnoreCase("")) {
+                    // closerDateTxt.setError("Please select closer date");
                     Toast.makeText(AddNewStationaryRequestActivity.this, "Please select closer date", Toast.LENGTH_SHORT).show();
-                }else if (innerlist.size() == 0)
-                {
+                } else if (innerlist.size() == 0) {
                     Toast.makeText(AddNewStationaryRequestActivity.this, "At least one item required", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
 
-                    if (conn.getConnectivityStatus()>0) {
+                    if (conn.getConnectivityStatus() > 0) {
 
                         if (modeString.equalsIgnoreCase("Edit")) {
                             addStaionoryItem(userId, rIdStr, "1", closerDateTxt.getText().toString(), authCode, object);
 
-                        }else
-                            {
-                                addStaionoryItem(userId, "", "1", closerDateTxt.getText().toString(), authCode, object);
+                        } else {
+                            addStaionoryItem(userId, "", "1", closerDateTxt.getText().toString(), authCode, object);
 
-                            }
-                    }else
-                        {
-                            conn.showNoInternetAlret();
                         }
+                    } else {
+                        conn.showNoInternetAlret();
+                    }
                 }
 
 
@@ -381,9 +368,9 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
 
     //Stationary Item Data
-    public void stationryData(final String AuthCode , final String ItemCatID, final String userId) {
+    public void stationryData(final String AuthCode, final String ItemCatID, final String userId) {
 
-        final ProgressDialog pDialog = new ProgressDialog(AddNewStationaryRequestActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(AddNewStationaryRequestActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -394,23 +381,20 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
                 try {
                     Log.e("Login", response);
-                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["),response.lastIndexOf("]") +1 ));
+                    JSONArray jsonArray = new JSONArray(response.substring(response.indexOf("["), response.lastIndexOf("]") + 1));
 
-                    if (list.size()>0)
-                    {
+                    if (list.size() > 0) {
                         list.clear();
                     }
-                    for (int i=0 ; i<jsonArray.length();i++)
-                    {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
                         String ItemID = jsonObject.getString("ItemID");
                         String ItemName = jsonObject.getString("ItemName");
                         String MaxQuantity = jsonObject.getString("MaxQuantity");
 
-                      //  list.add(new BookMeaPrevisionModel(ItemName,ItemID,MaxQuantity,"","false","0"));
+                        //  list.add(new BookMeaPrevisionModel(ItemName,ItemID,MaxQuantity,"","false","0"));
 
-                        list.add(new AddNewStationoryRequestModel(ItemName,MaxQuantity,ItemID,"",""));
-
+                        list.add(new AddNewStationoryRequestModel(ItemName, MaxQuantity, ItemID, "", ""));
 
 
                     }
@@ -419,7 +403,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -434,13 +418,13 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AuthCode",AuthCode);
-                params.put("ItemCatID",ItemCatID);
-                params.put("AdminID",userId);
+                params.put("AuthCode", AuthCode);
+                params.put("ItemCatID", ItemCatID);
+                params.put("AdminID", userId);
 
 
                 Log.e("Parms", params.toString());
@@ -465,10 +449,10 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
     }
 
     //add new staionry Data
-    public void addStaionoryItem(final String AdminID  ,final String RID, final String ItemCatID, final String IdealCosureDate,
-                                 final String AuthCode, final JSONObject mainArray)  {
+    public void addStaionoryItem(final String AdminID, final String RID, final String ItemCatID, final String IdealCosureDate,
+                                 final String AuthCode, final JSONObject mainArray) {
 
-        final ProgressDialog pDialog = new ProgressDialog(AddNewStationaryRequestActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(AddNewStationaryRequestActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -479,14 +463,12 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
                 try {
                     Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1));
 
-                    if (jsonObject.has("status"))
-                    {
+                    if (jsonObject.has("status")) {
                         String status = jsonObject.getString("status");
 
-                        if (status.equalsIgnoreCase("success"))
-                        {
+                        if (status.equalsIgnoreCase("success")) {
                             onBackPressed();
                         }
                     }
@@ -495,7 +477,7 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -510,16 +492,16 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AdminID",AdminID);
-                params.put("RID",RID);
-                params.put("ItemCatID",ItemCatID);
-                params.put("IdealCosureDate",IdealCosureDate);
-                params.put("ItemDetailJson",mainArray.toString());
-                params.put("AuthCode",AuthCode);
+                params.put("AdminID", AdminID);
+                params.put("RID", RID);
+                params.put("ItemCatID", ItemCatID);
+                params.put("IdealCosureDate", IdealCosureDate);
+                params.put("ItemDetailJson", mainArray.toString());
+                params.put("AuthCode", AuthCode);
 
                 Log.e("Parms", params.toString());
                 return params;
@@ -536,9 +518,9 @@ public class AddNewStationaryRequestActivity extends AppCompatActivity implement
     @Override
     public void getAllItem(ArrayList<String> sendList) {
 
-       // sendListInner = sendList;
+        // sendListInner = sendList;
 
         secondQuant = sendList;
-        Log.e("checking the size",secondQuant.size()+"");
+        Log.e("checking the size", secondQuant.size() + "");
     }
 }

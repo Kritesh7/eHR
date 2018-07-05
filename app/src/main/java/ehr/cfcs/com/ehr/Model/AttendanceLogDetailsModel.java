@@ -16,9 +16,12 @@ public class AttendanceLogDetailsModel
     public String remark;
     public String profilePic;
     public String zoneName;
+    public String approvalStatus;
+    public  String approvalDate;
+    public String approvalBy;
 
     public AttendanceLogDetailsModel(String name, String empId, String designation, String punchTime, String punchDate,
-                                     String punchType, String punchLocation, String remark, String profilePic, String zoneName) {
+                                     String punchType, String punchLocation, String remark, String profilePic, String zoneName,String approvalStatus,String approvalDate ,String approvalBy) {
         this.name = name;
         this.empId = empId;
         this.designation = designation;
@@ -29,7 +32,11 @@ public class AttendanceLogDetailsModel
         this.remark = remark;
         this.profilePic = profilePic;
         this.zoneName = zoneName;
+        this.approvalStatus=approvalStatus;
+        this.approvalDate=approvalDate;
+        this.approvalBy=approvalBy;
     }
+
 
 
     public String getProfilePic() {
@@ -71,4 +78,12 @@ public class AttendanceLogDetailsModel
     public String getRemark() {
         return remark;
     }
+
+    public  String getApprovalStatus(){return  approvalStatus;}
+
+    public  String getApprovalDate(){return  approvalDate;}
+
+    public String getApprovalBy(){return approvalBy;}
+
+
 }

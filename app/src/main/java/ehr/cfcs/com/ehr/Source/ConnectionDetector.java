@@ -8,9 +8,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-/**
- * Created by Himanshu Dubey on 15-04-2017.
- */
 
 public class ConnectionDetector extends Activity
 {

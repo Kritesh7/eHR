@@ -162,7 +162,7 @@ public class DownloadTask
                     Log.e(TAG, "Directory Created.");
                 }
 
-                outputFile = new File(apkStorage, downloadFileName);//Create Output file in Main File
+                outputFile = new File(apkStorage,downloadFileName);//Create Output file in Main File
 
                 //Create New File if not present
                 if (!outputFile.exists()) {

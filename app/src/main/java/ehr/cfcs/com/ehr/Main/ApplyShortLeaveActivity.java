@@ -214,8 +214,6 @@ public class ApplyShortLeaveActivity extends AppCompatActivity {
 
         dateTxt.setText(getCurrentTime());
 
-
-
         // apply leave
         subBtn.setOnClickListener(new View.OnClickListener() {
             @Override

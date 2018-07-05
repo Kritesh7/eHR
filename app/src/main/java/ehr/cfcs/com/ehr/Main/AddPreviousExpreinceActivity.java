@@ -241,7 +241,6 @@ public class AddPreviousExpreinceActivity extends AppCompatActivity {
             }
         }
 
-
         //change spinner arrow color
         monthSpinner.getBackground().setColorFilter(getResources().getColor(R.color.status_color), PorterDuff.Mode.SRC_ATOP);
 
@@ -308,7 +307,6 @@ public class AddPreviousExpreinceActivity extends AppCompatActivity {
                 mYear = c.get(Calendar.YEAR);
                 mMonth = c.get(Calendar.MONTH);
                 mDay = c.get(Calendar.DAY_OF_MONTH);
-
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(AddPreviousExpreinceActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
@@ -395,8 +393,6 @@ public class AddPreviousExpreinceActivity extends AppCompatActivity {
         });
     }
 
-
-
     //Add Previous Expreince
     public void addPreviousExpreinceDetails(final String AdminID  ,final String RecordID, final String CompanyName, final String JoiningDate,
                                  final String Designation, final String RelievingDate , final String Year , final String Month,
@@ -430,7 +426,6 @@ public class AddPreviousExpreinceActivity extends AppCompatActivity {
                             }
                     }
 
-
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
@@ -446,7 +441,6 @@ public class AddPreviousExpreinceActivity extends AppCompatActivity {
 
                 Toast.makeText(AddPreviousExpreinceActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 pDialog.dismiss();
-
 
             }
         }){
@@ -474,7 +468,6 @@ public class AddPreviousExpreinceActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
-
     }
 
     @Override

@@ -112,11 +112,10 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
     private int mYear, mMonth, mDay, mHour, mMinute;
     public String personalDdlDetailsUrl = SettingConstant.BaseUrl + "AppddlEmployeePersonalData";
     public String addUrl = SettingConstant.BaseUrl + "AppEmployeeOfficeDocumentInsUpdt";
-    public  ArrayAdapter<DocumentTypeModel> documentAdapter;
+    public ArrayAdapter<DocumentTypeModel> documentAdapter;
     public ConnectionDetector conn;
     public Button addBtn;
-    public String userId = "", authcode = "", documentId = "", imageBase64 = "", imageExtenstion = "", userNameStr = "", compId = ""
-            ,documentTxt = "";
+    public String userId = "", authcode = "", documentId = "", imageBase64 = "", imageExtenstion = "", userNameStr = "", compId = "", documentTxt = "";
     public LinearLayout fileSelectTxt;
     public ImageView crossBtn;
     private static final int FILE_SELECT_CODE = 0;
@@ -157,8 +156,8 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
         titleTxt.setText("Add Officially Detail");
 
         conn = new ConnectionDetector(AddOffieceallyDetailsActivity.this);
-        authcode =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddOffieceallyDetailsActivity.this)));
-        userId =  UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddOffieceallyDetailsActivity.this)));
+        authcode = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAuthCode(AddOffieceallyDetailsActivity.this)));
+        userId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getAdminId(AddOffieceallyDetailsActivity.this)));
         userNameStr = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getUserName(AddOffieceallyDetailsActivity.this)));
         compId = UtilsMethods.getBlankIfStringNull(String.valueOf(SharedPrefs.getCompanyId(AddOffieceallyDetailsActivity.this)));
 
@@ -188,7 +187,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
             public void onClick(View view) {
 
 
-               if (checkPermissions()){
+                if (checkPermissions()) {
                     showFileChooser();
 
                 }
@@ -281,13 +280,11 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
         });
 
         //get spiiner data
-        if (conn.getConnectivityStatus()>0)
-        {
+        if (conn.getConnectivityStatus() > 0) {
             personalDdlDetails();
-        }else
-            {
-                conn.showNoInternetAlret();
-            }
+        } else {
+            conn.showNoInternetAlret();
+        }
 
 
         //get document id
@@ -310,23 +307,20 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (documentId.equalsIgnoreCase(""))
-                {
+                if (documentId.equalsIgnoreCase("")) {
                     Toast.makeText(AddOffieceallyDetailsActivity.this, "Please select Document type", Toast.LENGTH_SHORT).show();
-                }else if (imageExtenstion.equalsIgnoreCase(""))
-                {
+                } else if (imageExtenstion.equalsIgnoreCase("")) {
                     Toast.makeText(AddOffieceallyDetailsActivity.this, "Please choose Documents", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     if (conn.getConnectivityStatus() > 0) {
 
                         if (!imageBase64.equalsIgnoreCase("")) {
                             addOfficealyDocs(userId, "0", documentId, noTxt.getText().toString(), authcode, issuesOfPlaceTxt.getText().toString(),
                                     expiryDateTxt.getText().toString(), issueDateTxt.getText().toString(), imageBase64, imageExtenstion,
                                     compId, userNameStr, documentTxt);
-                        }else
-                            {
-                                Toast.makeText(AddOffieceallyDetailsActivity.this, "This file is not supported", Toast.LENGTH_SHORT).show();
-                            }
+                        } else {
+                            Toast.makeText(AddOffieceallyDetailsActivity.this, "This file is not supported", Toast.LENGTH_SHORT).show();
+                        }
 
                     } else {
                         conn.showNoInternetAlret();
@@ -370,7 +364,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
         //Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         //intent.setType("*/*");
-       // startActivityForResult(intent, 7);
+        // startActivityForResult(intent, 7);
 
        /* try {
             startActivityForResult(
@@ -482,10 +476,10 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                         photoDirectory = new File(Environment.getDataDirectory()
                                 + "/Robotium-Screenshots/");
             *//*
-             * this checks to see if there are any previous test photo files
-             * if there are any photos, they are deleted for the sake of
-             * memory
-             *//*
+                     * this checks to see if there are any previous test photo files
+                     * if there are any photos, they are deleted for the sake of
+                     * memory
+                     *//*
                         if (photoDirectory.exists()) {
                             File[] dirFiles = photoDirectory.listFiles();
                             if (dirFiles.length != 0) {
@@ -558,52 +552,52 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                         }
                     } else {*/
 
-                        // Get the Uri of the selected file
-                        Uri uri = data.getData();
-                        Bitmap bitmap = null;
-                        Log.d("Checking One", "File Uri: " + uri.toString());
-                        // Get the path
-                        String path = null;
+                    // Get the Uri of the selected file
+                    Uri uri = data.getData();
+                    Bitmap bitmap = null;
+                    Log.d("Checking One", "File Uri: " + uri.toString());
+                    // Get the path
+                    String path = null;
 
-                        path = FilePath.getPath(AddOffieceallyDetailsActivity.this, uri);
+                    path = FilePath.getPath(AddOffieceallyDetailsActivity.this, uri);
 
-                        if (path == null)
-                            path = FilePath.getPath(AddOffieceallyDetailsActivity.this, uri);// From File Manager
+                    if (path == null)
+                        path = FilePath.getPath(AddOffieceallyDetailsActivity.this, uri);// From File Manager
 
-                        if (path != null)
-                            bitmap = BitmapFactory.decodeFile(path);
-
-
-                        Log.d("Checking", "File Path: " + path);
-                        File file = new File(FilePath.getPath(AddOffieceallyDetailsActivity.this, uri));
-                        Log.d("", "File : " + file.getName());
-                        uploadedFileName = file.getName().toString();
-
-                        imageExtenstion = path.substring(path.lastIndexOf("."));
-                        Log.e("File Name", imageExtenstion);
-                        // first = tokens.nextToken();
-
-                        mDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this);
-                        mDialog.setMessage("Uploading " + file.getName());
-                        mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                        // mDialog.show();
-
-                        new MyTask(mDialog);
+                    if (path != null)
+                        bitmap = BitmapFactory.decodeFile(path);
 
 
-                        if (imageExtenstion.equalsIgnoreCase(".jpg")) {
+                    Log.d("Checking", "File Path: " + path);
+                    File file = new File(FilePath.getPath(AddOffieceallyDetailsActivity.this, uri));
+                    Log.d("", "File : " + file.getName());
+                    uploadedFileName = file.getName().toString();
 
-                            imageBase64 = getEncoded64ImageStringFromBitmap(bitmap);
-                            Log.e("checking the frount 64", getEncoded64ImageStringFromBitmap(bitmap) + "Null");
-                        } else {
-                            imageBase64 = convertFileToByteArray(file);
-                            Log.e("checking the frount 64", convertFileToByteArray(file) + "Null");
-                        }
+                    imageExtenstion = path.substring(path.lastIndexOf("."));
+                    Log.e("File Name", imageExtenstion);
+                    // first = tokens.nextToken();
 
-                        //File select Successfully Text Visibile
-                        fileSelectTxt.setVisibility(View.VISIBLE);
-                        uploadBtn.setVisibility(View.GONE);
-                  //  }
+                    mDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this);
+                    mDialog.setMessage("Uploading " + file.getName());
+                    mDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    // mDialog.show();
+
+                    new MyTask(mDialog);
+
+
+                    if (imageExtenstion.equalsIgnoreCase(".jpg")) {
+
+                        imageBase64 = getEncoded64ImageStringFromBitmap(bitmap);
+                        Log.e("checking the frount 64", getEncoded64ImageStringFromBitmap(bitmap) + "Null");
+                    } else {
+                        imageBase64 = convertFileToByteArray(file);
+                        Log.e("checking the frount 64", convertFileToByteArray(file) + "Null");
+                    }
+
+                    //File select Successfully Text Visibile
+                    fileSelectTxt.setVisibility(View.VISIBLE);
+                    uploadBtn.setVisibility(View.GONE);
+                    //  }
                 }
                 break;
         }
@@ -611,8 +605,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
     }
 
 
-    public static String getPath(final Context context, final Uri uri)
-    {
+    public static String getPath(final Context context, final Uri uri) {
         //check here to KITKAT or new version
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
@@ -656,7 +649,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                 }
 
                 final String selection = "_id=?";
-                final String[] selectionArgs = new String[] {
+                final String[] selectionArgs = new String[]{
                         split[1]
                 };
 
@@ -685,7 +678,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                                        String selection, String[] selectionArgs) {
         Cursor cursor = null;
         final String column = "_data";
-        final String[] projection = { column };
+        final String[] projection = {column};
 
         try {
             cursor = context.getContentResolver().query(uri, projection,
@@ -700,14 +693,17 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
         }
         return null;
     }
+
     public static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri
                 .getAuthority());
     }
+
     public static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri
                 .getAuthority());
     }
+
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri
                 .getAuthority());
@@ -718,36 +714,36 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
                 .getAuthority());
     }
 
-   /* public static String getPath(Context context, Uri uri) throws URISyntaxException {
-        if ("content".equalsIgnoreCase(uri.getScheme())) {
-            String[] projection = { "_data" };
-            Cursor cursor = null;
+    /* public static String getPath(Context context, Uri uri) throws URISyntaxException {
+         if ("content".equalsIgnoreCase(uri.getScheme())) {
+             String[] projection = { "_data" };
+             Cursor cursor = null;
 
-            try {
-                cursor = context.getContentResolver().query(uri, projection, null, null, null);
-                int column_index = cursor.getColumnIndexOrThrow("_data");
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index);
-                }
-            } catch (Exception e) {
-                // Eat it
-            }
-        }
-        else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
-        }
+             try {
+                 cursor = context.getContentResolver().query(uri, projection, null, null, null);
+                 int column_index = cursor.getColumnIndexOrThrow("_data");
+                 if (cursor.moveToFirst()) {
+                     return cursor.getString(column_index);
+                 }
+             } catch (Exception e) {
+                 // Eat it
+             }
+         }
+         else if ("file".equalsIgnoreCase(uri.getScheme())) {
+             return uri.getPath();
+         }
 
-        return null;
-    }
-*/
+         return null;
+     }
+ */
     public String getRealPathFromURI(Uri contentUri) {
-        String [] proj      = {MediaStore.Images.Media.DATA};
-        Cursor cursor       = managedQuery( contentUri, proj, null, null,null);
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
 
         if (cursor == null)
             return null;
 
-        int column_index    = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 
         cursor.moveToFirst();
 
@@ -759,13 +755,13 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
         private ProgressDialog progressBar;
 
-        public MyTask( ProgressDialog progressBar ) {
+        public MyTask(ProgressDialog progressBar) {
 
-            this.progressBar= progressBar;
+            this.progressBar = progressBar;
         }
 
         @Override
-        protected String doInBackground( String... params ) {
+        protected String doInBackground(String... params) {
             progressBar.show();
             //do your work
             return "OK";
@@ -775,14 +771,17 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            progressBar.dismiss( );
+            progressBar.dismiss();
         }
 
         /* @Override
         protected void onPostExecute( ArrayList<Comment> result ) {
             progressBar.setVisibility( View.GONE );
         }*/
-    };
+    }
+
+    ;
+
     public static boolean isImageFile(String path) {
         String mimeType = URLConnection.guessContentTypeFromName(path);
         return mimeType != null && mimeType.startsWith("image");
@@ -790,7 +789,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
 
     //for files
-    public  String convertFileToByteArray(File f) {
+    public String convertFileToByteArray(File f) {
         byte[] byteArray = null;
         try {
             InputStream inputStream = new FileInputStream(f);
@@ -806,7 +805,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
             Log.e("Byte array", ">" + byteArray);
 
-           // mDialog.dismiss();
+            // mDialog.dismiss();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -839,7 +838,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
             baat = baos.toByteArray();
             encodeString = Base64.encodeToString(baat, Base64.DEFAULT);
 
-          //  pDialog.dismiss();
+            //  pDialog.dismiss();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -903,7 +902,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
     public void personalDdlDetails() {
 
 
-        final  ProgressDialog pDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -914,24 +913,22 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1));
 
                     //bind material List
-                    if (documentTypeList.size()>0)
-                    {
+                    if (documentTypeList.size() > 0) {
                         documentTypeList.clear();
                     }
-                    documentTypeList.add(new DocumentTypeModel("Please Select Policy Type",""));
+                    documentTypeList.add(new DocumentTypeModel("Please Select Policy Type", ""));
 
                     JSONArray documentTypeObj = jsonObject.getJSONArray("DocumentTypeMaster");
-                    for (int i =0; i<documentTypeObj.length(); i++)
-                    {
+                    for (int i = 0; i < documentTypeObj.length(); i++) {
                         JSONObject object = documentTypeObj.getJSONObject(i);
 
                         String DocumentTypeID = object.getString("DocumentTypeID");
                         String DocumentTypeName = object.getString("DocumentTypeName");
 
-                        documentTypeList.add(new DocumentTypeModel(DocumentTypeName,DocumentTypeID));
+                        documentTypeList.add(new DocumentTypeModel(DocumentTypeName, DocumentTypeID));
 
                     }
 
@@ -952,7 +949,7 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -976,12 +973,12 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
     }
 
     // add the officeally document
-    public void addOfficealyDocs(final String AdminID  ,final String RecordID, final String DocumentID, final String Number,
-                                         final String AuthCode, final String IssuePlace, final String ExpiryDate, final String IssueDate,
-                                         final String FileJson, final String FileExtension, final String CompID, final String UserName,
-                                 final String Document)  {
+    public void addOfficealyDocs(final String AdminID, final String RecordID, final String DocumentID, final String Number,
+                                 final String AuthCode, final String IssuePlace, final String ExpiryDate, final String IssueDate,
+                                 final String FileJson, final String FileExtension, final String CompID, final String UserName,
+                                 final String Document) {
 
-        final ProgressDialog pDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this,R.style.AppCompatAlertDialogStyle);
+        final ProgressDialog pDialog = new ProgressDialog(AddOffieceallyDetailsActivity.this, R.style.AppCompatAlertDialogStyle);
         pDialog.setMessage("Loading...");
         pDialog.show();
 
@@ -992,31 +989,28 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
                 try {
                     Log.e("Login", response);
-                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"),response.lastIndexOf("}") +1 ));
+                    JSONObject jsonObject = new JSONObject(response.substring(response.indexOf("{"), response.lastIndexOf("}") + 1));
 
-                    if (jsonObject.has("status"))
-                    {
+                    if (jsonObject.has("status")) {
                         String status = jsonObject.getString("status");
 
-                        if (status.equalsIgnoreCase("success"))
-                        {
+                        if (status.equalsIgnoreCase("success")) {
                             onBackPressed();
 
                             String MsgNotification = jsonObject.getString("MsgNotification");
-                            Toast.makeText(AddOffieceallyDetailsActivity.this,MsgNotification , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddOffieceallyDetailsActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
 
-                        }else
-                            {
-                                String MsgNotification = jsonObject.getString("MsgNotification");
-                                Toast.makeText(AddOffieceallyDetailsActivity.this,MsgNotification , Toast.LENGTH_SHORT).show();
-                            }
+                        } else {
+                            String MsgNotification = jsonObject.getString("MsgNotification");
+                            Toast.makeText(AddOffieceallyDetailsActivity.this, MsgNotification, Toast.LENGTH_SHORT).show();
+                        }
                     }
 
 
                     pDialog.dismiss();
 
                 } catch (JSONException e) {
-                    Log.e("checking json excption" , e.getMessage());
+                    Log.e("checking json excption", e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -1031,26 +1025,23 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
 
 
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("AdminID",AdminID);
-                params.put("AuthCode",AuthCode);
-                params.put("RecordID",RecordID);
-                params.put("DocumentID",DocumentID);
-                params.put("Number",Number);
-                params.put("IssuePlace",IssuePlace);
-                params.put("ExpiryDate",ExpiryDate);
-                params.put("IssueDate",IssueDate);
-                params.put("FileJson",FileJson);
-                params.put("FileExtension",FileExtension);
-                params.put("CompID",CompID);
-                params.put("UserName",UserName);
-                params.put("Document",Document);
-
-
-
+                params.put("AdminID", AdminID);
+                params.put("AuthCode", AuthCode);
+                params.put("RecordID", RecordID);
+                params.put("DocumentID", DocumentID);
+                params.put("Number", Number);
+                params.put("IssuePlace", IssuePlace);
+                params.put("ExpiryDate", ExpiryDate);
+                params.put("IssueDate", IssueDate);
+                params.put("FileJson", FileJson);
+                params.put("FileExtension", FileExtension);
+                params.put("CompID", CompID);
+                params.put("UserName", UserName);
+                params.put("Document", Document);
 
 
                 Log.e("Parms", params.toString());
@@ -1064,8 +1055,6 @@ public class AddOffieceallyDetailsActivity extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(historyInquiry, "Login");
 
     }
-
-
 
 
 }
